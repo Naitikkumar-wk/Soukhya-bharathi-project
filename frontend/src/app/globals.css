@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@font-face {
+  font-display: swap;
+  font-family: "mayo-display";
+  src: url("https://www.mayoclinic.org/mayofonts/Fonts/mayo/MayoClinicSerifDisplay-Bold.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 700;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "mayo-display";
+  src: url("https://www.mayoclinic.org/mayofonts/Fonts/mayo/MayoClinicSerifDisplay-Light.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 300;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "mayo-sans";
+  src: url("https://www.mayoclinic.org/mayofonts/Fonts/mayo/MayoClinicSans-Regular.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "mayo-sans";
+  src: url("https://www.mayoclinic.org/mayofonts/Fonts/mayo/MayoClinicSans-Bold.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 700;
+}
+
+:root {
+  --background: #f7f9f8;
+  --foreground: #142023;
+  --brand-teal: #268b8b;
+  --brand-teal-dark: #1f7474;
+  --surface: #ffffff;
+  --muted: #55646a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "mayo-sans", Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "mayo-sans", Arial, Helvetica, sans-serif;
+}
+
+.font-ui {
+  font-family: "mayo-sans", Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: "mayo-display", Georgia, "Times New Roman", serif;
+}
