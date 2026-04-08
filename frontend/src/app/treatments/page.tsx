@@ -17,6 +17,7 @@ const navItems: NavItem[] = [
   { href: "/appointment", label: "Appointment" },
 ];
 
+
 type Therapy = {
   id: string;
   title: string;
