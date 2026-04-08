@@ -23,15 +23,15 @@ export function SiteHeader({
 
   return (
     <header className="sticky top-0 z-30 border-b border-[#e5e7eb] bg-white">
-      <div className="mx-auto flex h-[84px] w-[min(1440px,calc(100%-36px))] items-center justify-between gap-4">
+      <div className="mx-auto flex h-[68px] w-[min(1440px,calc(100%-36px))] items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2.5 no-underline">
-          <span className="relative grid h-11 w-11 place-items-center overflow-hidden rounded-lg bg-[#1f948e]">
+          <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-lg bg-[#1f948e]">
             <Image
               src="/images/logo.png"
               alt="Soukhya Bharathi logo"
               fill
               className="scale-125 object-contain"
-              sizes="44px"
+              sizes="40px"
               priority
             />
           </span>
@@ -40,12 +40,12 @@ export function SiteHeader({
           </span>
         </Link>
 
-        <nav className="font-ui hidden flex-1 items-center justify-center gap-5 lg:flex xl:gap-6">
+        <nav className="font-ui hidden flex-1 items-center justify-center gap-6 lg:flex xl:gap-8">
           {navItems.map((item) => (
             <a
               key={item.label}
               href={item.href}
-              className="whitespace-nowrap text-[12px] text-[#4a5565] hover:text-[#101828]"
+              className="inline-flex min-h-[44px] items-center whitespace-nowrap text-[14px] text-[#4a5565] hover:text-[#101828]"
             >
               {item.label}
             </a>
@@ -55,7 +55,7 @@ export function SiteHeader({
         <button
           type="button"
           onClick={() => setMobileOpen((s) => !s)}
-          className="flex cursor-pointer flex-col gap-[5px] border-0 bg-transparent p-0 lg:hidden"
+          className="flex min-h-[44px] min-w-[44px] cursor-pointer flex-col items-center justify-center gap-[5px] border-0 bg-transparent p-2 lg:hidden"
           aria-label="Toggle navigation"
           aria-expanded={mobileOpen}
         >
@@ -76,7 +76,7 @@ export function SiteHeader({
 
         <a
           href={ctaHref}
-          className="font-ui hidden h-11 min-w-[168px] items-center justify-center rounded-full bg-[#1f948e] px-5 text-[13px] font-bold text-white transition hover:brightness-95 lg:inline-flex"
+          className="font-ui hidden h-10 min-w-[160px] items-center justify-center rounded-full bg-[#1f948e] px-5 text-[14px] font-bold text-white transition hover:brightness-95 lg:inline-flex"
         >
           {ctaLabel}
         </a>
