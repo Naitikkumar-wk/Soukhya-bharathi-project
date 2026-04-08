@@ -6,11 +6,11 @@ import { SiteHeader, type NavItem } from "@/components/SiteHeader";
 
 const navItems: NavItem[] = [
   { href: "/care", label: "Care" },
-  { href: "/treatments", label: "Wellness" },
+  { href: "/#treatments", label: "Wellness" },
   { href: "/#research", label: "Research" },
   { href: "/#about", label: "About SBH" },
   { href: "/#stories", label: "Stories" },
-  { href: "/appointment", label: "Appointment" },
+  { href: "/#appointment", label: "Appointment" },
 ];
 
 const careCards = [
@@ -35,7 +35,7 @@ const careCards = [
     alt: "Book appointment",
     title: "Book Appointment",
     text: "Start with intake form, choose date and doctor, and continue through confirmation and follow-up.",
-    href: "/appointment",
+    href: "#appointment",
     linkLabel: "Start Booking",
   },
 ];
@@ -46,7 +46,7 @@ const wellnessCards = [
     alt: "Panchakarma treatment",
     title: "Panchakarma",
     text: "Clinical detox protocol with treatment benefits, process details, FAQs, and booking entry.",
-    href: "/treatments#panchakarma",
+    href: "#",
     linkLabel: "View Details",
   },
   {
@@ -54,7 +54,7 @@ const wellnessCards = [
     alt: "Acupuncture treatment",
     title: "Acupuncture",
     text: "Targeted pain and stress support with clear eligibility, treatment process, and follow-up steps.",
-    href: "/treatments#acupuncture",
+    href: "#",
     linkLabel: "View Details",
   },
   {
@@ -62,7 +62,7 @@ const wellnessCards = [
     alt: "Other therapeutic treatments",
     title: "All Treatment Details",
     text: "Cupping Therapy, Yoga Therapy, and Kalari Marma Therapy with structured detail sections.",
-    href: "/treatments",
+    href: "#",
     linkLabel: "Explore Treatments",
   },
 ];
@@ -162,7 +162,7 @@ function ImageCard({
 export default function Home() {
   return (
     <div className="bg-white text-[#4a5565]">
-      <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
+      <SiteHeader navItems={navItems} ctaHref="/#appointment" ctaLabel="Book Appointment" />
 
       <main>
         <section id="about" className="relative flex min-h-[630px] items-center overflow-hidden text-white">
@@ -190,13 +190,13 @@ export default function Home() {
               </p>
               <div className="font-ui flex flex-wrap gap-3.5">
                 <a
-                  href="/treatments"
+                  href="#treatments"
                   className="inline-flex items-center justify-center rounded-full bg-[#1f948e] px-6 py-[13px] text-[14px] font-bold text-white transition hover:brightness-95"
                 >
                   Start Your Journey
                 </a>
                 <a
-                  href="/appointment"
+                  href="#appointment"
                   className="inline-flex items-center justify-center rounded-full border border-white/35 bg-white px-6 py-[13px] text-[14px] font-bold text-[#111]"
                 >
                   Book Consultation
@@ -268,7 +268,7 @@ export default function Home() {
               ))}
             </div>
             <p className="font-ui mt-5 text-center text-[14px] text-[#1e3a8a]">
-              <a href="/appointment">Book Appointment →</a>
+              <a href="#appointment">Book Appointment →</a>
             </p>
           </div>
         </section>
