@@ -9,11 +9,11 @@ const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
-  { href: "/#treatments", label: "Wellness" },
+  { href: "/treatments", label: "Wellness" },
   { href: "/#research", label: "Research" },
   { href: "/#about", label: "About SBH" },
   { href: "/#stories", label: "Stories" },
-  { href: "/#appointment", label: "Appointment" },
+  { href: "/appointment", label: "Appointment" },
 ];
 
 const specialties = [
@@ -124,7 +124,7 @@ function ProgramSection({
 export default function CarePage() {
   return (
     <div className="bg-white text-[#4a5565]">
-      <SiteHeader navItems={navItems} ctaHref="/#appointment" ctaLabel="Book Appointment" />
+      <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
 
       <main>
         <section className="py-12 text-center">
@@ -187,7 +187,7 @@ export default function CarePage() {
               text: "Begin your care journey with a personalized consultation. Our team will assess and create your wellness plan.",
               imageSrc: "/images/care-book.webp",
               imageAlt: "Book appointment",
-              href: "/#appointment",
+              href: "/appointment",
             },
           ]}
         />
@@ -224,7 +224,7 @@ export default function CarePage() {
               text: "Start with a cognitive assessment and personalized care plan. Our doctors will guide your wellness journey.",
               imageSrc: "/images/care-book.webp",
               imageAlt: "Book now",
-              href: "/#appointment",
+              href: "/appointment",
             },
           ]}
         />
@@ -237,7 +237,7 @@ export default function CarePage() {
                 Choose a program and take the first step toward better health with our expert team.
               </p>
               <a
-                href="/#appointment"
+                href="/appointment"
                 className="font-ui inline-flex items-center justify-center rounded-full bg-[#1f948e] px-6 py-2.5 text-[14px] font-bold text-white"
               >
                 Book Your Consultation
