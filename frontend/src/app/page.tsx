@@ -6,11 +6,11 @@ import { SiteHeader, type NavItem } from "@/components/SiteHeader";
 
 const navItems: NavItem[] = [
   { href: "/care", label: "Care" },
-  { href: "/#treatments", label: "Wellness" },
-  { href: "/#research", label: "Research" },
-  { href: "/#about", label: "About SBH" },
-  { href: "/#stories", label: "Stories" },
-  { href: "/#appointment", label: "Appointment" },
+  { href: "/treatments", label: "Wellness" },
+  { href: "/research", label: "Research" },
+  { href: "/about", label: "About SBH" },
+  { href: "/stories", label: "Stories" },
+  { href: "/appointment", label: "Appointment" },
 ];
 
 const careCards = [
@@ -19,7 +19,7 @@ const careCards = [
     alt: "Terminal illness care",
     title: "Terminal Illness Care",
     text: "Patient journey, care-team doctors, and testimonial-backed support for long-term guidance.",
-    href: "#",
+    href: "/care?section=terminal-illness-program",
     linkLabel: "View Program",
   },
   {
@@ -27,7 +27,7 @@ const careCards = [
     alt: "Neuro cognitive care",
     title: "Neuro Cognitive Care",
     text: "Structured care approach with patient stories, specialist doctors, and direct appointments.",
-    href: "#",
+    href: "/care?section=neuro-cognitive-program",
     linkLabel: "View Program",
   },
   {
@@ -46,7 +46,7 @@ const wellnessCards = [
     alt: "Panchakarma treatment",
     title: "Panchakarma",
     text: "Clinical detox protocol with treatment benefits, process details, FAQs, and booking entry.",
-    href: "#",
+    href: "/treatments?section=panchakarma",
     linkLabel: "View Details",
   },
   {
@@ -54,7 +54,7 @@ const wellnessCards = [
     alt: "Acupuncture treatment",
     title: "Acupuncture",
     text: "Targeted pain and stress support with clear eligibility, treatment process, and follow-up steps.",
-    href: "#",
+    href: "/treatments?section=acupuncture",
     linkLabel: "View Details",
   },
   {
@@ -73,7 +73,7 @@ const researchCards = [
     alt: "Research highlights",
     title: "Research Highlights",
     text: "Publications, research outcomes, and education programs for trust and transparency.",
-    href: "#",
+    href: "/research",
     linkLabel: "View Research & Education",
   },
   {
@@ -81,15 +81,15 @@ const researchCards = [
     alt: "Doctor team",
     title: "Doctors",
     text: "Meet specialists for Terminal Illness Care and Neuro Cognitive Care programs.",
-    href: "#",
-    linkLabel: "Meet Doctors",
+    href: "/about?section=team",
+    linkLabel: "Meet Team",
   },
   {
     src: "/images/stories.webp",
     alt: "Patient stories",
     title: "Success Stories",
     text: "Video testimonials and written reviews from patient journeys across programs.",
-    href: "#stories",
+    href: "/stories",
     linkLabel: "View Stories",
   },
 ];
@@ -165,7 +165,7 @@ export default function Home() {
       <SiteHeader navItems={navItems} ctaHref="/#appointment" ctaLabel="Book Appointment" />
 
       <main>
-        <section id="about" className="relative flex min-h-[630px] items-center overflow-hidden text-white">
+        <section id="hero" className="relative flex min-h-[630px] items-center overflow-hidden text-white">
           <Image
             src="/images/home-hero.webp"
             alt="Soukhya Bharathi reception"
@@ -206,6 +206,24 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="about" className="border-b border-[#e5e7eb] bg-[#f9fafb] py-12 md:py-14">
+          <div className={wrapperClass}>
+            <div className="mx-auto max-w-[720px] text-center">
+              <h2 className="text-[26px] font-bold text-[#101828] md:text-[30px]">About Soukhya Bharathi</h2>
+              <p className="font-ui mt-3 text-[15px] leading-[1.75] text-[#4a5565]">
+                Our philosophy, mission, values, and team — built around responsible Ayurvedic care, education,
+                and transparency. Read the full overview on the About page.
+              </p>
+              <a
+                href="/about"
+                className="font-ui mt-6 inline-flex items-center justify-center rounded-full bg-[#1f948e] px-7 py-3 text-[14px] font-bold text-white transition hover:brightness-95"
+              >
+                About SBH →
+              </a>
+            </div>
+          </div>
+        </section>
+
         <section id="care" className="py-20">
           <div className={wrapperClass}>
             <SectionTitle
@@ -218,7 +236,7 @@ export default function Home() {
               ))}
             </div>
             <p className="font-ui mt-5 text-center text-[14px] text-[#1e3a8a]">
-              <a href="#">Explore all care sub-sections →</a>
+              <a href="/care">Explore all care sub-sections →</a>
             </p>
           </div>
         </section>

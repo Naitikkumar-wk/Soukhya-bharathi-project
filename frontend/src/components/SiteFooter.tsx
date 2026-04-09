@@ -1,8 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
   wrapperClass?: string;
 };
+
+const quickLinkClass =
+  "text-white/80 underline-offset-2 transition hover:text-white hover:underline";
 
 export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]" }: Props) {
   return (
@@ -26,11 +30,36 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
         <div>
           <h4 className="mb-3.5 text-[16px] font-bold text-white">Quick Links</h4>
           <ul className="font-ui space-y-2.5 text-[14px]">
-            <li>Home</li>
-            <li>Care</li>
-            <li>Treatments</li>
-            <li>Research &amp; Education</li>
-            <li>Success Stories</li>
+            <li>
+              <Link href="/" className={quickLinkClass}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/care" className={quickLinkClass}>
+                Care
+              </Link>
+            </li>
+            <li>
+              <Link href="/treatments" className={quickLinkClass}>
+                Treatments
+              </Link>
+            </li>
+            <li>
+              <Link href="/research" className={quickLinkClass}>
+                Research &amp; Education
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className={quickLinkClass}>
+                About SBH
+              </Link>
+            </li>
+            <li>
+              <Link href="/stories" className={quickLinkClass}>
+                Success Stories
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -59,8 +88,12 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
       >
         <span>© 2026 Ayurveda Wellness. All rights reserved.</span>
         <div className="font-ui flex gap-4">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <button type="button" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
+            Privacy Policy
+          </button>
+          <button type="button" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
+            Terms of Service
+          </button>
         </div>
       </div>
     </footer>
