@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
 
 const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
- 
+
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
@@ -281,7 +281,6 @@ function SpecialtySection({
           imageOnRight ? "lg:[&>*:first-child]:order-2" : ""
         }`}
       >
-        {/* Image */}
         <div className="relative h-[320px] overflow-hidden rounded-2xl shadow-[0_4px_16px_rgba(16,24,40,0.10)]">
           <Image
             src={specialty.imageSrc}
@@ -292,7 +291,6 @@ function SpecialtySection({
           />
         </div>
 
-        {/* Content */}
         <div>
           <div className="border-l-[3px] border-[#1f948e] pl-5">
             <h2 className="text-[26px] font-bold leading-tight text-[#101828] md:text-[30px]">
@@ -342,13 +340,7 @@ function TherapyCard({
   return (
     <article className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
       <div className="relative h-[220px] w-full">
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
+        <Image src={src} alt={alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
       </div>
       <div className="p-6">
         <h3 className="text-[22px] font-bold text-[#101828]">{title}</h3>
@@ -358,67 +350,6 @@ function TherapyCard({
         </a>
       </div>
     </article>
-  );
-}
-
-type ProgramCardData = {
-  title: string;
-  text: string;
-  imageSrc: string;
-  imageAlt: string;
-  href: string;
-};
-
-function ProgramSection({
-  id,
-  title,
-  subtitle,
-  background,
-  cards,
-}: {
-  id: string;
-  title: string;
-  subtitle: string;
-  background?: "muted";
-  cards: ProgramCardData[];
-}) {
-  const sectionBg = background === "muted" ? "bg-[#f9fafb]" : "bg-white";
-  return (
-    <section id={id} className={`scroll-mt-[148px] py-14 lg:scroll-mt-28 ${sectionBg}`}>
-      <div className={wrapperClass}>
-        <div className="mb-10 text-center">
-          <h2 className="text-[34px] font-bold leading-tight text-[#101828] md:text-[40px]">{title}</h2>
-          <p className="font-ui mx-auto mt-3 max-w-[720px] text-[16px] leading-[1.6] text-[#4a5565]">
-            {subtitle}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {cards.map((card) => (
-            <article
-              key={card.title}
-              className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]"
-            >
-              <div className="relative h-[240px] w-full">
-                <Image
-                  src={card.imageSrc}
-                  alt={card.imageAlt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-[22px] font-bold text-[#101828]">{card.title}</h3>
-                <p className="font-ui mt-2 mb-4 text-[14px] leading-[1.6] text-[#4a5565]">{card.text}</p>
-                <a href={card.href} className="font-ui text-[14px] font-bold text-[#1f948e]">
-                  View Details →
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -447,15 +378,14 @@ export default function CarePage() {
       <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
 
       <main>
-        {/* ── Hero ─────────────────────────────────────────────── */}
         <section className="border-b border-[#e5e7eb] py-16 text-center">
           <div className={wrapperClass}>
             <h1 className="text-[42px] font-bold leading-tight text-[#101828] md:text-[52px]">
               Care @ Saukhyabharathi
             </h1>
             <p className="font-ui mx-auto mt-4 max-w-[680px] text-[16px] leading-[1.7] text-[#4a5565]">
-              Integrated Ayurveda and modern medicine under one roof — 11 specialties,
-              expert doctors, and personalized care plans for every condition.
+              Integrated Ayurveda and modern medicine under one roof — 11 specialties, expert doctors, and
+              personalized care plans for every condition.
             </p>
 
             <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -489,7 +419,6 @@ export default function CarePage() {
           </div>
         </section>
 
-        {/* ── Mobile sticky pill strip ──────────────────────────── */}
         <div className="sticky top-[84px] z-20 border-b border-[#e5e7eb] bg-white shadow-sm lg:hidden">
           <div className="overflow-x-auto px-4 py-3">
             <div className="flex w-max gap-2">
@@ -513,171 +442,123 @@ export default function CarePage() {
           </div>
         </div>
 
-        {/* Featured detailed programs (matches your care.html style) */}
-        <ProgramSection
-          id="terminal-illness-program"
-          title="Terminal Illness Care Program"
-          subtitle="Compassionate, integrated support for patients with serious long-term conditions"
-          cards={[
-            {
-              title: "Patient Journey",
-              text: "Understanding the path through diagnosis, treatment, and ongoing wellness management with our comprehensive care model.",
-              imageSrc: "/images/care-terminal.webp",
-              imageAlt: "Patient journey",
-              href: "/care?section=terminal-illness-program",
-            },
-            {
-              title: "Doctors",
-              text: "Meet our specialists experienced in Terminal Illness Care with decades of compassionate practice and patient outcomes.",
-              imageSrc: "/images/doctor.webp",
-              imageAlt: "Care doctors",
-              href: "/about",
-            },
-            {
-              title: "Testimonials",
-              text: "Hear from patients and families whose lives have been transformed through our Terminal Illness Care program.",
-              imageSrc: "/images/stories.webp",
-              imageAlt: "Patient stories",
-              href: "/stories",
-            },
-            {
-              title: "Book Appointment",
-              text: "Begin your care journey with a personalized consultation. Our team will assess and create your wellness plan.",
-              imageSrc: "/images/care-book.webp",
-              imageAlt: "Book appointment",
-              href: "/appointment",
-            },
-          ]}
-        />
-
-        <ProgramSection
-          id="neuro-cognitive-program"
-          title="Neuro Cognitive Care Program"
-          subtitle="Specialized support for neurological and cognitive health with evidence-based Ayurvedic approaches"
-          background="muted"
-          cards={[
-            {
-              title: "Care Approach",
-              text: "Our structured methodology combines classical Ayurvedic principles with modern understanding of neuro-cognitive wellness.",
-              imageSrc: "/images/care-neuro.webp",
-              imageAlt: "Care approach",
-              href: "/care?section=neuro-cognitive-program",
-            },
-            {
-              title: "Patient Stories",
-              text: "Real cases of patients who have regained mental clarity, improved focus, and better cognitive function.",
-              imageSrc: "/images/stories.webp",
-              imageAlt: "Patient stories",
-              href: "/stories",
-            },
-            {
-              title: "Doctors",
-              text: "Our Neuro Cognitive Care specialists bring years of experience in neurological health and cognitive rehabilitation.",
-              imageSrc: "/images/doctor.webp",
-              imageAlt: "Specialists",
-              href: "/about",
-            },
-            {
-              title: "Book Appointment",
-              text: "Start with a cognitive assessment and personalized care plan. Our doctors will guide your wellness journey.",
-              imageSrc: "/images/care-book.webp",
-              imageAlt: "Book now",
-              href: "/appointment",
-            },
-          ]}
-        />
-
         <div className={wrapperClass}>
-          <div className="divide-y divide-[#e5e7eb] py-4">
-            {specialties.map((s, i) => (
-              <SpecialtySection key={s.id} specialty={s} muted={i % 2 !== 0} index={i} />
-            ))}
-          </div>
+          <div className="flex gap-12 py-4">
+            <aside className="hidden w-52 shrink-0 lg:block">
+              <div className="sticky top-[108px] max-h-[calc(100vh-120px)] overflow-y-auto">
+                <p className="font-ui mb-3 text-[11px] font-bold uppercase tracking-widest text-[#4a5565]">
+                  Specialties
+                </p>
+                <nav className="flex flex-col">
+                  {specialties.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => {
+                        document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className={`font-ui block border-l-2 py-2 pl-3 pr-2 text-left text-[13px] transition ${
+                        activeId === s.id
+                          ? "border-[#1f948e] font-bold text-[#1f948e]"
+                          : "border-transparent text-[#4a5565] hover:border-[#a7e9e3] hover:text-[#101828]"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+            </aside>
 
-          <section
-            id="integrated-care"
-            className="my-12 rounded-2xl border border-[#a7e9e3] bg-[#f0fffe] px-8 py-12"
-          >
-            <div className="mb-10 text-center">
-              <h2 className="text-[28px] font-bold text-[#101828] md:text-[34px]">
-                Ayurveda &amp; Modern Medicine Under One Roof
-              </h2>
-              <p className="font-ui mx-auto mt-3 max-w-[560px] text-[15px] leading-[1.7] text-[#4a5565]">
-                Our integrated care model combines the best of classical Ayurveda with evidence-based
-                modern medicine for whole-person healing.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {integratedSteps.map((item) => (
-                <div
-                  key={item.step}
-                  className="rounded-2xl border border-[#a7e9e3] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
-                >
-                  <div className="font-ui mb-3 text-[11px] font-bold uppercase tracking-widest text-[#1f948e]">
-                    Step {item.step}
-                  </div>
-                  <h3 className="text-[22px] font-bold text-[#101828]">{item.title}</h3>
-                  <p className="font-ui mt-2 text-[14px] leading-[1.6] text-[#4a5565]">{item.text}</p>
+            <div className="min-w-0 flex-1">
+              <div className="divide-y divide-[#e5e7eb]">
+                {specialties.map((s, i) => (
+                  <SpecialtySection key={s.id} specialty={s} muted={i % 2 !== 0} index={i} />
+                ))}
+              </div>
+
+              <section className="my-12 rounded-2xl border border-[#a7e9e3] bg-[#f0fffe] px-8 py-12">
+                <div className="mb-10 text-center">
+                  <h2 className="text-[28px] font-bold text-[#101828] md:text-[34px]">
+                    Ayurveda &amp; Modern Medicine Under One Roof
+                  </h2>
+                  <p className="font-ui mx-auto mt-3 max-w-[560px] text-[15px] leading-[1.7] text-[#4a5565]">
+                    Our integrated care model combines the best of classical Ayurveda with evidence-based
+                    modern medicine for whole-person healing.
+                  </p>
                 </div>
-              ))}
-            </div>
-          </section>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  {integratedSteps.map((item) => (
+                    <div
+                      key={item.step}
+                      className="rounded-2xl border border-[#a7e9e3] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
+                    >
+                      <div className="font-ui mb-3 text-[11px] font-bold uppercase tracking-widest text-[#1f948e]">
+                        Step {item.step}
+                      </div>
+                      <h3 className="text-[22px] font-bold text-[#101828]">{item.title}</h3>
+                      <p className="font-ui mt-2 text-[14px] leading-[1.6] text-[#4a5565]">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
 
-          <section id="wellness" className="py-16">
-            <div className="mb-11 text-center">
-              <h2 className="text-[28px] font-bold text-[#101828] md:text-[34px]">
-                Ayurveda &amp; Traditional Health Systems for Wellness
-              </h2>
-              <p className="font-ui mx-auto mt-3 max-w-[560px] text-[15px] text-[#4a5565]">
-                Time-tested therapies delivered by trained practitioners for holistic restoration.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {wellnessTherapies.map((t) => (
-                <TherapyCard key={t.title} src={t.src} alt={t.alt} title={t.title} text={t.text} />
-              ))}
-            </div>
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-              <article className="rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
-                <h3 className="text-[22px] font-bold text-[#101828]">Yoga Therapy</h3>
-                <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">
-                  Therapeutic yoga sequences tailored to your condition for physical and mental
-                  restoration.
-                </p>
-                <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">
-                  Book a Session →
-                </a>
-              </article>
-              <article className="rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
-                <h3 className="text-[22px] font-bold text-[#101828]">Kalari Marma Therapy</h3>
-                <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">
-                  Ancient Kerala martial-art-derived marma point stimulation for deep tissue healing
-                  and pain relief.
-                </p>
-                <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">
-                  Book a Session →
-                </a>
-              </article>
-            </div>
-          </section>
-        </div>
+              <section id="wellness" className="py-16">
+                <div className="mb-11 text-center">
+                  <h2 className="text-[28px] font-bold text-[#101828] md:text-[34px]">
+                    Ayurveda &amp; Traditional Health Systems for Wellness
+                  </h2>
+                  <p className="font-ui mx-auto mt-3 max-w-[560px] text-[15px] text-[#4a5565]">
+                    Time-tested therapies delivered by trained practitioners for holistic restoration.
+                  </p>
+                </div>
 
-        <section className="py-0">
-          <div className={wrapperClass}>
-            <div className="mx-auto my-14 rounded-lg border border-[#a7e9e3] bg-[#f0fffe] p-8 text-center">
-              <h3 className="text-[24px] font-bold text-[#101828]">Ready to Begin Your Care Journey?</h3>
-              <p className="font-ui mx-auto mt-3 mb-5 max-w-[720px] text-[14px] text-[#4a5565]">
-                Choose a program and take the first step toward better health with our expert team.
-              </p>
-              <a
-                href="/appointment"
-                className="font-ui inline-flex items-center justify-center rounded-full bg-[#1f948e] px-6 py-2.5 text-[14px] font-bold text-white"
-              >
-                Book Your Consultation
-              </a>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                  {wellnessTherapies.map((t) => (
+                    <TherapyCard key={t.title} {...t} />
+                  ))}
+                </div>
+
+                <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <article className="rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
+                    <h3 className="text-[22px] font-bold text-[#101828]">Yoga Therapy</h3>
+                    <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">
+                      Therapeutic yoga sequences tailored to your condition for physical and mental restoration.
+                    </p>
+                    <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">
+                      Book a Session →
+                    </a>
+                  </article>
+                  <article className="rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
+                    <h3 className="text-[22px] font-bold text-[#101828]">Kalari Marma Therapy</h3>
+                    <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">
+                      Ancient Kerala martial-art-derived marma point stimulation for deep tissue healing and pain relief.
+                    </p>
+                    <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">
+                      Book a Session →
+                    </a>
+                  </article>
+                </div>
+              </section>
+
+              <section className="pb-16">
+                <div className="rounded-2xl border border-[#a7e9e3] bg-[#f0fffe] p-10 text-center">
+                  <h3 className="text-[28px] font-bold text-[#101828]">Ready to Begin Your Care Journey?</h3>
+                  <p className="font-ui mx-auto mt-3 mb-7 max-w-[580px] text-[15px] leading-[1.7] text-[#4a5565]">
+                    Choose a specialty and take the first step toward better health with our expert integrated
+                    care team.
+                  </p>
+                  <a
+                    href="/appointment"
+                    className="font-ui inline-flex items-center justify-center rounded-full bg-[#1f948e] px-8 py-3 text-[14px] font-bold text-white transition hover:brightness-95"
+                  >
+                    Book Your Consultation
+                  </a>
+                </div>
+              </section>
             </div>
           </div>
-        </section>
+        </div>
       </main>
 
       <SiteFooter wrapperClass={wrapperClass} />
