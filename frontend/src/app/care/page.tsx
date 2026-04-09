@@ -10,10 +10,10 @@ const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
-  { href: "/#treatments", label: "Wellness" },
-  { href: "/#research", label: "Research" },
-  { href: "/#about", label: "About SBH" },
-  { href: "/#stories", label: "Stories" },
+  { href: "/treatments", label: "Wellness" },
+  { href: "/research", label: "Research" },
+  { href: "/about", label: "About SBH" },
+  { href: "/stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
 ];
 
@@ -416,7 +416,7 @@ export default function CarePage() {
                 Book Consultation
               </a>
               <a
-                href="#cancer-care"
+                href="cancer-care"
                 className="font-ui inline-flex items-center justify-center rounded-full border border-[#1f948e] px-7 py-3 text-[14px] font-bold text-[#1f948e] transition hover:bg-[#f0fffe]"
               >
                 Explore Specialties ↓
@@ -432,7 +432,7 @@ export default function CarePage() {
               {specialties.map((s) => (
                 <a
                   key={s.id}
-                  href={`#${s.id}`}
+                  href={`${s.id}`}
                   className={`font-ui whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] font-medium transition ${
                     activeId === s.id
                       ? "border-[#1f948e] bg-[#1f948e] text-white"
