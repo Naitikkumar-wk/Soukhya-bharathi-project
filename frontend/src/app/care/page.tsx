@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
   { href: "/#research", label: "Research" },
-  { href: "/#about", label: "About SBH" },
+  { href: "/about", label: "About SBH" },
   { href: "/#stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
 ];
@@ -525,7 +525,7 @@ export default function CarePage() {
               text: "Meet our specialists experienced in Terminal Illness Care with decades of compassionate practice and patient outcomes.",
               imageSrc: "/images/doctor.webp",
               imageAlt: "Care doctors",
-              href: "/#about",
+              href: "/about",
             },
             {
               title: "Testimonials",
@@ -569,7 +569,7 @@ export default function CarePage() {
               text: "Our Neuro Cognitive Care specialists bring years of experience in neurological health and cognitive rehabilitation.",
               imageSrc: "/images/doctor.webp",
               imageAlt: "Specialists",
-              href: "/#about",
+              href: "/about",
             },
             {
               title: "Book Appointment",
