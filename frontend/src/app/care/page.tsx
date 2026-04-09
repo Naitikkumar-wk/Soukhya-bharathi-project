@@ -10,7 +10,7 @@ const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
-  { href: "/#treatments", label: "Wellness" },
+  { href: "/treatments", label: "Wellness" },
   { href: "/#research", label: "Research" },
   { href: "/#about", label: "About SBH" },
   { href: "/#stories", label: "Stories" },
@@ -446,131 +446,93 @@ export default function CarePage() {
           </div>
         </div>
 
-        {/* ── Two-column layout spanning entire page below hero ─── */}
-        <div className={wrapperClass}>
-          <div className="flex gap-12 py-4">
+        {/* Featured detailed programs (matches your care.html style) */}
+        <ProgramSection
+          id="terminal-care"
+          title="Terminal Illness Care Program"
+          subtitle="Compassionate, integrated support for patients with serious long-term conditions"
+          cards={[
+            {
+              title: "Patient Journey",
+              text: "Understanding the path through diagnosis, treatment, and ongoing wellness management with our comprehensive care model.",
+              imageSrc: "/images/care-terminal.webp",
+              imageAlt: "Patient journey",
+              href: "#",
+            },
+            {
+              title: "Doctors",
+              text: "Meet our specialists experienced in Terminal Illness Care with decades of compassionate practice and patient outcomes.",
+              imageSrc: "/images/doctor.webp",
+              imageAlt: "Care doctors",
+              href: "/#about",
+            },
+            {
+              title: "Testimonials",
+              text: "Hear from patients and families whose lives have been transformed through our Terminal Illness Care program.",
+              imageSrc: "/images/stories.webp",
+              imageAlt: "Patient stories",
+              href: "/#stories",
+            },
+            {
+              title: "Book Appointment",
+              text: "Begin your care journey with a personalized consultation. Our team will assess and create your wellness plan.",
+              imageSrc: "/images/care-book.webp",
+              imageAlt: "Book appointment",
+              href: "/appointment",
+            },
+          ]}
+        />
 
-            {/* Sticky Left Nav — desktop, sticks through entire page */}
-            <aside className="hidden w-52 shrink-0 lg:block">
-              <div className="sticky top-[108px] max-h-[calc(100vh-120px)] overflow-y-auto">
-                <p className="font-ui mb-3 text-[11px] font-bold uppercase tracking-widest text-[#4a5565]">
-                  Specialties
-                </p>
-                <nav className="flex flex-col">
-                  {specialties.map((s) => (
-                    <a
-                      key={s.id}
-                      href={`#${s.id}`}
-                      className={`font-ui block border-l-2 py-2 pl-3 pr-2 text-[13px] transition ${
-                        activeId === s.id
-                          ? "border-[#1f948e] font-bold text-[#1f948e]"
-                          : "border-transparent text-[#4a5565] hover:border-[#a7e9e3] hover:text-[#101828]"
-                      }`}
-                    >
-                      {s.label}
-                    </a>
-                  ))}
-                </nav>
-              </div>
-            </aside>
+        <ProgramSection
+          id="neuro-care"
+          title="Neuro Cognitive Care Program"
+          subtitle="Specialized support for neurological and cognitive health with evidence-based Ayurvedic approaches"
+          background="muted"
+          cards={[
+            {
+              title: "Care Approach",
+              text: "Our structured methodology combines classical Ayurvedic principles with modern understanding of neuro-cognitive wellness.",
+              imageSrc: "/images/care-neuro.webp",
+              imageAlt: "Care approach",
+              href: "#",
+            },
+            {
+              title: "Patient Stories",
+              text: "Real cases of patients who have regained mental clarity, improved focus, and better cognitive function.",
+              imageSrc: "/images/stories.webp",
+              imageAlt: "Patient stories",
+              href: "/#stories",
+            },
+            {
+              title: "Doctors",
+              text: "Our Neuro Cognitive Care specialists bring years of experience in neurological health and cognitive rehabilitation.",
+              imageSrc: "/images/doctor.webp",
+              imageAlt: "Specialists",
+              href: "/#about",
+            },
+            {
+              title: "Book Appointment",
+              text: "Start with a cognitive assessment and personalized care plan. Our doctors will guide your wellness journey.",
+              imageSrc: "/images/care-book.webp",
+              imageAlt: "Book now",
+              href: "/appointment",
+            },
+          ]}
+        />
 
-            {/* Right column — ALL page content */}
-            <div className="min-w-0 flex-1">
-
-              {/* Specialty Sections */}
-              <div className="divide-y divide-[#e5e7eb]">
-                {specialties.map((s, i) => (
-                  <SpecialtySection key={s.id} specialty={s} muted={i % 2 !== 0} index={i} />
-                ))}
-              </div>
-
-              {/* ── Integrated Care Explainer ─────────────────────── */}
-              <section className="my-12 rounded-2xl border border-[#a7e9e3] bg-[#f0fffe] px-8 py-12">
-                <div className="mb-10 text-center">
-                  <h2 className="text-[28px] font-bold text-[#101828] md:text-[34px]">
-                    Ayurveda &amp; Modern Medicine Under One Roof
-                  </h2>
-                  <p className="font-ui mx-auto mt-3 max-w-[560px] text-[15px] leading-[1.7] text-[#4a5565]">
-                    Our integrated care model combines the best of classical Ayurveda with
-                    evidence-based modern medicine for whole-person healing.
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                  {integratedSteps.map((item) => (
-                    <div
-                      key={item.step}
-                      className="rounded-2xl border border-[#a7e9e3] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
-                    >
-                      <div className="font-ui mb-3 text-[11px] font-bold uppercase tracking-widest text-[#1f948e]">
-                        Step {item.step}
-                      </div>
-                      <h3 className="text-[22px] font-bold text-[#101828]">{item.title}</h3>
-                      <p className="font-ui mt-2 text-[14px] leading-[1.6] text-[#4a5565]">
-                        {item.text}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* ── Wellness Therapies ────────────────────────────── */}
-              <section id="wellness" className="py-16">
-                <div className="mb-11 text-center">
-                  <h2 className="text-[28px] font-bold text-[#101828] md:text-[34px]">
-                    Ayurveda &amp; Traditional Health Systems for Wellness
-                  </h2>
-                  <p className="font-ui mx-auto mt-3 max-w-[560px] text-[15px] text-[#4a5565]">
-                    Time-tested therapies delivered by trained practitioners for holistic restoration.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                  {wellnessTherapies.map((t) => (
-                    <TherapyCard key={t.title} {...t} />
-                  ))}
-                </div>
-
-                <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <article className="rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
-                    <h3 className="text-[22px] font-bold text-[#101828]">Yoga Therapy</h3>
-                    <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">
-                      Therapeutic yoga sequences tailored to your condition for physical and mental restoration.
-                    </p>
-                    <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">
-                      Book a Session →
-                    </a>
-                  </article>
-                  <article className="rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
-                    <h3 className="text-[22px] font-bold text-[#101828]">Kalari Marma Therapy</h3>
-                    <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">
-                      Ancient Kerala martial-art-derived marma point stimulation for deep tissue healing and pain relief.
-                    </p>
-                    <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">
-                      Book a Session →
-                    </a>
-                  </article>
-                </div>
-              </section>
-
-              {/* ── Final CTA Band ────────────────────────────────── */}
-              <section className="pb-16">
-                <div className="rounded-2xl border border-[#a7e9e3] bg-[#f0fffe] p-10 text-center">
-                  <h3 className="text-[28px] font-bold text-[#101828]">
-                    Ready to Begin Your Care Journey?
-                  </h3>
-                  <p className="font-ui mx-auto mt-3 mb-7 max-w-[580px] text-[15px] leading-[1.7] text-[#4a5565]">
-                    Choose a specialty and take the first step toward better health with our
-                    expert integrated care team.
-                  </p>
-                  <a
-                    href="/appointment"
-                    className="font-ui inline-flex items-center justify-center rounded-full bg-[#1f948e] px-8 py-3 text-[14px] font-bold text-white transition hover:brightness-95"
-                  >
-                    Book Your Consultation
-                  </a>
-                </div>
-              </section>
-
+        <section className="py-0">
+          <div className={wrapperClass}>
+            <div className="mx-auto my-14 rounded-lg border border-[#a7e9e3] bg-[#f0fffe] p-8 text-center">
+              <h3 className="text-[24px] font-bold text-[#101828]">Ready to Begin Your Care Journey?</h3>
+              <p className="font-ui mx-auto mt-3 mb-5 max-w-[720px] text-[14px] text-[#4a5565]">
+                Choose a program and take the first step toward better health with our expert team.
+              </p>
+              <a
+                href="/appointment"
+                className="font-ui inline-flex items-center justify-center rounded-full bg-[#1f948e] px-6 py-2.5 text-[14px] font-bold text-white"
+              >
+                Book Your Consultation
+              </a>
             </div>
             {/* end right column */}
           </div>

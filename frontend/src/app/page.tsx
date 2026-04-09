@@ -46,7 +46,7 @@ const wellnessCards = [
     alt: "Panchakarma treatment",
     title: "Panchakarma",
     text: "Clinical detox protocol with treatment benefits, process details, FAQs, and booking entry.",
-    href: "#",
+    href: "/treatments#panchakarma",
     linkLabel: "View Details",
   },
   {
@@ -54,7 +54,7 @@ const wellnessCards = [
     alt: "Acupuncture treatment",
     title: "Acupuncture",
     text: "Targeted pain and stress support with clear eligibility, treatment process, and follow-up steps.",
-    href: "#",
+    href: "/treatments#acupuncture",
     linkLabel: "View Details",
   },
   {
@@ -62,7 +62,7 @@ const wellnessCards = [
     alt: "Other therapeutic treatments",
     title: "All Treatment Details",
     text: "Cupping Therapy, Yoga Therapy, and Kalari Marma Therapy with structured detail sections.",
-    href: "#",
+    href: "/treatments",
     linkLabel: "Explore Treatments",
   },
 ];
@@ -190,7 +190,7 @@ export default function Home() {
               </p>
               <div className="font-ui flex flex-wrap gap-3.5">
                 <a
-                  href="#treatments"
+                  href="/treatments"
                   className="inline-flex items-center justify-center rounded-full bg-[#1f948e] px-6 py-[13px] text-[14px] font-bold text-white transition hover:brightness-95"
                 >
                   Start Your Journey

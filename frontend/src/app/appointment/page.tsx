@@ -8,7 +8,7 @@ const wrapperClass = "mx-auto w-[min(1184px,calc(100%-32px))]";
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
-  { href: "/#treatments", label: "Wellness" },
+  { href: "/treatments", label: "Wellness" },
   { href: "/#research", label: "Research" },
   { href: "/#about", label: "About SBH" },
   { href: "/#stories", label: "Stories" },
