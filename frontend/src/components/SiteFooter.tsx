@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
   wrapperClass?: string;
@@ -30,7 +31,11 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
             <li>Care</li>
             <li>Treatments</li>
             <li>Research &amp; Education</li>
-            <li>Success Stories</li>
+            <li>
+              <Link href="/stories" className="text-white/80 underline-offset-2 hover:text-white hover:underline">
+                Success Stories
+              </Link>
+            </li>
           </ul>
         </div>
 

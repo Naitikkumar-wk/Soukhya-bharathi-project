@@ -13,7 +13,7 @@ const navItems: NavItem[] = [
   { href: "/treatments", label: "Wellness" },
   { href: "/#research", label: "Research" },
   { href: "/#about", label: "About SBH" },
-  { href: "/#stories", label: "Stories" },
+  { href: "/stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
 ];
 
@@ -532,7 +532,7 @@ export default function CarePage() {
               text: "Hear from patients and families whose lives have been transformed through our Terminal Illness Care program.",
               imageSrc: "/images/stories.webp",
               imageAlt: "Patient stories",
-              href: "/#stories",
+              href: "/stories",
             },
             {
               title: "Book Appointment",
@@ -562,7 +562,7 @@ export default function CarePage() {
               text: "Real cases of patients who have regained mental clarity, improved focus, and better cognitive function.",
               imageSrc: "/images/stories.webp",
               imageAlt: "Patient stories",
-              href: "/#stories",
+              href: "/stories",
             },
             {
               title: "Doctors",
