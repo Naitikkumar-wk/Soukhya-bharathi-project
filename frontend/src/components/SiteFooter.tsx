@@ -46,7 +46,7 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
               </Link>
             </li>
             <li>
-              <Link href="/#research" className={quickLinkClass}>
+              <Link href="/research" className={quickLinkClass}>
                 Research &amp; Education
               </Link>
             </li>
@@ -56,7 +56,7 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
               </Link>
             </li>
             <li>
-              <Link href="/#stories" className={quickLinkClass}>
+              <Link href="/stories" className={quickLinkClass}>
                 Success Stories
               </Link>
             </li>
@@ -88,8 +88,12 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
       >
         <span>© 2026 Ayurveda Wellness. All rights reserved.</span>
         <div className="font-ui flex gap-4">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <button type="button" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
+            Privacy Policy
+          </button>
+          <button type="button" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
+            Terms of Service
+          </button>
         </div>
       </div>
     </footer>

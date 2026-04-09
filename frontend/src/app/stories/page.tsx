@@ -1,5 +1,8 @@
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
+import { Suspense } from "react";
+import { InPageScrollNav } from "@/components/InPageScrollNav";
+import { ScrollToSectionOnLoad } from "@/components/ScrollToSectionOnLoad";
 import { reviewItems, videoTestimonials } from "@/content/stories";
 
 const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
@@ -8,8 +11,8 @@ const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
-  { href: "/#research", label: "Research" },
-  { href: "/#about", label: "About SBH" },
+  { href: "/research", label: "Research" },
+  { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
 ];
@@ -20,6 +23,9 @@ export default function StoriesPage() {
       <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
 
       <main>
+        <Suspense fallback={null}>
+          <ScrollToSectionOnLoad />
+        </Suspense>
         <section className="border-b border-[#e5e7eb] bg-[#f0fffe] py-16 md:py-20">
           <div className={wrapperClass}>
             <div className="mx-auto max-w-[900px] text-center">
@@ -37,19 +43,15 @@ export default function StoriesPage() {
                 aria-label="On this page"
                 className="font-ui mt-8 flex flex-wrap items-center justify-center gap-2 text-[13px] font-semibold text-[#4a5565]"
               >
-                <a
-                  href="#video-testimonials"
-                  className="rounded-full border border-[#a7e9e3] bg-white px-4 py-2 transition hover:border-[#1f948e] hover:text-[#1f948e]"
-                >
-                  Video Testimonials
-                </a>
-                <span className="text-[#d1d5db]">·</span>
-                <a
-                  href="#reviews"
-                  className="rounded-full border border-[#a7e9e3] bg-white px-4 py-2 transition hover:border-[#1f948e] hover:text-[#1f948e]"
-                >
-                  Reviews
-                </a>
+                <InPageScrollNav
+                  items={[
+                    { label: "Video Testimonials", targetId: "video-testimonials" },
+                    { label: "Reviews", targetId: "reviews" },
+                  ]}
+                  className="flex flex-wrap items-center justify-center gap-2"
+                  itemClassName="rounded-full border border-[#a7e9e3] bg-white px-4 py-2 transition hover:border-[#1f948e] hover:text-[#1f948e]"
+                  separatorClassName="text-[#d1d5db]"
+                />
               </nav>
             </div>
           </div>

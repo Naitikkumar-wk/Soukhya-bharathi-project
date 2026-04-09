@@ -11,8 +11,8 @@ const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
-  { href: "/#research", label: "Research" },
-  { href: "/#about", label: "About SBH" },
+  { href: "/research", label: "Research" },
+  { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
 ];
@@ -321,12 +321,15 @@ export default function TreatmentsPage() {
                 >
                   Book Consultation
                 </a>
-                <a
-                  href="#therapies"
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById("therapies")?.scrollIntoView({ behavior: "smooth" });
+                  }}
                   className="font-ui inline-flex items-center justify-center rounded-full border border-[#1f948e] bg-white px-7 py-3 text-[14px] font-bold text-[#1f948e] transition hover:bg-[#f0fffe]"
                 >
                   Explore Therapies
-                </a>
+                </button>
               </div>
             </div>
           </div>

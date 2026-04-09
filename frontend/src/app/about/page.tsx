@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
+import { InPageScrollNav } from "@/components/InPageScrollNav";
+import { ScrollToSectionOnLoad } from "@/components/ScrollToSectionOnLoad";
 
 const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
 
@@ -9,9 +12,9 @@ const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
-  { href: "/#research", label: "Research" },
+  { href: "/research", label: "Research" },
   { href: "/about", label: "About SBH" },
-  { href: "/#stories", label: "Stories" },
+  { href: "/stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
 ];
 
@@ -47,6 +50,9 @@ export default function AboutPage() {
       <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
 
       <main>
+        <Suspense fallback={null}>
+          <ScrollToSectionOnLoad />
+        </Suspense>
         {/* Hero — stock photo + wash; replace file in /public/images/ if needed */}
         <section className="relative overflow-hidden border-b border-[#e5e7eb]">
           <div className="pointer-events-none absolute inset-0 min-h-[380px] md:min-h-[440px]">
@@ -80,33 +86,17 @@ export default function AboutPage() {
                 aria-label="On this page"
                 className="font-ui mt-8 flex flex-wrap items-center justify-center gap-2 text-[13px] font-semibold text-[#4a5565]"
               >
-                <a
-                  href="#philosophy"
-                  className="rounded-full border border-[#a7e9e3] bg-white/85 px-4 py-2 shadow-sm backdrop-blur-sm transition hover:border-[#1f948e] hover:text-[#1f948e]"
-                >
-                  Philosophy
-                </a>
-                <span className="text-[#d1d5db]">·</span>
-                <a
-                  href="#mission"
-                  className="rounded-full border border-[#a7e9e3] bg-white/85 px-4 py-2 shadow-sm backdrop-blur-sm transition hover:border-[#1f948e] hover:text-[#1f948e]"
-                >
-                  Mission
-                </a>
-                <span className="text-[#d1d5db]">·</span>
-                <a
-                  href="#values"
-                  className="rounded-full border border-[#a7e9e3] bg-white/85 px-4 py-2 shadow-sm backdrop-blur-sm transition hover:border-[#1f948e] hover:text-[#1f948e]"
-                >
-                  Values
-                </a>
-                <span className="text-[#d1d5db]">·</span>
-                <a
-                  href="#team"
-                  className="rounded-full border border-[#a7e9e3] bg-white/85 px-4 py-2 shadow-sm backdrop-blur-sm transition hover:border-[#1f948e] hover:text-[#1f948e]"
-                >
-                  Team
-                </a>
+                <InPageScrollNav
+                  items={[
+                    { label: "Philosophy", targetId: "philosophy" },
+                    { label: "Mission", targetId: "mission" },
+                    { label: "Values", targetId: "values" },
+                    { label: "Team", targetId: "team" },
+                  ]}
+                  className="flex flex-wrap items-center justify-center gap-2"
+                  itemClassName="rounded-full border border-[#a7e9e3] bg-white/85 px-4 py-2 shadow-sm backdrop-blur-sm transition hover:border-[#1f948e] hover:text-[#1f948e]"
+                  separatorClassName="text-[#d1d5db]"
+                />
               </nav>
             </div>
           </div>

@@ -11,8 +11,8 @@ const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
-  { href: "/#research", label: "Research" },
-  { href: "/#about", label: "About SBH" },
+  { href: "/research", label: "Research" },
+  { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
 ];
@@ -476,12 +476,15 @@ export default function CarePage() {
               >
                 Book Consultation
               </a>
-              <a
-                href="#cancer-care"
+              <button
+                type="button"
+                onClick={() => {
+                  document.getElementById("cancer-care")?.scrollIntoView({ behavior: "smooth" });
+                }}
                 className="font-ui inline-flex items-center justify-center rounded-full border border-[#1f948e] px-7 py-3 text-[14px] font-bold text-[#1f948e] transition hover:bg-[#f0fffe]"
               >
                 Explore Specialties ↓
-              </a>
+              </button>
             </div>
           </div>
         </section>
@@ -491,9 +494,12 @@ export default function CarePage() {
           <div className="overflow-x-auto px-4 py-3">
             <div className="flex w-max gap-2">
               {specialties.map((s) => (
-                <a
+                <button
                   key={s.id}
-                  href={`#${s.id}`}
+                  type="button"
+                  onClick={() => {
+                    document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" });
+                  }}
                   className={`font-ui whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] font-medium transition ${
                     activeId === s.id
                       ? "border-[#1f948e] bg-[#1f948e] text-white"
@@ -501,7 +507,7 @@ export default function CarePage() {
                   }`}
                 >
                   {s.label}
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -518,7 +524,7 @@ export default function CarePage() {
               text: "Understanding the path through diagnosis, treatment, and ongoing wellness management with our comprehensive care model.",
               imageSrc: "/images/care-terminal.webp",
               imageAlt: "Patient journey",
-              href: "#",
+              href: "/care?section=terminal-illness-program",
             },
             {
               title: "Doctors",
@@ -555,7 +561,7 @@ export default function CarePage() {
               text: "Our structured methodology combines classical Ayurvedic principles with modern understanding of neuro-cognitive wellness.",
               imageSrc: "/images/care-neuro.webp",
               imageAlt: "Care approach",
-              href: "#",
+              href: "/care?section=neuro-cognitive-program",
             },
             {
               title: "Patient Stories",
