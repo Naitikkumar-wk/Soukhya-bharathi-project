@@ -8,8 +8,8 @@ const navItems: NavItem[] = [
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
   { href: "/#research", label: "Research" },
-  { href: "/about", label: "About SBH" },
-  { href: "/#stories", label: "Stories" },
+  { href: "/#about", label: "About SBH" },
+  { href: "/stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
 ];
 
@@ -89,7 +89,7 @@ const researchCards = [
     alt: "Patient stories",
     title: "Success Stories",
     text: "Video testimonials and written reviews from patient journeys across programs.",
-    href: "#stories",
+    href: "/stories",
     linkLabel: "View Stories",
   },
 ];
