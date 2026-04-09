@@ -7,7 +7,7 @@ import { SiteHeader, type NavItem } from "@/components/SiteHeader";
 const navItems: NavItem[] = [
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
-  { href: "/#research", label: "Research" },
+  { href: "/research", label: "Research" },
   { href: "/#about", label: "About SBH" },
   { href: "/#stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },
@@ -73,7 +73,7 @@ const researchCards = [
     alt: "Research highlights",
     title: "Research Highlights",
     text: "Publications, research outcomes, and education programs for trust and transparency.",
-    href: "#",
+    href: "/research",
     linkLabel: "View Research & Education",
   },
   {

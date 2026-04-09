@@ -9,7 +9,7 @@ const navItems: NavItem[] = [
   { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
-  { href: "/#research", label: "Research" },
+  { href: "/research", label: "Research" },
   { href: "/#about", label: "About SBH" },
   { href: "/#stories", label: "Stories" },
   { href: "/appointment", label: "Appointment" },

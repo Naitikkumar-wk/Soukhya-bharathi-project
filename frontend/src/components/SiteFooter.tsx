@@ -29,7 +29,11 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
             <li>Home</li>
             <li>Care</li>
             <li>Treatments</li>
-            <li>Research &amp; Education</li>
+            <li>
+              <a href="/research" className="text-white/80 underline-offset-2 hover:text-white hover:underline">
+                Research &amp; Education
+              </a>
+            </li>
             <li>Success Stories</li>
           </ul>
         </div>
