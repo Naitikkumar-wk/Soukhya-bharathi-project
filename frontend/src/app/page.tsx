@@ -165,7 +165,7 @@ export default function Home() {
       <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
 
       <main>
-        <section id="about" className="relative flex min-h-[630px] items-center overflow-hidden text-white">
+        <section id="hero" className="relative flex min-h-[630px] items-center overflow-hidden text-white">
           <Image
             src="/images/home-hero.webp"
             alt="Soukhya Bharathi reception"
@@ -202,6 +202,24 @@ export default function Home() {
                   Book Consultation
                 </a>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" className="border-b border-[#e5e7eb] bg-[#f9fafb] py-12 md:py-14">
+          <div className={wrapperClass}>
+            <div className="mx-auto max-w-[720px] text-center">
+              <h2 className="text-[26px] font-bold text-[#101828] md:text-[30px]">About Soukhya Bharathi</h2>
+              <p className="font-ui mt-3 text-[15px] leading-[1.75] text-[#4a5565]">
+                Our philosophy, mission, values, and team — built around responsible Ayurvedic care, education,
+                and transparency. Read the full overview on the About page.
+              </p>
+              <a
+                href="/about"
+                className="font-ui mt-6 inline-flex items-center justify-center rounded-full bg-[#1f948e] px-7 py-3 text-[14px] font-bold text-white transition hover:brightness-95"
+              >
+                About SBH →
+              </a>
             </div>
           </div>
         </section>
