@@ -380,7 +380,7 @@ export default function CarePage() {
         <section className="border-b border-[#e5e7eb] py-16 text-center">
           <div className={wrapperClass}>
             <h1 className="text-[42px] font-bold leading-tight text-[#101828] md:text-[52px]">
-              Care @ Saukhyabharathi
+              Care @ Soukhya Bharathi
             </h1>
             <p className="font-ui mx-auto mt-4 max-w-[680px] text-[16px] leading-[1.7] text-[#4a5565]">
               Integrated Ayurveda and modern medicine under one roof — 11 specialties, expert doctors, and

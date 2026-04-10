@@ -1,6 +1,6 @@
 ---
 name: Care Page UX Redesign
-overview: Redesign the Care page information architecture so users can quickly find specialties and treatments while preserving the existing Saukhyabharathi visual style.
+overview: Redesign the Care page information architecture so users can quickly find specialties and treatments while preserving the existing Soukhya Bharathi visual style.
 todos:
   - id: define-ia
     content: Define final information architecture and group specialties into 3 user-friendly buckets.
@@ -31,7 +31,7 @@ Create a scannable, conversion-focused `Care` page that handles many specialties
 ## Recommended Page Structure
 
 1. **Hero + trust strip (above the fold)**
-- Keep title: `Care @ Saukhyabharathi`.
+- Keep title: `Care @ Soukhya Bharathi`.
 - Add 1-sentence value proposition: integrated Ayurveda + modern medicine.
 - Add quick trust chips: `Expert Doctors`, `Integrated Care`, `Personalized Plans`, `Appointment Support`.
 - Primary CTA: `Book Consultation`; secondary CTA: `Explore Specialties` (scroll to directory).
@@ -101,7 +101,7 @@ Create a scannable, conversion-focused `Care` page that handles many specialties
 - Use concise alt text focused on care context.
 
 ## Suggested Content IA (from your provided list)
-- `Care @ Saukhyabharathi`
+- `Care @ Soukhya Bharathi`
   - Integrated Care (Ayurveda + Modern)
   - Specialty Care Directory
     - Cancer & Surgical Oncology

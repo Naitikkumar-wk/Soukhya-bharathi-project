@@ -14,7 +14,7 @@ type Props = {
 };
 
 export function SiteHeader({
-  brandName = "Soukhya bharathi",
+  brandName = "Soukhya Bharathi",
   navItems,
   ctaHref,
   ctaLabel,

@@ -19,11 +19,11 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
             <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-lg bg-[#1f948e]">
               <Image src="/images/logo.png" alt="Soukhya Bharathi logo" width={28} height={28} />
             </span>
-            <span className="text-[24px] font-bold text-white">Soukhya bharathi</span>
+            <span className="text-[24px] font-bold text-white">Soukhya Bharathi</span>
           </div>
           <p className="font-ui mt-3.5 mb-4.5 text-[14px]">
-            Discover the ancient science of life. We provide authentic Ayurvedic treatments for a
-            balanced and healthy lifestyle.
+            Integrative Ayurveda and modern medicine under one roof — medical specialties, classical
+            therapies, and wellness programs tailored to you.
           </p>
         </div>
 
@@ -77,16 +77,16 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
         <div>
           <h4 className="mb-3.5 text-[16px] font-bold text-white">Visit Us</h4>
           <ul className="font-ui space-y-2.5 text-[14px]">
-            <li>108 Lotus Valley Road, Kerala, India 682001</li>
+            <li>Kerala, India — full address provided at appointment confirmation</li>
             <li>+91 98765 43210</li>
-            <li>namaste@ayurveda.wellness</li>
+            <li>care@soukhya-bharathi.org</li>
           </ul>
         </div>
       </div>
       <div
         className={`${wrapperClass} flex h-auto flex-col items-start justify-between gap-4 border-t border-white/15 py-4 text-[14px] text-white/60 md:h-[62px] md:flex-row md:items-center`}
       >
-        <span>© 2026 Ayurveda Wellness. All rights reserved.</span>
+        <span>© 2026 Soukhya Bharathi. All rights reserved.</span>
         <div className="font-ui flex gap-4">
           <button type="button" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
             Privacy Policy

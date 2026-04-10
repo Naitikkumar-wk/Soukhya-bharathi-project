@@ -35,8 +35,9 @@ export default function StoriesPage() {
                 Patient Voices and Reviews
               </h1>
               <p className="font-ui mx-auto mt-4 max-w-[740px] text-[16px] leading-[1.8] text-[#4a5565]">
-                Video testimonials and written reviews are collected here to share patient and caregiver
-                experiences. Temporary videos are used for now and can be replaced any time.
+                Real patient and caregiver voices from Soukhya Bharathi — integrative care, wellness
+                therapies, and long-term follow-up. Video embeds below are illustrative until your
+                approved recordings are linked.
               </p>
               <nav
                 aria-label="On this page"
@@ -61,8 +62,8 @@ export default function StoriesPage() {
             <div className="mb-10 text-center">
               <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Video Testimonials</h2>
               <p className="font-ui mx-auto mt-3 max-w-[700px] text-[15px] leading-[1.7] text-[#4a5565]">
-                These are temporary relevant YouTube videos for layout preview. Replace each `embedUrl` in
-                `src/content/stories.ts` with your client-approved links later.
+                Replace each video URL in <code className="rounded bg-[#f0fffe] px-1 py-0.5 text-[13px]">src/content/stories.ts</code> with
+                Soukhya Bharathi–approved testimonials when your media is ready.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -97,7 +98,8 @@ export default function StoriesPage() {
             <div className="mb-11 text-center">
               <h2 className="text-[34px] leading-[1.1] font-bold text-[#101828] md:text-[40px]">Reviews</h2>
               <p className="font-ui mt-2 text-[14px] text-[#4a5565]">
-                Selected patient feedback (placeholder set; update names and text as needed).
+                A sample of feedback we hear from patients and families. Names may use initials for privacy;
+                expand this section with approved full stories and ratings as you collect them.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">

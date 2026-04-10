@@ -20,19 +20,19 @@ const navItems: NavItem[] = [
 const values = [
   {
     title: "Patient dignity",
-    text: "Care decisions are discussed with respect for autonomy, privacy, and cultural context (placeholder).",
+    text: "We involve you in decisions, protect your privacy, and respect cultural and personal preferences in how care is planned and delivered.",
   },
   {
     title: "Evidence-informed practice",
-    text: "Clinical and educational activities align with documented protocols and ongoing learning (placeholder).",
+    text: "Protocols, training, and quality review help our clinical and teaching teams stay aligned with safe, up-to-date practice.",
   },
   {
     title: "Integrity & transparency",
-    text: "Clear communication about scope of services, limitations, and pathways for escalation when appropriate (placeholder).",
+    text: "We explain what we offer, what we do not, and how to reach the right team if you have questions or concerns.",
   },
   {
     title: "Collaboration",
-    text: "Coordination across specialties and with external providers when it supports safer, clearer care (placeholder).",
+    text: "Physicians and therapists coordinate with each other—and with outside providers when needed—so your care path stays clear.",
   },
 ];
 
@@ -78,8 +78,9 @@ export default function AboutPage() {
                 Soukhya Bharathi
               </h1>
               <p className="font-ui mx-auto mt-4 max-w-[640px] text-[16px] leading-[1.8] text-[#4a5565]">
-                An institutional overview of who we are, what guides our work, and how we organize care,
-                education, and quality (placeholder copy — replace with client-approved text).
+                Soukhya Bharathi brings Ayurvedic care together with modern clinical practice. Here you can
+                see how we think about healing, how we run our services, and how we stay accountable to
+                patients and the community.
               </p>
               <nav
                 aria-label="On this page"
@@ -106,14 +107,15 @@ export default function AboutPage() {
             <div className="mx-auto max-w-[800px] text-center">
               <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Philosophy</h2>
               <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                Soukhya Bharathi is grounded in classical Ayurvedic principles applied within modern clinical
-                and educational frameworks. We hold that sustainable wellness arises from alignment of diet,
-                daily rhythm, therapies, and mind–body practices — always under appropriate medical oversight
-                where indicated (placeholder).
+                Soukhya Bharathi is grounded in classical Ayurvedic principles within clear, modern clinical
+                and educational standards. We focus on diet, daily rhythm, appropriate therapies, and
+                mind–body practices as part of a plan that fits your condition and your physician&apos;s
+                guidance.
               </p>
               <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                Our philosophy emphasizes continuity of care, transparent communication, and humility in
-                describing what integrative approaches may support, without overstating outcomes (placeholder).
+                We communicate honestly about what Ayurveda and integrative care can support, when
+                conventional medical care or referral is the safer choice, and how we work alongside your
+                existing doctors when you need that coordination.
               </p>
             </div>
           </div>
@@ -134,13 +136,13 @@ export default function AboutPage() {
               <div className="flex-1 text-center lg:text-left">
                 <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Mission</h2>
                 <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                  To deliver responsible, patient-centered Ayurvedic and integrative services; to advance
-                  education and research under institutional ethics and quality systems; and to contribute
-                  to the community through clear information and accountable operations (placeholder).
+                  To deliver thoughtful, patient-centered care across our medical specialties and wellness
+                  therapies; to support teaching and research through proper ethics and quality systems; and
+                  to share clear, useful information with patients and the public.
                 </p>
                 <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                  This mission is reviewed and refined with leadership and will be updated when the
-                  organization publishes its formal charter (placeholder).
+                  Our formal mission statement and governance materials are maintained with hospital
+                  leadership and published as they are finalized.
                 </p>
               </div>
             </div>
@@ -152,7 +154,8 @@ export default function AboutPage() {
             <div className="mb-10 text-center">
               <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Values</h2>
               <p className="font-ui mx-auto mt-3 max-w-[640px] text-[15px] leading-[1.7] text-[#4a5565]">
-                Shared expectations that guide how we work with patients, families, and partners (placeholder).
+                Shared expectations that guide how our teams work with patients, families, staff, and partners
+                every day.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -174,8 +177,8 @@ export default function AboutPage() {
             <div className="mb-10 text-center">
               <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Team</h2>
               <p className="font-ui mx-auto mt-3 max-w-[640px] text-[15px] leading-[1.7] text-[#4a5565]">
-                Named profiles, photographs, and credentials will appear here after internal review and consent
-                (placeholder).
+                Leadership profiles, photos, and credentials will be added here after internal review and
+                consent. Explore our care and wellness pages or book a consultation to learn how we work today.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -188,7 +191,7 @@ export default function AboutPage() {
                     className="h-[120px] w-[120px] rounded-full border-2 border-dashed border-[#a7e9e3] bg-[#f0fffe]"
                     aria-hidden
                   />
-                  <p className="mt-5 text-[16px] font-bold text-[#101828]">Profile coming soon</p>
+                  <p className="mt-5 text-[16px] font-bold text-[#101828]">Details coming soon</p>
                   <p className="font-ui mt-1 text-[13px] text-[#4a5565]">{member.label}</p>
                 </article>
               ))}

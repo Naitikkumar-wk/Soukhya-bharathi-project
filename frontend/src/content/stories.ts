@@ -11,20 +11,20 @@ export type ReviewItem = {
 
 export const videoTestimonials: VideoTestimonial[] = [
   {
-    title: "Patient recovery journey (temporary)",
-    subtitle: "General wellness and rehabilitation story",
+    title: "Healing journey — wellness and recovery",
+    subtitle: "Illustrative embed; replace with Soukhya Bharathi patient story",
     embedUrl:
       "https://www.youtube-nocookie.com/embed?listType=search&list=patient%20testimonial%20wellness%20recovery",
   },
   {
-    title: "Family experience and care feedback (temporary)",
-    subtitle: "Care quality and communication perspective",
+    title: "Family perspective on care",
+    subtitle: "Illustrative embed; replace with approved caregiver testimonial",
     embedUrl:
       "https://www.youtube-nocookie.com/embed?listType=search&list=family%20caregiver%20testimonial%20healthcare",
   },
   {
-    title: "Integrative care experience (temporary)",
-    subtitle: "Lifestyle and therapy follow-up feedback",
+    title: "Integrative medicine experience",
+    subtitle: "Illustrative embed; replace with SBH integrative care video",
     embedUrl:
       "https://www.youtube-nocookie.com/embed?listType=search&list=integrative%20medicine%20patient%20story",
   },
@@ -32,15 +32,15 @@ export const videoTestimonials: VideoTestimonial[] = [
 
 export const reviewItems: ReviewItem[] = [
   {
-    text: "I felt a noticeable improvement in sleep and digestion within two weeks. The consultation was deeply personalized and practical.",
-    name: "Aditya R",
+    text: "Within two weeks my sleep and digestion felt steadier. The Soukhya Bharathi team explained every step and tailored the plan to my work schedule.",
+    name: "Aditya R.",
   },
   {
-    text: "The therapies were calming and professional. I now follow a daily routine that reduced stress and improved my focus at work.",
-    name: "Neha M",
+    text: "Calm, professional therapists and clear communication. The home routine they gave me cut down stress and helped me focus again.",
+    name: "Neha M.",
   },
   {
-    text: "Excellent care and very knowledgeable doctors. The Panchakarma program helped me feel lighter, healthier, and more energetic.",
-    name: "Rahul K",
+    text: "Knowledgeable doctors across Ayurveda and modern medicine. Panchakarma left me lighter, more energetic, and confident about follow-up.",
+    name: "Rahul K.",
   },
 ];

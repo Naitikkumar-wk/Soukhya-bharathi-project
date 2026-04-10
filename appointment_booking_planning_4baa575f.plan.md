@@ -72,9 +72,9 @@ Six PNG references are stored under the Cursor project assets folder (copy into 
 
 ### Patterns to replicate (from reference)
 
-- **Header:** Logo (teal mark + “Soukhya bharathi” in serif), **centered nav**, primary **“Book Appointment”** CTA (rounded teal button, white label).
+- **Header:** Logo (teal mark + “Soukhya Bharathi” in serif), **centered nav**, primary **“Book Appointment”** CTA (rounded teal button, white label).
 - **Hero:** Full-width **facility or lifestyle photo** with **dark teal overlay** for contrast; eyebrow line, large **serif headline**, supporting sans body; dual CTAs (e.g. “Start Your Journey”, “Book Consultation”).
-- **Section: “Care @ Saukhyabharathi”:** Centered title + subtitle; **three large vertical cards** with **strong photography**, title, short description; third card can route to booking.
+- **Section: “Care @ Soukhya Bharathi”:** Centered title + subtitle; **three large vertical cards** with **strong photography**, title, short description; third card can route to booking.
 - **Section: “Ayurveda & Wellness Treatments”:** Three image-forward cards (e.g. Panchakarma, Acupuncture, “All Treatment Details”) with **rounded image tops** and serif titles.
 - **Further down:** Treatment detail cards with “View Details →”; **Research & Education + Success Stories** row with **facility / portrait / patient-stories** imagery; **Testimonials** with rating line and quote cards; **footer** on solid teal with columns (brand blurb, quick links, treatments list, visit/contact).
 
@@ -116,7 +116,7 @@ Six PNG references are stored under the Cursor project assets folder (copy into 
 ### Site tree (as given)
 
 - **HOME**
-- **Care @ Saukhyabharathi**
+- **Care @ Soukhya Bharathi**
   - **Ayurveda & Modern Medicine Under Single Roof**
     - Integrated and Cooperative Healthcare Approach
   - **Cancer care and Surgical Oncology** — oncology super specialty care; Ayurveda Oncology; Surgery; Chemotherapy; Radiotherapy; Counseling
