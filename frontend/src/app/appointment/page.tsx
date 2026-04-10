@@ -145,10 +145,9 @@ const wellnessTherapies: Service[] = [
 
 const STEPS = [
   { number: 1, label: "Service" },
-  { number: 2, label: "Date" },
-  { number: 3, label: "Time" },
-  { number: 4, label: "Details" },
-  { number: 5, label: "Confirm" },
+  { number: 2, label: "Schedule" },
+  { number: 3, label: "Details" },
+  { number: 4, label: "Confirm" },
 ] as const;
 
 const TIME_PREFS = [
@@ -456,9 +455,11 @@ function ServiceIcon({ id, selected }: { id: string; selected: boolean }) {
 function Calendar({
   selected,
   onSelect,
+  compact,
 }: {
   selected: Date | null;
   onSelect: (d: Date) => void;
+  compact?: boolean;
 }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -494,14 +495,20 @@ function Calendar({
   ];
 
   return (
-    <div className="rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-[0_2px_8px_rgba(16,24,40,0.06)]">
+    <div
+      className={`border border-[#e5e7eb] bg-white shadow-[0_2px_8px_rgba(16,24,40,0.06)] ${
+        compact ? "rounded-xl p-3" : "rounded-2xl p-5"
+      }`}
+    >
       {/* Month navigation */}
-      <div className="mb-4 flex items-center justify-between">
+      <div className={`flex items-center justify-between ${compact ? "mb-2" : "mb-4"}`}>
         <button
           type="button"
           disabled={prevMonthDisabled}
           onClick={() => setViewDate(new Date(year, month - 1, 1))}
-          className={`flex h-9 w-9 items-center justify-center rounded-full text-[20px] transition ${
+          className={`flex items-center justify-center rounded-full transition ${
+            compact ? "h-8 w-8 text-[18px]" : "h-9 w-9 text-[20px]"
+          } ${
             prevMonthDisabled
               ? "cursor-not-allowed text-[#d1d5db]"
               : "text-[#4a5565] hover:bg-[#f0fffe] hover:text-[#1f948e]"
@@ -509,13 +516,17 @@ function Calendar({
         >
           ‹
         </button>
-        <span className="text-[15px] font-bold text-[#101828]">
+        <span
+          className={`font-bold text-[#101828] ${compact ? "text-[14px]" : "text-[15px]"}`}
+        >
           {monthName} {year}
         </span>
         <button
           type="button"
           onClick={() => setViewDate(new Date(year, month + 1, 1))}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-[20px] text-[#4a5565] transition hover:bg-[#f0fffe] hover:text-[#1f948e]"
+          className={`flex items-center justify-center rounded-full text-[#4a5565] transition hover:bg-[#f0fffe] hover:text-[#1f948e] ${
+            compact ? "h-8 w-8 text-[18px]" : "h-9 w-9 text-[20px]"
+          }`}
         >
           ›
         </button>
@@ -526,9 +537,9 @@ function Calendar({
         {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
           <div
             key={d}
-            className={`font-ui py-1.5 text-[11px] font-bold uppercase tracking-wider ${
-              d === "Su" ? "text-[#d1d5db]" : "text-[#9ca3af]"
-            }`}
+            className={`font-ui font-bold uppercase tracking-wider ${
+              compact ? "py-1 text-[10px]" : "py-1.5 text-[11px]"
+            } ${d === "Su" ? "text-[#d1d5db]" : "text-[#9ca3af]"}`}
           >
             {d}
           </div>
@@ -536,9 +547,13 @@ function Calendar({
       </div>
 
       {/* Day cells */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className={`grid grid-cols-7 ${compact ? "gap-0.5" : "gap-1"}`}>
         {cells.map((day, i) => {
-          if (day === null) return <div key={`e-${i}`} />;
+          if (day === null) {
+            return (
+              <div key={`e-${i}`} className={compact ? "h-8" : undefined} aria-hidden />
+            );
+          }
           const disabled = isPast(day) || isSunday(day);
           const sel = isSelected(day);
           const tod = isToday(day);
@@ -550,13 +565,20 @@ function Calendar({
               disabled={disabled}
               onClick={() => onSelect(new Date(year, month, day))}
               className={[
-                "font-ui flex aspect-square w-full items-center justify-center rounded-full text-[14px] font-medium transition",
+                "font-ui flex w-full items-center justify-center rounded-full font-medium transition",
+                compact
+                  ? "h-8 text-[12px]"
+                  : "aspect-square text-[14px]",
                 disabled ? "cursor-not-allowed text-[#d1d5db]" : "cursor-pointer",
                 sel ? "bg-[#1f948e] !text-white shadow-[0_2px_8px_rgba(31,148,142,0.30)]" : "",
                 !sel && !disabled
                   ? "text-[#101828] hover:bg-[#f0fffe] hover:text-[#1f948e]"
                   : "",
-                tod && !sel ? "font-bold text-[#1f948e] ring-2 ring-[#1f948e]" : "",
+                tod && !sel
+                  ? compact
+                    ? "font-bold text-[#1f948e] ring-1 ring-[#1f948e]"
+                    : "font-bold text-[#1f948e] ring-2 ring-[#1f948e]"
+                  : "",
               ]
                 .filter(Boolean)
                 .join(" ")}
@@ -581,7 +603,7 @@ function ProgressBar({
 }) {
   return (
     <div className="border-b border-[#e5e7eb] bg-white">
-      <div className={`${wrapperClass} py-3`}>
+      <div className={`${wrapperClass} py-2`}>
         <div className="flex items-center">
           {STEPS.map((s, i) => {
             const done = s.number < step;
@@ -592,10 +614,10 @@ function ProgressBar({
                   type="button"
                   disabled={!done}
                   onClick={() => done && onStepClick(s.number)}
-                  className={`flex flex-col items-center gap-1 ${done ? "cursor-pointer" : "cursor-default"}`}
+                  className={`flex flex-col items-center gap-0.5 ${done ? "cursor-pointer" : "cursor-default"}`}
                 >
                   <div
-                    className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-[11px] font-bold transition ${
+                    className={`flex h-6 w-6 items-center justify-center rounded-full border-2 text-[10px] font-bold transition ${
                       done
                         ? "border-[#1f948e] bg-[#1f948e] text-white"
                         : current
@@ -603,10 +625,10 @@ function ProgressBar({
                           : "border-[#d1d5db] bg-white text-[#9ca3af]"
                     }`}
                   >
-                    {done ? <CheckIcon size={12} color="white" /> : s.number}
+                    {done ? <CheckIcon size={11} color="white" /> : s.number}
                   </div>
                   <span
-                    className={`font-ui hidden text-[10px] font-semibold sm:block ${
+                    className={`font-ui hidden text-[9px] font-semibold leading-none sm:block ${
                       done || current ? "text-[#1f948e]" : "text-[#9ca3af]"
                     }`}
                   >
@@ -693,12 +715,30 @@ function SummaryRow({
 
 // ── Step Header ────────────────────────────────────────────────────────────
 
-function StepHeader({ title, subtitle }: { title: string; subtitle?: string }) {
+function StepHeader({
+  title,
+  subtitle,
+  compact,
+}: {
+  title: string;
+  subtitle?: string;
+  compact?: boolean;
+}) {
   return (
-    <div className="mb-6 text-center">
-      <h1 className="text-[26px] font-bold text-[#101828] md:text-[32px]">{title}</h1>
+    <div className={compact ? "mb-3 text-center" : "mb-6 text-center"}>
+      <h1
+        className={`font-bold text-[#101828] ${
+          compact ? "text-[22px] md:text-[26px]" : "text-[26px] md:text-[32px]"
+        }`}
+      >
+        {title}
+      </h1>
       {subtitle && (
-        <p className="font-ui mt-1.5 text-[14px] text-[#4a5565]">{subtitle}</p>
+        <p
+          className={`font-ui text-[#4a5565] ${compact ? "mt-1 text-[13px]" : "mt-1.5 text-[14px]"}`}
+        >
+          {subtitle}
+        </p>
       )}
     </div>
   );
@@ -741,7 +781,7 @@ export default function BookPage() {
   // ── Navigation ────────────────────────────────────────────────────────────
 
   const handleNext = () => {
-    if (step === 4) {
+    if (step === 3) {
       const errs = validateStep4();
       if (Object.keys(errs).length > 0) {
         setErrors(errs);
@@ -749,17 +789,15 @@ export default function BookPage() {
       }
       setErrors({});
     }
-    setStep((s) => Math.min(s + 1, 5));
+    setStep((s) => Math.min(s + 1, 4));
   };
 
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
 
   const handleConfirm = () => setConfirmed(true);
 
-  // Step 3: selecting a time auto-advances to step 4 after a brief visual delay
   const handleTimeSelect = (t: TimePreference) => {
     setBooking((b) => ({ ...b, timePreference: t }));
-    setTimeout(() => setStep(4), 380);
   };
 
   const handleReset = () => {
@@ -783,9 +821,10 @@ export default function BookPage() {
   const timePref = TIME_PREFS.find((t) => t.id === booking.timePreference);
 
   const nextDisabled =
-    (step === 1 && !booking.service) || (step === 2 && !booking.date);
+    (step === 1 && !booking.service) ||
+    (step === 2 && (!booking.date || !booking.timePreference));
 
-  const nextLabel = step === 4 ? "Review Booking" : "Continue";
+  const nextLabel = step === 3 ? "Review Booking" : "Continue";
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -801,18 +840,23 @@ export default function BookPage() {
 
       {/* ── Scrollable step content ───────────────────────────────────────── */}
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className={`${wrapperClass} py-7`}>
+        <div
+          className={`${wrapperClass} ${
+            (step === 1 || step === 2) && !confirmed ? "py-4 md:py-5" : "py-7"
+          }`}
+        >
 
           {/* ── Step 1: Choose a Service ─────────────────────────────────── */}
           {step === 1 && (
             <div>
               <StepHeader
+                compact
                 title="Choose a Service"
                 subtitle="Select a specialty or wellness therapy to book."
               />
 
               {/* Tab switcher */}
-              <div className="mb-5 flex gap-2">
+              <div className="mb-3 flex gap-2">
                 <button
                   type="button"
                   onClick={() => setActiveTab("specialty")}
@@ -864,86 +908,88 @@ export default function BookPage() {
             </div>
           )}
 
-          {/* ── Step 2: Choose a Date ────────────────────────────────────── */}
+          {/* ── Step 2: Date & time (calendar left, slots right on large screens) ─ */}
           {step === 2 && (
-            <div className="mx-auto max-w-[440px]">
+            <div>
               <StepHeader
-                title="Choose a Date"
+                compact
+                title="Date & time"
                 subtitle={booking.service?.label}
               />
 
-              <Calendar
-                selected={booking.date}
-                onSelect={(d) => setBooking((b) => ({ ...b, date: d }))}
-              />
-
-              {booking.date ? (
-                <div className="mt-4 rounded-xl border border-[#a7e9e3] bg-[#f0fffe] px-4 py-3 text-center">
-                  <p className="font-ui text-[13px] font-bold text-[#1f948e]">
-                    {formatDate(booking.date)}
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-8">
+                <div>
+                  <p className="font-ui mb-2 text-[11px] font-bold uppercase tracking-wider text-[#9ca3af] lg:mb-2">
+                    Date
                   </p>
+                  <div className="mx-auto max-w-[440px] lg:mx-0 lg:max-w-none">
+                    <Calendar
+                      compact
+                      selected={booking.date}
+                      onSelect={(d) => setBooking((b) => ({ ...b, date: d }))}
+                    />
+                  </div>
+                  {booking.date ? (
+                    <div className="mt-2 rounded-xl border border-[#a7e9e3] bg-[#f0fffe] px-4 py-2 text-center lg:text-left">
+                      <p className="font-ui text-[13px] font-bold text-[#1f948e]">
+                        {formatDate(booking.date)}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="font-ui mt-2 text-center text-[12px] text-[#9ca3af] lg:text-left">
+                      Sundays and past dates are unavailable.
+                    </p>
+                  )}
                 </div>
-              ) : (
-                <p className="font-ui mt-3 text-center text-[12px] text-[#9ca3af]">
-                  Sundays and past dates are unavailable.
-                </p>
-              )}
-            </div>
-          )}
 
-          {/* ── Step 3: Choose a Time ────────────────────────────────────── */}
-          {step === 3 && (
-            <div>
-              <StepHeader
-                title="Choose a Time"
-                subtitle={
-                  booking.date
-                    ? `${formatDate(booking.date)} · ${booking.service?.label}`
-                    : booking.service?.label
-                }
-              />
-
-              {/* Mobile: stacked full-width cards | Desktop: 3-column row */}
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                {TIME_PREFS.map((t) => {
-                  const sel = booking.timePreference === t.id;
-                  return (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => handleTimeSelect(t.id)}
-                      className={`flex flex-col items-center justify-center gap-4 rounded-2xl border-2 py-10 transition ${
-                        sel
-                          ? "border-[#1f948e] bg-[#1f948e] text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)]"
-                          : "border-[#e5e7eb] bg-white text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)]"
-                      }`}
-                    >
-                      {t.icon === "sun" && (
-                        <SunIcon size={36} color={sel ? "white" : "#1f948e"} />
-                      )}
-                      {t.icon === "cloud-sun" && (
-                        <CloudSunIcon size={36} color={sel ? "white" : "#1f948e"} />
-                      )}
-                      {t.icon === "moon" && (
-                        <MoonIcon size={36} color={sel ? "white" : "#1f948e"} />
-                      )}
-                      <div className="text-center">
-                        <div className="text-[20px] font-bold">{t.label}</div>
-                        <div
-                          className={`font-ui mt-1 text-[13px] ${sel ? "text-white/80" : "text-[#4a5565]"}`}
+                <div>
+                  <p className="font-ui mb-2 text-[11px] font-bold uppercase tracking-wider text-[#9ca3af] lg:mb-3">
+                    Preferred time
+                  </p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3 lg:grid-cols-3 lg:gap-2">
+                    {TIME_PREFS.map((t) => {
+                      const sel = booking.timePreference === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => handleTimeSelect(t.id)}
+                          className={`flex flex-col items-center justify-center rounded-2xl transition sm:py-8 lg:rounded-xl lg:py-3.5 lg:px-1.5 ${
+                            sel
+                              ? "gap-3 border-2 border-[#1f948e] bg-[#1f948e] py-6 text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)] lg:gap-1.5 lg:border-2"
+                              : "gap-3 border-2 border-[#e5e7eb] bg-white py-6 text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)] lg:gap-1.5 lg:border lg:border-[#e5e7eb] lg:shadow-none hover:lg:border-[#a7e9e3]"
+                          }`}
                         >
-                          {t.range}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
+                          {t.icon === "sun" && (
+                            <SunIcon size={24} color={sel ? "white" : "#1f948e"} />
+                          )}
+                          {t.icon === "cloud-sun" && (
+                            <CloudSunIcon size={24} color={sel ? "white" : "#1f948e"} />
+                          )}
+                          {t.icon === "moon" && (
+                            <MoonIcon size={24} color={sel ? "white" : "#1f948e"} />
+                          )}
+                          <div className="text-center lg:min-w-0 lg:px-0.5">
+                            <div className="text-[17px] font-bold sm:text-[18px] lg:text-[14px] lg:leading-tight">
+                              {t.label}
+                            </div>
+                            <div
+                              className={`font-ui mt-0.5 text-[12px] sm:text-[13px] lg:text-[10px] lg:leading-snug ${sel ? "text-white/80" : "text-[#4a5565]"}`}
+                            >
+                              {t.range}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* ── Step 4: Your Details ─────────────────────────────────────── */}
-          {step === 4 && (
+          {/* ── Step 3: Your Details ─────────────────────────────────────── */}
+          {step === 3 && (
             <div className="mx-auto max-w-[580px]">
               <StepHeader
                 title="Your Details"
@@ -1080,8 +1126,8 @@ export default function BookPage() {
             </div>
           )}
 
-          {/* ── Step 5: Confirm ──────────────────────────────────────────── */}
-          {step === 5 && !confirmed && (
+          {/* ── Step 4: Confirm ──────────────────────────────────────────── */}
+          {step === 4 && !confirmed && (
             <div className="mx-auto max-w-[600px]">
               <StepHeader
                 title="Review & Confirm"
@@ -1214,16 +1260,13 @@ export default function BookPage() {
                 className="font-ui inline-flex items-center gap-1.5 rounded-full border border-[#e5e7eb] bg-white px-5 py-2.5 text-[14px] font-bold text-[#4a5565] transition hover:border-[#1f948e] hover:text-[#1f948e]"
               >
                 <ChevronLeftIcon />
-                {step === 5 ? "Edit Details" : "Back"}
+                {step === 4 ? "Edit Details" : "Back"}
               </button>
             ) : (
               <div />
             )}
 
-            {/* Right side: hint text for step 3, Continue/Confirm for others */}
-            {step === 3 ? (
-              <p className="font-ui text-[13px] text-[#9ca3af]">Tap a slot to continue</p>
-            ) : step < 5 ? (
+            {step < 4 ? (
               <button
                 type="button"
                 onClick={handleNext}
