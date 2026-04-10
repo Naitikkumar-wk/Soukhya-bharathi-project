@@ -56,7 +56,7 @@ export default function AboutPage() {
         <section className="relative overflow-hidden border-b border-[#e5e7eb]">
           <div className="pointer-events-none absolute inset-0 min-h-[380px] md:min-h-[440px]">
             <Image
-              src="/images/about-hero.jpg"
+              src="/images/care-book.webp"
               alt=""
               fill
               className="object-cover object-[center_35%]"
@@ -124,7 +124,7 @@ export default function AboutPage() {
             <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:gap-14">
               <div className="relative h-[240px] w-full max-w-[520px] overflow-hidden rounded-2xl shadow-[0_8px_32px_rgba(16,24,40,0.12)] sm:h-[280px] lg:h-[320px] lg:w-[min(420px,42%)] lg:max-w-none lg:shrink-0">
                 <Image
-                  src="/images/about-accent.jpg"
+                  src="/images/care-book.webp"
                   alt="Team collaborating at a table"
                   fill
                   className="object-cover"
