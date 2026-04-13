@@ -11,6 +11,7 @@ const navItems: NavItem[] = [
   { href: "/research", label: "Research" },
   { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },
+  { href: "/appointment", label: "Appointment" },
 ];
 
 const committees = [
