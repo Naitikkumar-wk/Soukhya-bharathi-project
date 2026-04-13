@@ -1,7 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
+import {
+  type AppointmentResponse,
+  type ApiServiceItem,
+  SbhApiError,
+  createAppointment,
+  fetchAvailability,
+  fetchServices,
+  toLocalYyyyMmDd,
+} from "@/lib/sbh-api";
 
 const wrapperClass = "mx-auto w-[min(1184px,calc(100%-32px))]";
 
@@ -12,7 +21,6 @@ const navItems: NavItem[] = [
   { href: "/research", label: "Research" },
   { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },
-  { href: "/appointment", label: "Appointment" },
 ];
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -36,6 +44,7 @@ type BookingState = {
   age: string;
   gender: Gender | "";
   concern: string;
+  consentAccepted: boolean;
 };
 
 // ── Services ───────────────────────────────────────────────────────────────
@@ -142,14 +151,21 @@ const wellnessTherapies: Service[] = [
   },
 ];
 
+const SERVICE_DESCRIPTION_MAP: Record<string, string> = [...specialties, ...wellnessTherapies].reduce(
+  (acc, service) => {
+    acc[service.id] = service.description;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
 // ── Constants ──────────────────────────────────────────────────────────────
 
 const STEPS = [
   { number: 1, label: "Service" },
-  { number: 2, label: "Date" },
-  { number: 3, label: "Time" },
-  { number: 4, label: "Details" },
-  { number: 5, label: "Confirm" },
+  { number: 2, label: "Schedule" },
+  { number: 3, label: "Details" },
+  { number: 4, label: "Confirm" },
 ] as const;
 
 const TIME_PREFS = [
@@ -188,6 +204,34 @@ function formatDate(d: Date) {
     month: "short",
     day: "numeric",
   });
+}
+
+function mapApiService(item: ApiServiceItem): Service {
+  return {
+    id: item.id,
+    label: item.name,
+    group: item.group,
+    description: SERVICE_DESCRIPTION_MAP[item.id] ?? "Consultation and personalized care support.",
+  };
+}
+
+function mapBookingError(error: unknown): string {
+  if (error instanceof SbhApiError) {
+    if (error.code === "BUCKET_FULL") {
+      return "Selected time bucket is no longer available. Please choose another slot.";
+    }
+    if (error.code === "DUPLICATE_BOOKING") {
+      return "A similar booking already exists for this phone number. Please verify your details.";
+    }
+    if (error.code === "IDEMPOTENCY_MISMATCH") {
+      return "This booking request conflicted with an earlier submission. Please try again.";
+    }
+    if (error.code === "VALIDATION_ERROR") {
+      return "Please review your details and try submitting again.";
+    }
+    return error.message || "Booking failed. Please try again.";
+  }
+  return "Something went wrong while booking. Please try again.";
 }
 
 // ── Icons ──────────────────────────────────────────────────────────────────
@@ -457,9 +501,11 @@ function ServiceIcon({ id, selected }: { id: string; selected: boolean }) {
 function Calendar({
   selected,
   onSelect,
+  compact,
 }: {
   selected: Date | null;
   onSelect: (d: Date) => void;
+  compact?: boolean;
 }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -495,14 +541,20 @@ function Calendar({
   ];
 
   return (
-    <div className="rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-[0_2px_8px_rgba(16,24,40,0.06)]">
+    <div
+      className={`border border-[#e5e7eb] bg-white shadow-[0_2px_8px_rgba(16,24,40,0.06)] ${
+        compact ? "rounded-xl p-3" : "rounded-2xl p-5"
+      }`}
+    >
       {/* Month navigation */}
-      <div className="mb-4 flex items-center justify-between">
+      <div className={`flex items-center justify-between ${compact ? "mb-2" : "mb-4"}`}>
         <button
           type="button"
           disabled={prevMonthDisabled}
           onClick={() => setViewDate(new Date(year, month - 1, 1))}
-          className={`flex h-9 w-9 items-center justify-center rounded-full text-[20px] transition ${
+          className={`flex items-center justify-center rounded-full transition ${
+            compact ? "h-8 w-8 text-[18px]" : "h-9 w-9 text-[20px]"
+          } ${
             prevMonthDisabled
               ? "cursor-not-allowed text-[#d1d5db]"
               : "text-[#4a5565] hover:bg-[#f0fffe] hover:text-[#1f948e]"
@@ -510,13 +562,17 @@ function Calendar({
         >
           ‹
         </button>
-        <span className="text-[15px] font-bold text-[#101828]">
+        <span
+          className={`font-bold text-[#101828] ${compact ? "text-[14px]" : "text-[15px]"}`}
+        >
           {monthName} {year}
         </span>
         <button
           type="button"
           onClick={() => setViewDate(new Date(year, month + 1, 1))}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-[20px] text-[#4a5565] transition hover:bg-[#f0fffe] hover:text-[#1f948e]"
+          className={`flex items-center justify-center rounded-full text-[#4a5565] transition hover:bg-[#f0fffe] hover:text-[#1f948e] ${
+            compact ? "h-8 w-8 text-[18px]" : "h-9 w-9 text-[20px]"
+          }`}
         >
           ›
         </button>
@@ -527,9 +583,9 @@ function Calendar({
         {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
           <div
             key={d}
-            className={`font-ui py-1.5 text-[11px] font-bold uppercase tracking-wider ${
-              d === "Su" ? "text-[#d1d5db]" : "text-[#9ca3af]"
-            }`}
+            className={`font-ui font-bold uppercase tracking-wider ${
+              compact ? "py-1 text-[10px]" : "py-1.5 text-[11px]"
+            } ${d === "Su" ? "text-[#d1d5db]" : "text-[#9ca3af]"}`}
           >
             {d}
           </div>
@@ -537,9 +593,13 @@ function Calendar({
       </div>
 
       {/* Day cells */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className={`grid grid-cols-7 ${compact ? "gap-0.5" : "gap-1"}`}>
         {cells.map((day, i) => {
-          if (day === null) return <div key={`e-${i}`} />;
+          if (day === null) {
+            return (
+              <div key={`e-${i}`} className={compact ? "h-8" : undefined} aria-hidden />
+            );
+          }
           const disabled = isPast(day) || isSunday(day);
           const sel = isSelected(day);
           const tod = isToday(day);
@@ -551,13 +611,20 @@ function Calendar({
               disabled={disabled}
               onClick={() => onSelect(new Date(year, month, day))}
               className={[
-                "font-ui flex aspect-square w-full items-center justify-center rounded-full text-[14px] font-medium transition",
+                "font-ui flex w-full items-center justify-center rounded-full font-medium transition",
+                compact
+                  ? "h-8 text-[12px]"
+                  : "aspect-square text-[14px]",
                 disabled ? "cursor-not-allowed text-[#d1d5db]" : "cursor-pointer",
                 sel ? "bg-[#1f948e] !text-white shadow-[0_2px_8px_rgba(31,148,142,0.30)]" : "",
                 !sel && !disabled
                   ? "text-[#101828] hover:bg-[#f0fffe] hover:text-[#1f948e]"
                   : "",
-                tod && !sel ? "font-bold text-[#1f948e] ring-2 ring-[#1f948e]" : "",
+                tod && !sel
+                  ? compact
+                    ? "font-bold text-[#1f948e] ring-1 ring-[#1f948e]"
+                    : "font-bold text-[#1f948e] ring-2 ring-[#1f948e]"
+                  : "",
               ]
                 .filter(Boolean)
                 .join(" ")}
@@ -582,7 +649,7 @@ function ProgressBar({
 }) {
   return (
     <div className="border-b border-[#e5e7eb] bg-white">
-      <div className={`${wrapperClass} py-3`}>
+      <div className={`${wrapperClass} py-2`}>
         <div className="flex items-center">
           {STEPS.map((s, i) => {
             const done = s.number < step;
@@ -593,10 +660,10 @@ function ProgressBar({
                   type="button"
                   disabled={!done}
                   onClick={() => done && onStepClick(s.number)}
-                  className={`flex flex-col items-center gap-1 ${done ? "cursor-pointer" : "cursor-default"}`}
+                  className={`flex flex-col items-center gap-0.5 ${done ? "cursor-pointer" : "cursor-default"}`}
                 >
                   <div
-                    className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-[11px] font-bold transition ${
+                    className={`flex h-6 w-6 items-center justify-center rounded-full border-2 text-[10px] font-bold transition ${
                       done
                         ? "border-[#1f948e] bg-[#1f948e] text-white"
                         : current
@@ -604,10 +671,10 @@ function ProgressBar({
                           : "border-[#d1d5db] bg-white text-[#9ca3af]"
                     }`}
                   >
-                    {done ? <CheckIcon size={12} color="white" /> : s.number}
+                    {done ? <CheckIcon size={11} color="white" /> : s.number}
                   </div>
                   <span
-                    className={`font-ui hidden text-[10px] font-semibold sm:block ${
+                    className={`font-ui hidden text-[9px] font-semibold leading-none sm:block ${
                       done || current ? "text-[#1f948e]" : "text-[#9ca3af]"
                     }`}
                   >
@@ -694,12 +761,30 @@ function SummaryRow({
 
 // ── Step Header ────────────────────────────────────────────────────────────
 
-function StepHeader({ title, subtitle }: { title: string; subtitle?: string }) {
+function StepHeader({
+  title,
+  subtitle,
+  compact,
+}: {
+  title: string;
+  subtitle?: string;
+  compact?: boolean;
+}) {
   return (
-    <div className="mb-6 text-center">
-      <h1 className="text-[26px] font-bold text-[#101828] md:text-[32px]">{title}</h1>
+    <div className={compact ? "mb-3 text-center" : "mb-6 text-center"}>
+      <h1
+        className={`font-bold text-[#101828] ${
+          compact ? "text-[22px] md:text-[26px]" : "text-[26px] md:text-[32px]"
+        }`}
+      >
+        {title}
+      </h1>
       {subtitle && (
-        <p className="font-ui mt-1.5 text-[14px] text-[#4a5565]">{subtitle}</p>
+        <p
+          className={`font-ui text-[#4a5565] ${compact ? "mt-1 text-[13px]" : "mt-1.5 text-[14px]"}`}
+        >
+          {subtitle}
+        </p>
       )}
     </div>
   );
@@ -712,6 +797,17 @@ export default function BookPage() {
   const [confirmed, setConfirmed] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<"specialty" | "wellness">("specialty");
+  const [services, setServices] = useState<Service[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [servicesError, setServicesError] = useState<string | null>(null);
+  const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState<string | null>(null);
+  const [availabilityByBucket, setAvailabilityByBucket] = useState<
+    Partial<Record<TimePreference, { available: boolean; remaining: number }>>
+  >({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [bookingResult, setBookingResult] = useState<AppointmentResponse | null>(null);
 
   const [booking, setBooking] = useState<BookingState>({
     service: null,
@@ -722,7 +818,79 @@ export default function BookPage() {
     age: "",
     gender: "",
     concern: "",
+    consentAccepted: false,
   });
+
+  const loadServices = async () => {
+    setServicesLoading(true);
+    setServicesError(null);
+    try {
+      const data = await fetchServices();
+      setServices(data.items.map(mapApiService));
+    } catch (error) {
+      setServicesError(
+        error instanceof SbhApiError
+          ? error.message
+          : "Could not load services right now. Please retry."
+      );
+      setServices([]);
+    } finally {
+      setServicesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadServices();
+  }, []);
+
+  useEffect(() => {
+    if (!booking.service || !booking.date) {
+      setAvailabilityByBucket({});
+      setAvailabilityError(null);
+      return;
+    }
+
+    let isDisposed = false;
+    const serviceId = booking.service.id;
+    const selectedDate = booking.date;
+    const run = async () => {
+      setAvailabilityLoading(true);
+      setAvailabilityError(null);
+      try {
+        const payload = await fetchAvailability(serviceId, toLocalYyyyMmDd(selectedDate));
+        if (isDisposed) return;
+        const nextState: Partial<Record<TimePreference, { available: boolean; remaining: number }>> =
+          {};
+        for (const bucket of payload.buckets) {
+          nextState[bucket.time_bucket] = {
+            available: bucket.available,
+            remaining: bucket.remaining,
+          };
+        }
+        setAvailabilityByBucket(nextState);
+        if (booking.timePreference && nextState[booking.timePreference]?.available === false) {
+          setBooking((prev) => ({ ...prev, timePreference: null }));
+        }
+      } catch (error) {
+        if (isDisposed) return;
+        setAvailabilityError(
+          error instanceof SbhApiError
+            ? error.message
+            : "Could not load availability. Please try again."
+        );
+        setAvailabilityByBucket({});
+      } finally {
+        if (!isDisposed) {
+          setAvailabilityLoading(false);
+        }
+      }
+    };
+
+    run();
+    return () => {
+      isDisposed = true;
+    };
+  }, [booking.service, booking.date, booking.timePreference]);
 
   // ── Validation ────────────────────────────────────────────────────────────
 
@@ -736,13 +904,14 @@ export default function BookPage() {
     else if (Number(booking.age) < 1 || Number(booking.age) > 120)
       errs.age = "Enter a valid age (1–120)";
     if (!booking.gender) errs.gender = "Please select a gender";
+    if (!booking.consentAccepted) errs.consentAccepted = "Please accept consent to continue";
     return errs;
   };
 
   // ── Navigation ────────────────────────────────────────────────────────────
 
   const handleNext = () => {
-    if (step === 4) {
+    if (step === 3) {
       const errs = validateStep4();
       if (Object.keys(errs).length > 0) {
         setErrors(errs);
@@ -750,23 +919,64 @@ export default function BookPage() {
       }
       setErrors({});
     }
-    setStep((s) => Math.min(s + 1, 5));
+    setStep((s) => Math.min(s + 1, 4));
   };
 
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
 
-  const handleConfirm = () => setConfirmed(true);
+  const handleConfirm = async () => {
+    if (!booking.service || !booking.date || !booking.timePreference) return;
+    const validationErrors = validateStep4();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
-  // Step 3: selecting a time auto-advances to step 4 after a brief visual delay
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    const idempotencyKey =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+
+    try {
+      const result = await createAppointment(
+        {
+          service_id: booking.service.id,
+          appointment_date: toLocalYyyyMmDd(booking.date),
+          time_bucket: booking.timePreference,
+          name: booking.name.trim(),
+          phone: booking.phone.trim(),
+          age: Number(booking.age),
+          gender: booking.gender as Gender,
+          concern: booking.concern.trim() ? booking.concern.trim() : null,
+          consent_accepted: true,
+          source: "web",
+        },
+        { idempotencyKey }
+      );
+      setBookingResult(result);
+      setConfirmed(true);
+    } catch (error) {
+      setSubmitError(mapBookingError(error));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleTimeSelect = (t: TimePreference) => {
     setBooking((b) => ({ ...b, timePreference: t }));
-    setTimeout(() => setStep(4), 380);
   };
 
   const handleReset = () => {
     setConfirmed(false);
     setStep(1);
     setActiveTab("specialty");
+    setSubmitError(null);
+    setBookingResult(null);
+    setAvailabilityByBucket({});
+    setAvailabilityError(null);
     setBooking({
       service: null,
       date: null,
@@ -776,17 +986,24 @@ export default function BookPage() {
       age: "",
       gender: "",
       concern: "",
+      consentAccepted: false,
     });
   };
 
   // ── Derived ───────────────────────────────────────────────────────────────
 
+  const servicesForActiveTab = useMemo(
+    () => services.filter((s) => s.group === activeTab),
+    [services, activeTab]
+  );
+
   const timePref = TIME_PREFS.find((t) => t.id === booking.timePreference);
 
   const nextDisabled =
-    (step === 1 && !booking.service) || (step === 2 && !booking.date);
+    (step === 1 && !booking.service) ||
+    (step === 2 && (!booking.date || !booking.timePreference));
 
-  const nextLabel = step === 4 ? "Review Booking" : "Continue";
+  const nextLabel = step === 3 ? "Review Booking" : "Continue";
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -802,18 +1019,23 @@ export default function BookPage() {
 
       {/* ── Scrollable step content ───────────────────────────────────────── */}
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className={`${wrapperClass} py-7`}>
+        <div
+          className={`${wrapperClass} ${
+            (step === 1 || step === 2) && !confirmed ? "py-4 md:py-5" : "py-7"
+          }`}
+        >
 
           {/* ── Step 1: Choose a Service ─────────────────────────────────── */}
           {step === 1 && (
             <div>
               <StepHeader
+                compact
                 title="Choose a Service"
                 subtitle="Select a specialty or wellness therapy to book."
               />
 
               {/* Tab switcher */}
-              <div className="mb-5 flex gap-2">
+              <div className="mb-3 flex gap-2">
                 <button
                   type="button"
                   onClick={() => setActiveTab("specialty")}
@@ -839,16 +1061,40 @@ export default function BookPage() {
               </div>
 
               {/* Service grid */}
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                {(activeTab === "specialty" ? specialties : wellnessTherapies).map((s) => (
-                  <CompactServiceCard
-                    key={s.id}
-                    service={s}
-                    selected={booking.service?.id === s.id}
-                    onSelect={() => setBooking((b) => ({ ...b, service: s }))}
-                  />
-                ))}
-              </div>
+              {servicesLoading ? (
+                <div className="rounded-xl border border-[#e5e7eb] bg-white px-4 py-6 text-center">
+                  <p className="font-ui text-[13px] text-[#4a5565]">Loading services...</p>
+                </div>
+              ) : servicesError ? (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-4">
+                  <p className="font-ui text-[13px] text-red-600">{servicesError}</p>
+                  <button
+                    type="button"
+                    onClick={loadServices}
+                    className="font-ui mt-3 rounded-full border border-red-300 px-4 py-1.5 text-[12px] font-bold text-red-600 transition hover:bg-red-100"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                  {servicesForActiveTab.map((s) => (
+                    <CompactServiceCard
+                      key={s.id}
+                      service={s}
+                      selected={booking.service?.id === s.id}
+                      onSelect={() =>
+                        setBooking((b) => ({
+                          ...b,
+                          service: s,
+                          date: null,
+                          timePreference: null,
+                        }))
+                      }
+                    />
+                  ))}
+                </div>
+              )}
 
               {/* Selected service badge */}
               {booking.service && (
@@ -865,86 +1111,112 @@ export default function BookPage() {
             </div>
           )}
 
-          {/* ── Step 2: Choose a Date ────────────────────────────────────── */}
+          {/* ── Step 2: Date & time (calendar left, slots right on large screens) ─ */}
           {step === 2 && (
-            <div className="mx-auto max-w-[440px]">
+            <div>
               <StepHeader
-                title="Choose a Date"
+                compact
+                title="Date & time"
                 subtitle={booking.service?.label}
               />
 
-              <Calendar
-                selected={booking.date}
-                onSelect={(d) => setBooking((b) => ({ ...b, date: d }))}
-              />
-
-              {booking.date ? (
-                <div className="mt-4 rounded-xl border border-[#a7e9e3] bg-[#f0fffe] px-4 py-3 text-center">
-                  <p className="font-ui text-[13px] font-bold text-[#1f948e]">
-                    {formatDate(booking.date)}
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-8">
+                <div>
+                  <p className="font-ui mb-2 text-[11px] font-bold uppercase tracking-wider text-[#9ca3af] lg:mb-2">
+                    Date
                   </p>
+                  <div className="mx-auto max-w-[440px] lg:mx-0 lg:max-w-none">
+                    <Calendar
+                      compact
+                      selected={booking.date}
+                      onSelect={(d) => setBooking((b) => ({ ...b, date: d }))}
+                    />
+                  </div>
+                  {booking.date ? (
+                    <div className="mt-2 rounded-xl border border-[#a7e9e3] bg-[#f0fffe] px-4 py-2 text-center lg:text-left">
+                      <p className="font-ui text-[13px] font-bold text-[#1f948e]">
+                        {formatDate(booking.date)}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="font-ui mt-2 text-center text-[12px] text-[#9ca3af] lg:text-left">
+                      Sundays and past dates are unavailable.
+                    </p>
+                  )}
                 </div>
-              ) : (
-                <p className="font-ui mt-3 text-center text-[12px] text-[#9ca3af]">
-                  Sundays and past dates are unavailable.
-                </p>
-              )}
-            </div>
-          )}
 
-          {/* ── Step 3: Choose a Time ────────────────────────────────────── */}
-          {step === 3 && (
-            <div>
-              <StepHeader
-                title="Choose a Time"
-                subtitle={
-                  booking.date
-                    ? `${formatDate(booking.date)} · ${booking.service?.label}`
-                    : booking.service?.label
-                }
-              />
-
-              {/* Mobile: stacked full-width cards | Desktop: 3-column row */}
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                {TIME_PREFS.map((t) => {
-                  const sel = booking.timePreference === t.id;
-                  return (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => handleTimeSelect(t.id)}
-                      className={`flex flex-col items-center justify-center gap-4 rounded-2xl border-2 py-10 transition ${
-                        sel
-                          ? "border-[#1f948e] bg-[#1f948e] text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)]"
-                          : "border-[#e5e7eb] bg-white text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)]"
-                      }`}
-                    >
-                      {t.icon === "sun" && (
-                        <SunIcon size={36} color={sel ? "white" : "#1f948e"} />
-                      )}
-                      {t.icon === "cloud-sun" && (
-                        <CloudSunIcon size={36} color={sel ? "white" : "#1f948e"} />
-                      )}
-                      {t.icon === "moon" && (
-                        <MoonIcon size={36} color={sel ? "white" : "#1f948e"} />
-                      )}
-                      <div className="text-center">
-                        <div className="text-[20px] font-bold">{t.label}</div>
-                        <div
-                          className={`font-ui mt-1 text-[13px] ${sel ? "text-white/80" : "text-[#4a5565]"}`}
+                <div>
+                  <p className="font-ui mb-2 text-[11px] font-bold uppercase tracking-wider text-[#9ca3af] lg:mb-3">
+                    Preferred time
+                  </p>
+                  {availabilityLoading && (
+                    <p className="font-ui mb-2 text-[12px] text-[#4a5565]">Checking availability...</p>
+                  )}
+                  {availabilityError && (
+                    <p className="font-ui mb-2 text-[12px] text-red-600">{availabilityError}</p>
+                  )}
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3 lg:grid-cols-3 lg:gap-2">
+                    {TIME_PREFS.map((t) => {
+                      const bucket = availabilityByBucket[t.id];
+                      const isUnavailable = bucket ? !bucket.available : false;
+                      const sel = booking.timePreference === t.id;
+                      return (
+                        <button
+                          key={t.id}
+                          type="button"
+                          disabled={isUnavailable}
+                          onClick={() => handleTimeSelect(t.id)}
+                          className={`flex flex-col items-center justify-center rounded-2xl transition sm:py-8 lg:rounded-xl lg:py-3.5 lg:px-1.5 ${
+                            isUnavailable
+                              ? "cursor-not-allowed gap-3 border-2 border-[#f3d1d1] bg-[#fbf2f2] py-6 text-[#9b4f4f] lg:gap-1.5 lg:border"
+                              : sel
+                              ? "gap-3 border-2 border-[#1f948e] bg-[#1f948e] py-6 text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)] lg:gap-1.5 lg:border-2"
+                              : "gap-3 border-2 border-[#e5e7eb] bg-white py-6 text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)] lg:gap-1.5 lg:border lg:border-[#e5e7eb] lg:shadow-none hover:lg:border-[#a7e9e3]"
+                          }`}
                         >
-                          {t.range}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
+                          {t.icon === "sun" && (
+                            <SunIcon size={24} color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"} />
+                          )}
+                          {t.icon === "cloud-sun" && (
+                            <CloudSunIcon
+                              size={24}
+                              color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"}
+                            />
+                          )}
+                          {t.icon === "moon" && (
+                            <MoonIcon size={24} color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"} />
+                          )}
+                          <div className="text-center lg:min-w-0 lg:px-0.5">
+                            <div className="text-[17px] font-bold sm:text-[18px] lg:text-[14px] lg:leading-tight">
+                              {t.label}
+                            </div>
+                            <div
+                              className={`font-ui mt-0.5 text-[12px] sm:text-[13px] lg:text-[10px] lg:leading-snug ${
+                                sel ? "text-white/80" : isUnavailable ? "text-[#9b4f4f]" : "text-[#4a5565]"
+                              }`}
+                            >
+                              {isUnavailable ? "Full" : t.range}
+                            </div>
+                            {!isUnavailable && bucket && (
+                              <div className="font-ui mt-0.5 text-[11px] text-[#6b7280]">
+                                {bucket.remaining} slots left
+                              </div>
+                            )}
+                            {isUnavailable && (
+                              <div className="font-ui mt-0.5 text-[11px] text-[#9b4f4f]">Not available</div>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* ── Step 4: Your Details ─────────────────────────────────────── */}
-          {step === 4 && (
+          {/* ── Step 3: Your Details ─────────────────────────────────────── */}
+          {step === 3 && (
             <div className="mx-auto max-w-[580px]">
               <StepHeader
                 title="Your Details"
@@ -1076,13 +1348,33 @@ export default function BookPage() {
                     </p>
                   </div>
 
+                  <div className="md:col-span-2">
+                    <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3">
+                      <input
+                        type="checkbox"
+                        checked={booking.consentAccepted}
+                        onChange={(e) => {
+                          setBooking((b) => ({ ...b, consentAccepted: e.target.checked }));
+                          setErrors((er) => ({ ...er, consentAccepted: "" }));
+                        }}
+                        className="mt-0.5 h-4 w-4 accent-[#1f948e]"
+                      />
+                      <span className="font-ui text-[13px] leading-[1.5] text-[#4a5565]">
+                        I confirm the details are accurate and consent to share this information for booking.
+                      </span>
+                    </label>
+                    {errors.consentAccepted && (
+                      <p className="font-ui mt-1 text-[12px] text-red-500">{errors.consentAccepted}</p>
+                    )}
+                  </div>
+
                 </div>
               </div>
             </div>
           )}
 
-          {/* ── Step 5: Confirm ──────────────────────────────────────────── */}
-          {step === 5 && !confirmed && (
+          {/* ── Step 4: Confirm ──────────────────────────────────────────── */}
+          {step === 4 && !confirmed && (
             <div className="mx-auto max-w-[600px]">
               <StepHeader
                 title="Review & Confirm"
@@ -1131,10 +1423,13 @@ export default function BookPage() {
                 </div>
 
                 <p className="font-ui mt-5 text-[12px] leading-[1.6] text-[#4a5565]">
-                  Our team will call you at{" "}
-                  <span className="font-bold text-[#101828]">{booking.phone}</span> to confirm your
-                  appointment within your preferred time slot.
+                  We will confirm this booking immediately and send your reference details for follow-up.
                 </p>
+                {submitError && (
+                  <p className="font-ui mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
+                    {submitError}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -1147,16 +1442,22 @@ export default function BookPage() {
               </div>
 
               <h2 className="mb-3 text-[26px] font-bold text-[#101828] md:text-[32px]">
-                Appointment Request Received!
+                Appointment Confirmed!
               </h2>
               <p className="font-ui mx-auto max-w-[460px] text-[15px] leading-[1.8] text-[#4a5565]">
                 Thank you,{" "}
-                <span className="font-bold text-[#101828]">{booking.name}</span>. Our team will
-                call you at{" "}
-                <span className="font-bold text-[#101828]">{booking.phone}</span> to confirm your{" "}
-                <span className="font-semibold text-[#1f948e]">{booking.service?.label}</span>{" "}
-                appointment.
+                <span className="font-bold text-[#101828]">{bookingResult?.name ?? booking.name}</span>. Your
+                booking for{" "}
+                <span className="font-semibold text-[#1f948e]">{booking.service?.label}</span> is confirmed.
               </p>
+
+              {bookingResult?.booking_reference && (
+                <div className="mt-5 rounded-full border border-[#a7e9e3] bg-[#f0fffe] px-5 py-2">
+                  <p className="font-ui text-[12px] font-bold tracking-wide text-[#1f948e]">
+                    Booking Reference: {bookingResult.booking_reference}
+                  </p>
+                </div>
+              )}
 
               <div className="mt-7 w-full max-w-[380px] rounded-2xl border border-[#a7e9e3] bg-[#f0fffe] px-7 py-5 text-left">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -1215,16 +1516,13 @@ export default function BookPage() {
                 className="font-ui inline-flex items-center gap-1.5 rounded-full border border-[#e5e7eb] bg-white px-5 py-2.5 text-[14px] font-bold text-[#4a5565] transition hover:border-[#1f948e] hover:text-[#1f948e]"
               >
                 <ChevronLeftIcon />
-                {step === 5 ? "Edit Details" : "Back"}
+                {step === 4 ? "Edit Details" : "Back"}
               </button>
             ) : (
               <div />
             )}
 
-            {/* Right side: hint text for step 3, Continue/Confirm for others */}
-            {step === 3 ? (
-              <p className="font-ui text-[13px] text-[#9ca3af]">Tap a slot to continue</p>
-            ) : step < 5 ? (
+            {step < 4 ? (
               <button
                 type="button"
                 onClick={handleNext}
@@ -1242,9 +1540,12 @@ export default function BookPage() {
               <button
                 type="button"
                 onClick={handleConfirm}
-                className="font-ui inline-flex items-center gap-1.5 rounded-full bg-[#1f948e] px-8 py-2.5 text-[14px] font-bold text-white transition hover:brightness-95"
+                disabled={isSubmitting}
+                className={`font-ui inline-flex items-center gap-1.5 rounded-full px-8 py-2.5 text-[14px] font-bold text-white transition ${
+                  isSubmitting ? "cursor-not-allowed bg-[#9ca3af]" : "bg-[#1f948e] hover:brightness-95"
+                }`}
               >
-                Confirm Booking
+                {isSubmitting ? "Confirming..." : "Confirm Booking"}
                 <ChevronRightIcon />
               </button>
             )}
