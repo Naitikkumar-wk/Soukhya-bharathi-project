@@ -1,7 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
+import {
+  type AppointmentResponse,
+  type ApiServiceItem,
+  SbhApiError,
+  createAppointment,
+  fetchAvailability,
+  fetchServices,
+  toLocalYyyyMmDd,
+} from "@/lib/sbh-api";
 
 const wrapperClass = "mx-auto w-[min(1184px,calc(100%-32px))]";
 
@@ -35,6 +44,7 @@ type BookingState = {
   age: string;
   gender: Gender | "";
   concern: string;
+  consentAccepted: boolean;
 };
 
 // ── Services ───────────────────────────────────────────────────────────────
@@ -141,6 +151,14 @@ const wellnessTherapies: Service[] = [
   },
 ];
 
+const SERVICE_DESCRIPTION_MAP: Record<string, string> = [...specialties, ...wellnessTherapies].reduce(
+  (acc, service) => {
+    acc[service.id] = service.description;
+    return acc;
+  },
+  {} as Record<string, string>
+);
+
 // ── Constants ──────────────────────────────────────────────────────────────
 
 const STEPS = [
@@ -186,6 +204,34 @@ function formatDate(d: Date) {
     month: "short",
     day: "numeric",
   });
+}
+
+function mapApiService(item: ApiServiceItem): Service {
+  return {
+    id: item.id,
+    label: item.name,
+    group: item.group,
+    description: SERVICE_DESCRIPTION_MAP[item.id] ?? "Consultation and personalized care support.",
+  };
+}
+
+function mapBookingError(error: unknown): string {
+  if (error instanceof SbhApiError) {
+    if (error.code === "BUCKET_FULL") {
+      return "Selected time bucket is no longer available. Please choose another slot.";
+    }
+    if (error.code === "DUPLICATE_BOOKING") {
+      return "A similar booking already exists for this phone number. Please verify your details.";
+    }
+    if (error.code === "IDEMPOTENCY_MISMATCH") {
+      return "This booking request conflicted with an earlier submission. Please try again.";
+    }
+    if (error.code === "VALIDATION_ERROR") {
+      return "Please review your details and try submitting again.";
+    }
+    return error.message || "Booking failed. Please try again.";
+  }
+  return "Something went wrong while booking. Please try again.";
 }
 
 // ── Icons ──────────────────────────────────────────────────────────────────
@@ -751,6 +797,17 @@ export default function BookPage() {
   const [confirmed, setConfirmed] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<"specialty" | "wellness">("specialty");
+  const [services, setServices] = useState<Service[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [servicesError, setServicesError] = useState<string | null>(null);
+  const [availabilityLoading, setAvailabilityLoading] = useState(false);
+  const [availabilityError, setAvailabilityError] = useState<string | null>(null);
+  const [availabilityByBucket, setAvailabilityByBucket] = useState<
+    Partial<Record<TimePreference, { available: boolean; remaining: number }>>
+  >({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [bookingResult, setBookingResult] = useState<AppointmentResponse | null>(null);
 
   const [booking, setBooking] = useState<BookingState>({
     service: null,
@@ -761,7 +818,79 @@ export default function BookPage() {
     age: "",
     gender: "",
     concern: "",
+    consentAccepted: false,
   });
+
+  const loadServices = async () => {
+    setServicesLoading(true);
+    setServicesError(null);
+    try {
+      const data = await fetchServices();
+      setServices(data.items.map(mapApiService));
+    } catch (error) {
+      setServicesError(
+        error instanceof SbhApiError
+          ? error.message
+          : "Could not load services right now. Please retry."
+      );
+      setServices([]);
+    } finally {
+      setServicesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadServices();
+  }, []);
+
+  useEffect(() => {
+    if (!booking.service || !booking.date) {
+      setAvailabilityByBucket({});
+      setAvailabilityError(null);
+      return;
+    }
+
+    let isDisposed = false;
+    const serviceId = booking.service.id;
+    const selectedDate = booking.date;
+    const run = async () => {
+      setAvailabilityLoading(true);
+      setAvailabilityError(null);
+      try {
+        const payload = await fetchAvailability(serviceId, toLocalYyyyMmDd(selectedDate));
+        if (isDisposed) return;
+        const nextState: Partial<Record<TimePreference, { available: boolean; remaining: number }>> =
+          {};
+        for (const bucket of payload.buckets) {
+          nextState[bucket.time_bucket] = {
+            available: bucket.available,
+            remaining: bucket.remaining,
+          };
+        }
+        setAvailabilityByBucket(nextState);
+        if (booking.timePreference && nextState[booking.timePreference]?.available === false) {
+          setBooking((prev) => ({ ...prev, timePreference: null }));
+        }
+      } catch (error) {
+        if (isDisposed) return;
+        setAvailabilityError(
+          error instanceof SbhApiError
+            ? error.message
+            : "Could not load availability. Please try again."
+        );
+        setAvailabilityByBucket({});
+      } finally {
+        if (!isDisposed) {
+          setAvailabilityLoading(false);
+        }
+      }
+    };
+
+    run();
+    return () => {
+      isDisposed = true;
+    };
+  }, [booking.service, booking.date, booking.timePreference]);
 
   // ── Validation ────────────────────────────────────────────────────────────
 
@@ -775,6 +904,7 @@ export default function BookPage() {
     else if (Number(booking.age) < 1 || Number(booking.age) > 120)
       errs.age = "Enter a valid age (1–120)";
     if (!booking.gender) errs.gender = "Please select a gender";
+    if (!booking.consentAccepted) errs.consentAccepted = "Please accept consent to continue";
     return errs;
   };
 
@@ -794,7 +924,46 @@ export default function BookPage() {
 
   const handleBack = () => setStep((s) => Math.max(s - 1, 1));
 
-  const handleConfirm = () => setConfirmed(true);
+  const handleConfirm = async () => {
+    if (!booking.service || !booking.date || !booking.timePreference) return;
+    const validationErrors = validateStep4();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    const idempotencyKey =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+
+    try {
+      const result = await createAppointment(
+        {
+          service_id: booking.service.id,
+          appointment_date: toLocalYyyyMmDd(booking.date),
+          time_bucket: booking.timePreference,
+          name: booking.name.trim(),
+          phone: booking.phone.trim(),
+          age: Number(booking.age),
+          gender: booking.gender as Gender,
+          concern: booking.concern.trim() ? booking.concern.trim() : null,
+          consent_accepted: true,
+          source: "web",
+        },
+        { idempotencyKey }
+      );
+      setBookingResult(result);
+      setConfirmed(true);
+    } catch (error) {
+      setSubmitError(mapBookingError(error));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleTimeSelect = (t: TimePreference) => {
     setBooking((b) => ({ ...b, timePreference: t }));
@@ -804,6 +973,10 @@ export default function BookPage() {
     setConfirmed(false);
     setStep(1);
     setActiveTab("specialty");
+    setSubmitError(null);
+    setBookingResult(null);
+    setAvailabilityByBucket({});
+    setAvailabilityError(null);
     setBooking({
       service: null,
       date: null,
@@ -813,10 +986,16 @@ export default function BookPage() {
       age: "",
       gender: "",
       concern: "",
+      consentAccepted: false,
     });
   };
 
   // ── Derived ───────────────────────────────────────────────────────────────
+
+  const servicesForActiveTab = useMemo(
+    () => services.filter((s) => s.group === activeTab),
+    [services, activeTab]
+  );
 
   const timePref = TIME_PREFS.find((t) => t.id === booking.timePreference);
 
@@ -882,16 +1061,40 @@ export default function BookPage() {
               </div>
 
               {/* Service grid */}
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
-                {(activeTab === "specialty" ? specialties : wellnessTherapies).map((s) => (
-                  <CompactServiceCard
-                    key={s.id}
-                    service={s}
-                    selected={booking.service?.id === s.id}
-                    onSelect={() => setBooking((b) => ({ ...b, service: s }))}
-                  />
-                ))}
-              </div>
+              {servicesLoading ? (
+                <div className="rounded-xl border border-[#e5e7eb] bg-white px-4 py-6 text-center">
+                  <p className="font-ui text-[13px] text-[#4a5565]">Loading services...</p>
+                </div>
+              ) : servicesError ? (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-4">
+                  <p className="font-ui text-[13px] text-red-600">{servicesError}</p>
+                  <button
+                    type="button"
+                    onClick={loadServices}
+                    className="font-ui mt-3 rounded-full border border-red-300 px-4 py-1.5 text-[12px] font-bold text-red-600 transition hover:bg-red-100"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                  {servicesForActiveTab.map((s) => (
+                    <CompactServiceCard
+                      key={s.id}
+                      service={s}
+                      selected={booking.service?.id === s.id}
+                      onSelect={() =>
+                        setBooking((b) => ({
+                          ...b,
+                          service: s,
+                          date: null,
+                          timePreference: null,
+                        }))
+                      }
+                    />
+                  ))}
+                </div>
+              )}
 
               {/* Selected service badge */}
               {booking.service && (
@@ -946,38 +1149,62 @@ export default function BookPage() {
                   <p className="font-ui mb-2 text-[11px] font-bold uppercase tracking-wider text-[#9ca3af] lg:mb-3">
                     Preferred time
                   </p>
+                  {availabilityLoading && (
+                    <p className="font-ui mb-2 text-[12px] text-[#4a5565]">Checking availability...</p>
+                  )}
+                  {availabilityError && (
+                    <p className="font-ui mb-2 text-[12px] text-red-600">{availabilityError}</p>
+                  )}
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3 lg:grid-cols-3 lg:gap-2">
                     {TIME_PREFS.map((t) => {
+                      const bucket = availabilityByBucket[t.id];
+                      const isUnavailable = bucket ? !bucket.available : false;
                       const sel = booking.timePreference === t.id;
                       return (
                         <button
                           key={t.id}
                           type="button"
+                          disabled={isUnavailable}
                           onClick={() => handleTimeSelect(t.id)}
                           className={`flex flex-col items-center justify-center rounded-2xl transition sm:py-8 lg:rounded-xl lg:py-3.5 lg:px-1.5 ${
-                            sel
+                            isUnavailable
+                              ? "cursor-not-allowed gap-3 border-2 border-[#f3d1d1] bg-[#fbf2f2] py-6 text-[#9b4f4f] lg:gap-1.5 lg:border"
+                              : sel
                               ? "gap-3 border-2 border-[#1f948e] bg-[#1f948e] py-6 text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)] lg:gap-1.5 lg:border-2"
                               : "gap-3 border-2 border-[#e5e7eb] bg-white py-6 text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)] lg:gap-1.5 lg:border lg:border-[#e5e7eb] lg:shadow-none hover:lg:border-[#a7e9e3]"
                           }`}
                         >
                           {t.icon === "sun" && (
-                            <SunIcon size={24} color={sel ? "white" : "#1f948e"} />
+                            <SunIcon size={24} color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"} />
                           )}
                           {t.icon === "cloud-sun" && (
-                            <CloudSunIcon size={24} color={sel ? "white" : "#1f948e"} />
+                            <CloudSunIcon
+                              size={24}
+                              color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"}
+                            />
                           )}
                           {t.icon === "moon" && (
-                            <MoonIcon size={24} color={sel ? "white" : "#1f948e"} />
+                            <MoonIcon size={24} color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"} />
                           )}
                           <div className="text-center lg:min-w-0 lg:px-0.5">
                             <div className="text-[17px] font-bold sm:text-[18px] lg:text-[14px] lg:leading-tight">
                               {t.label}
                             </div>
                             <div
-                              className={`font-ui mt-0.5 text-[12px] sm:text-[13px] lg:text-[10px] lg:leading-snug ${sel ? "text-white/80" : "text-[#4a5565]"}`}
+                              className={`font-ui mt-0.5 text-[12px] sm:text-[13px] lg:text-[10px] lg:leading-snug ${
+                                sel ? "text-white/80" : isUnavailable ? "text-[#9b4f4f]" : "text-[#4a5565]"
+                              }`}
                             >
-                              {t.range}
+                              {isUnavailable ? "Full" : t.range}
                             </div>
+                            {!isUnavailable && bucket && (
+                              <div className="font-ui mt-0.5 text-[11px] text-[#6b7280]">
+                                {bucket.remaining} slots left
+                              </div>
+                            )}
+                            {isUnavailable && (
+                              <div className="font-ui mt-0.5 text-[11px] text-[#9b4f4f]">Not available</div>
+                            )}
                           </div>
                         </button>
                       );
@@ -1121,6 +1348,26 @@ export default function BookPage() {
                     </p>
                   </div>
 
+                  <div className="md:col-span-2">
+                    <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3">
+                      <input
+                        type="checkbox"
+                        checked={booking.consentAccepted}
+                        onChange={(e) => {
+                          setBooking((b) => ({ ...b, consentAccepted: e.target.checked }));
+                          setErrors((er) => ({ ...er, consentAccepted: "" }));
+                        }}
+                        className="mt-0.5 h-4 w-4 accent-[#1f948e]"
+                      />
+                      <span className="font-ui text-[13px] leading-[1.5] text-[#4a5565]">
+                        I confirm the details are accurate and consent to share this information for booking.
+                      </span>
+                    </label>
+                    {errors.consentAccepted && (
+                      <p className="font-ui mt-1 text-[12px] text-red-500">{errors.consentAccepted}</p>
+                    )}
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -1176,10 +1423,13 @@ export default function BookPage() {
                 </div>
 
                 <p className="font-ui mt-5 text-[12px] leading-[1.6] text-[#4a5565]">
-                  Our team will call you at{" "}
-                  <span className="font-bold text-[#101828]">{booking.phone}</span> to confirm your
-                  appointment within your preferred time slot.
+                  We will confirm this booking immediately and send your reference details for follow-up.
                 </p>
+                {submitError && (
+                  <p className="font-ui mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
+                    {submitError}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -1192,16 +1442,22 @@ export default function BookPage() {
               </div>
 
               <h2 className="mb-3 text-[26px] font-bold text-[#101828] md:text-[32px]">
-                Appointment Request Received!
+                Appointment Confirmed!
               </h2>
               <p className="font-ui mx-auto max-w-[460px] text-[15px] leading-[1.8] text-[#4a5565]">
                 Thank you,{" "}
-                <span className="font-bold text-[#101828]">{booking.name}</span>. Our team will
-                call you at{" "}
-                <span className="font-bold text-[#101828]">{booking.phone}</span> to confirm your{" "}
-                <span className="font-semibold text-[#1f948e]">{booking.service?.label}</span>{" "}
-                appointment.
+                <span className="font-bold text-[#101828]">{bookingResult?.name ?? booking.name}</span>. Your
+                booking for{" "}
+                <span className="font-semibold text-[#1f948e]">{booking.service?.label}</span> is confirmed.
               </p>
+
+              {bookingResult?.booking_reference && (
+                <div className="mt-5 rounded-full border border-[#a7e9e3] bg-[#f0fffe] px-5 py-2">
+                  <p className="font-ui text-[12px] font-bold tracking-wide text-[#1f948e]">
+                    Booking Reference: {bookingResult.booking_reference}
+                  </p>
+                </div>
+              )}
 
               <div className="mt-7 w-full max-w-[380px] rounded-2xl border border-[#a7e9e3] bg-[#f0fffe] px-7 py-5 text-left">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -1284,9 +1540,12 @@ export default function BookPage() {
               <button
                 type="button"
                 onClick={handleConfirm}
-                className="font-ui inline-flex items-center gap-1.5 rounded-full bg-[#1f948e] px-8 py-2.5 text-[14px] font-bold text-white transition hover:brightness-95"
+                disabled={isSubmitting}
+                className={`font-ui inline-flex items-center gap-1.5 rounded-full px-8 py-2.5 text-[14px] font-bold text-white transition ${
+                  isSubmitting ? "cursor-not-allowed bg-[#9ca3af]" : "bg-[#1f948e] hover:brightness-95"
+                }`}
               >
-                Confirm Booking
+                {isSubmitting ? "Confirming..." : "Confirm Booking"}
                 <ChevronRightIcon />
               </button>
             )}

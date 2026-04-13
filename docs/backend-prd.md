@@ -348,7 +348,41 @@ Standard error payload:
   - sudden spike in `409` or `500`
   - SMS failure ratio above threshold
 
-## 10) Testing and Acceptance Criteria
+## 10) Deployment, Scalability, and Production Readiness
+
+### Load and capacity assumptions
+- Traffic on the public marketing and booking UI is largely served by the frontend; backend load is driven by API calls such as `GET /services`, `GET /availability`, and `POST /appointments`.
+- **Concurrent site visitors** (e.g. thousands browsing pages) are not the same as **concurrent API requests** hitting the booking path; capacity planning must target the latter where writes and DB contention matter most.
+- Any target for simultaneous API concurrency must be **validated with load tests** in a staging-like environment, not assumed from user counts alone.
+
+### Application runtime (deployment shape)
+- Run the API as **stateless** instances behind a **load balancer**; scale with multiple **worker processes** (e.g. Gunicorn with Uvicorn workers) or **replicated containers** as needed.
+- **Readiness** probes should include **database connectivity** (see §9 Health and Alerting).
+- Apply **timeouts** (and optionally circuit breaking) on **outbound SMS** calls so slow provider responses do not exhaust worker capacity.
+
+### Database (production posture)
+- Use **PostgreSQL** in production; keep schema changes **versioned migrations** aligned with §3 and §6.
+- Add **indexes** for hot paths: service lookup by id/code, unique bucket row `(service_id, appointment_date, time_bucket)`, and any **duplicate-booking** checks implemented in SQL (normalized phone + service + date + bucket + time window, if applicable).
+- Tune **ORM connection pooling** (e.g. `pool_size`, `max_overflow`) so aggregate connections from all app replicas and workers stay **below the database `max_connections`** limit.
+- If metrics show read pressure on `GET /availability`, consider **short TTL caching** or, later, a **read replica**; booking remains authoritative per §6.
+
+### Throughput and abuse
+- Rely on §7 for **rate limiting** (IP and phone), **request body limits**, and production **CORS** restrictions.
+- Rely on **§4.4** and the **Idempotency Contract** in §14 for **idempotency** on booking submissions.
+
+### Notifications under load
+- Prefer the **async queue** pattern in §8 after transaction commit so booking latency stays predictable under burst traffic; synchronous SMS remains acceptable only where latency tradeoffs are explicitly accepted.
+
+### Configuration
+- Production **secrets** and connection strings via environment or a **secret manager** (§7); no credentials in source control.
+
+### Load testing and go-live validation
+- Use a load tool such as **k6** or **Locust** (implementation choice is open).
+- Exercise a **mixed scenario**: `GET /services`, `GET /availability`, and `POST /appointments`, including **contention for the last slot** in a bucket (see mandatory concurrency test in §11).
+- Monitor during runs: **database CPU**, **connection counts**, **p95/p99 latency**, **4xx/5xx rates**, and **pool exhaustion** signals.
+- **Go-live gate**: booking API **p95 latency** remains within the success criterion in §1 under an **agreed concurrent API** profile documented for the release.
+
+## 11) Testing and Acceptance Criteria
 
 ### Mandatory Tests
 - Happy path booking creation and instant confirmation.
@@ -367,7 +401,7 @@ Standard error payload:
 - Observability events/metrics available.
 - CI test suite includes booking conflict and idempotency scenarios.
 
-## 11) Delivery Plan and Milestones
+## 12) Delivery Plan and Milestones
 
 ### Milestone 1: Foundation
 - Create DB models and migrations for Service, DailyBucketCapacity, Appointment, NotificationEvent.
@@ -384,8 +418,9 @@ Standard error payload:
 ### Milestone 4: Hardening
 - Add rate limiting, structured logs, metrics.
 - Add full test matrix in CI.
+- Run **load tests against staging** per §10; record baseline results (or link to an ops runbook when available).
 
-## 12) Decision Log (Open Items)
+## 13) Decision Log (Open Items)
 
 1. **SMS vendor selection** (Twilio/MSG91/Gupshup/others) and delivery SLA.
 2. **Retention duration** final value after legal/compliance review.
@@ -393,7 +428,7 @@ Standard error payload:
 4. **Sync vs async SMS send** for MVP launch.
 5. **Admin operations model** for capacity management (seed-only vs internal panel).
 
-## 13) API Appendix
+## 14) API Appendix
 
 ### Error Codes (Proposed)
 - `VALIDATION_ERROR`
