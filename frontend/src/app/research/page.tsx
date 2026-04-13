@@ -17,7 +17,7 @@ const committees = [
   {
     title: "Clinical Ethics Committee",
     summary:
-      "Supports ethical conduct for clinical care and research involving participants, in line with Soukhya Bharathi policies and applicable regulations.",
+      "Supports ethical conduct for clinical care and research involving participants, in line with Saukhyabharathi policies and applicable regulations.",
     scope: [
       "Protocol and informed consent review",
       "Ongoing ethics oversight and documentation",
@@ -57,7 +57,7 @@ const publications = [
     title: "Case documentation and protocol adherence in integrative settings",
     venue: "Conference / journal — citation to be linked",
     summary:
-      "How standardized case records and ethics workflows support reproducible clinical research at Soukhya Bharathi.",
+      "How standardized case records and ethics workflows support reproducible clinical research at Saukhyabharathi.",
   },
   {
     title: "Education program outcomes — CME and internship reporting",
@@ -140,7 +140,7 @@ function SectionTitle({ title, subtitle }: { title: string; subtitle?: string })
 export default function ResearchPage() {
   return (
     <div className="bg-white text-[#4a5565]">
-      <SiteHeader navItems={navItems} ctaHref="/research" ctaLabel="Research & Education" />
+      <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
 
       <main>
         <section className="border-b border-[#e5e7eb] bg-[#f0fffe] py-16 md:py-20">
@@ -154,7 +154,7 @@ export default function ResearchPage() {
               </h1>
               <p className="font-ui mx-auto mt-4 max-w-[720px] text-[16px] leading-[1.8] text-[#4a5565]">
                 Ethics oversight, safety monitoring, publications, continuing education, and quality
-                documentation — how Soukhya Bharathi supports responsible research and learning in the open.
+                documentation — how Saukhyabharathi supports responsible research and learning in the open.
               </p>
 
               <InPageScrollNav

@@ -356,6 +356,17 @@ export default function CarePage() {
   const [activeId, setActiveId] = useState<string>(specialties[0].id);
 
   useEffect(() => {
+    const section = new URLSearchParams(window.location.search).get("section");
+    if (!section) return;
+    const el = document.getElementById(section);
+    if (!el) return;
+    window.setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (specialties.some((s) => s.id === section)) setActiveId(section);
+    }, 80);
+  }, []);
+
+  useEffect(() => {
     const observers: IntersectionObserver[] = [];
     specialties.forEach((s) => {
       const el = document.getElementById(s.id);
@@ -380,9 +391,9 @@ export default function CarePage() {
         <section className="border-b border-[#e5e7eb] py-16 text-center">
           <div className={wrapperClass}>
             <h1 className="text-[42px] font-bold leading-tight text-[#101828] md:text-[52px]">
-              Care @ Soukhya Bharathi
+              Care @ SaukhyaBharathi
             </h1>
-            <p className="font-ui mx-auto mt-4 max-w-[680px] text-[16px] leading-[1.7] text-[#4a5565]">
+              <p className="font-ui mx-auto mt-4 max-w-[680px] text-[17px] leading-[1.7] text-[#4a5565]">
               Integrated Ayurveda and modern medicine under one roof — 11 specialties, expert doctors, and
               personalized care plans for every condition.
             </p>
@@ -391,7 +402,7 @@ export default function CarePage() {
               {trustBadges.map((b) => (
                 <span
                   key={b}
-                  className="font-ui rounded-full border border-[#a7e9e3] bg-[#f0fffe] px-4 py-1.5 text-[13px] font-medium text-[#1f7474]"
+                  className="font-ui rounded-full border border-[#a7e9e3] bg-[#f0fffe] px-4 py-1.5 text-[14px] font-medium text-[#1f7474]"
                 >
                   {b}
                 </span>

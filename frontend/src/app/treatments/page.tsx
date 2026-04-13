@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
@@ -213,7 +213,7 @@ function SectionTitle({ title, subtitle }: { title: string; subtitle?: string })
     <div className="mb-10 text-center">
       <h2 className="text-[34px] leading-[1.1] font-bold text-[#101828] md:text-[40px]">{title}</h2>
       {subtitle ? (
-        <p className="font-ui mx-auto mt-3 max-w-[760px] text-[15px] leading-[1.7] text-[#4a5565]">
+        <p className="font-ui mx-auto mt-3 max-w-[760px] text-[16px] leading-[1.7] text-[#4a5565]">
           {subtitle}
         </p>
       ) : null}
@@ -293,6 +293,16 @@ function TherapyCard({ therapy }: { therapy: Therapy }) {
 
 export default function TreatmentsPage() {
   const [openFaq, setOpenFaq] = useState(0);
+
+  useEffect(() => {
+    const section = new URLSearchParams(window.location.search).get("section");
+    if (!section) return;
+    const el = document.getElementById(section);
+    if (!el) return;
+    window.setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  }, []);
 
   return (
     <div className="bg-white text-[#4a5565]">

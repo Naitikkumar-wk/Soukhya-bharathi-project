@@ -75,10 +75,10 @@ export default function AboutPage() {
                 About SBH
               </p>
               <h1 className="mt-3 text-[40px] leading-[1.1] font-bold text-[#101828] md:text-[52px]">
-                Soukhya Bharathi
+                Saukhyabharathi
               </h1>
               <p className="font-ui mx-auto mt-4 max-w-[640px] text-[16px] leading-[1.8] text-[#4a5565]">
-                Soukhya Bharathi brings Ayurvedic care together with modern clinical practice. Here you can
+                Saukhyabharathi brings Ayurvedic care together with modern clinical practice. Here you can
                 see how we think about healing, how we run our services, and how we stay accountable to
                 patients and the community.
               </p>
@@ -107,7 +107,7 @@ export default function AboutPage() {
             <div className="mx-auto max-w-[800px] text-center">
               <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Philosophy</h2>
               <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                Soukhya Bharathi is grounded in classical Ayurvedic principles within clear, modern clinical
+                Saukhyabharathi is grounded in classical Ayurvedic principles within clear, modern clinical
                 and educational standards. We focus on diet, daily rhythm, appropriate therapies, and
                 mind–body practices as part of a plan that fits your condition and your physician&apos;s
                 guidance.

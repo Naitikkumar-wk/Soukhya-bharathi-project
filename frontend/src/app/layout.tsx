@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Soukhya Bharathi",
+  title: "Saukhyabharathi",
   description: "Integrated Ayurveda and modern healthcare",
 };
 

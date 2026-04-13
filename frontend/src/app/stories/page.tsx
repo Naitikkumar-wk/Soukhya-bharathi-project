@@ -35,7 +35,7 @@ export default function StoriesPage() {
                 Patient Voices and Reviews
               </h1>
               <p className="font-ui mx-auto mt-4 max-w-[740px] text-[16px] leading-[1.8] text-[#4a5565]">
-                Real patient and caregiver voices from Soukhya Bharathi — integrative care, wellness
+                Real patient and caregiver voices from Saukhyabharathi — integrative care, wellness
                 therapies, and long-term follow-up. Video embeds below are illustrative until your
                 approved recordings are linked.
               </p>
@@ -63,7 +63,7 @@ export default function StoriesPage() {
               <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Video Testimonials</h2>
               <p className="font-ui mx-auto mt-3 max-w-[700px] text-[15px] leading-[1.7] text-[#4a5565]">
                 Replace each video URL in <code className="rounded bg-[#f0fffe] px-1 py-0.5 text-[13px]">src/content/stories.ts</code> with
-                Soukhya Bharathi–approved testimonials when your media is ready.
+                Saukhyabharathi–approved testimonials when your media is ready.
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">

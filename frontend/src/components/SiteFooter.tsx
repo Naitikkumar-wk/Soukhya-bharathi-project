@@ -17,11 +17,11 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
         <div>
           <div className="flex items-center gap-3">
             <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-lg bg-[#1f948e]">
-              <Image src="/images/logo.png" alt="Soukhya Bharathi logo" width={28} height={28} />
+              <Image src="/images/logo.png" alt="Saukhyabharathi logo" width={28} height={28} />
             </span>
-            <span className="text-[24px] font-bold text-white">Soukhya Bharathi</span>
+            <span className="text-[24px] font-bold text-white">Saukhyabharathi</span>
           </div>
-          <p className="font-ui mt-3.5 mb-4.5 text-[14px]">
+          <p className="font-ui mt-3.5 mb-4.5 text-[15px]">
             Integrative Ayurveda and modern medicine under one roof — medical specialties, classical
             therapies, and wellness programs tailored to you.
           </p>
@@ -29,7 +29,7 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
 
         <div>
           <h4 className="mb-3.5 text-[16px] font-bold text-white">Quick Links</h4>
-          <ul className="font-ui space-y-2.5 text-[14px]">
+          <ul className="font-ui space-y-2.5 text-[15px]">
             <li>
               <Link href="/" className={quickLinkClass}>
                 Home
@@ -65,7 +65,7 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
 
         <div>
           <h4 className="mb-3.5 text-[16px] font-bold text-white">Treatments</h4>
-          <ul className="font-ui space-y-2.5 text-[14px]">
+          <ul className="font-ui space-y-2.5 text-[15px]">
             <li>Panchakarma</li>
             <li>Shirodhara</li>
             <li>Abhyanga Massage</li>
@@ -76,17 +76,27 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
 
         <div>
           <h4 className="mb-3.5 text-[16px] font-bold text-white">Visit Us</h4>
-          <ul className="font-ui space-y-2.5 text-[14px]">
-            <li>Kerala, India — full address provided at appointment confirmation</li>
+          <ul className="font-ui space-y-2.5 text-[15px]">
+            <li>
+              <a
+                href="https://maps.app.goo.gl/EZLmm7VTySGfyGFN9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={quickLinkClass}
+              >
+                1st Cross Road, Siddapura Rd, 1st Block, Jaya Nagar East, Jayanagar, Bengaluru,
+                Karnataka 560011
+              </a>
+            </li>
             <li>+91 98765 43210</li>
-            <li>care@soukhya-bharathi.org</li>
+            <li>care@saukhyabharathi.org</li>
           </ul>
         </div>
       </div>
       <div
-        className={`${wrapperClass} flex h-auto flex-col items-start justify-between gap-4 border-t border-white/15 py-4 text-[14px] text-white/60 md:h-[62px] md:flex-row md:items-center`}
+        className={`${wrapperClass} flex h-auto flex-col items-start justify-between gap-4 border-t border-white/15 py-4 text-[15px] text-white/60 md:h-[62px] md:flex-row md:items-center`}
       >
-        <span>© 2026 Soukhya Bharathi. All rights reserved.</span>
+        <span>© 2026 Saukhyabharathi. All rights reserved.</span>
         <div className="font-ui flex gap-4">
           <button type="button" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
             Privacy Policy

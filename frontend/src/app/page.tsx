@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
 
 const navItems: NavItem[] = [
+  { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
   { href: "/research", label: "Research" },
@@ -226,7 +227,7 @@ export default function Home() {
         <section id="care" className="py-20">
           <div className={wrapperClass}>
             <SectionTitle
-              title="Care @ Soukhya Bharathi"
+              title="Care @ SaukhyaBharathi"
               subtitle="Explore medical specialties and pathways to our team, patient stories, and appointment booking."
             />
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
