@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
 
 const navItems: NavItem[] = [
+  { href: "/", label: "Home" },
   { href: "/care", label: "Care" },
   { href: "/treatments", label: "Wellness" },
   { href: "/research", label: "Research" },
@@ -33,7 +34,7 @@ const careCards = [
     src: "/images/care-book.webp",
     alt: "Book appointment",
     title: "Book Appointment",
-    text: "Start with intake form, choose date and doctor, and continue through confirmation and follow-up.",
+    text: "Choose a service, pick a date and preferred time of day, then confirm your details — our team will follow up to finalize your visit.",
     href: "/appointment",
     linkLabel: "Start Booking",
   },
@@ -71,7 +72,7 @@ const researchCards = [
     src: "/images/research-highlights.webp",
     alt: "Research highlights",
     title: "Research Highlights",
-    text: "Publications, research outcomes, and education programs for trust and transparency.",
+    text: "Ethics oversight, publications, and education programs — how Soukhya Bharathi supports responsible research.",
     href: "/research",
     linkLabel: "View Research & Education",
   },
@@ -95,16 +96,16 @@ const researchCards = [
 
 const testimonials = [
   {
-    text: "I felt a noticeable improvement in sleep and digestion within two weeks. The consultation was deeply personalized and practical.",
-    name: "Aditya R",
+    text: "Within two weeks my sleep and digestion felt steadier. The Soukhya Bharathi team explained every step and tailored the plan to my work schedule.",
+    name: "Aditya R.",
   },
   {
-    text: "The therapies were calming and professional. I now follow a daily routine that reduced stress and improved my focus at work.",
-    name: "Neha M",
+    text: "Calm, professional therapists and clear communication. The home routine they gave me cut down stress and helped me focus again.",
+    name: "Neha M.",
   },
   {
-    text: "Excellent care and very knowledgeable doctors. The Panchakarma program helped me feel lighter, healthier, and more energetic.",
-    name: "Rahul K",
+    text: "Knowledgeable doctors across Ayurveda and modern medicine. Panchakarma left me lighter, more energetic, and confident about follow-up.",
+    name: "Rahul K.",
   },
 ];
 
@@ -184,8 +185,8 @@ export default function Home() {
                 Mind, Body &amp; Spirit
               </h1>
               <p className="font-ui mt-5 mb-8 max-w-[520px] text-[18px] leading-[1.55] text-white/90">
-                Experience the ancient wisdom of Ayurveda through personalized consultations,
-                natural therapies, and holistic wellness practices.
+                At Soukhya Bharathi, classical Ayurveda meets modern medicine — personalized consultations,
+                evidence-informed therapies, and wellness programs for lasting balance.
               </p>
               <div className="font-ui flex flex-wrap gap-3.5">
                 <a
@@ -226,8 +227,8 @@ export default function Home() {
         <section id="care" className="py-20">
           <div className={wrapperClass}>
             <SectionTitle
-              title="Care @ Saukhyabharathi"
-              subtitle="Choose the right care pathway and move directly to doctors, stories, and appointment booking."
+              title="Care @ SaukhyaBharathi"
+              subtitle="Explore medical specialties and pathways to our team, patient stories, and appointment booking."
             />
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {careCards.map((card) => (

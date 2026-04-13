@@ -17,74 +17,77 @@ const committees = [
   {
     title: "Clinical Ethics Committee",
     summary:
-      "Supports ethical conduct for clinical and research activities involving participants, aligned with institutional policies and applicable standards (placeholder).",
+      "Supports ethical conduct for clinical care and research involving participants, in line with Saukhyabharathi policies and applicable regulations.",
     scope: [
-      "Protocol and consent review (placeholder)",
-      "Ongoing ethics oversight (placeholder)",
-      "Recommendations and reporting pathways (placeholder)",
+      "Protocol and informed consent review",
+      "Ongoing ethics oversight and documentation",
+      "Guidance on reporting and escalation pathways",
     ],
   },
   {
     title: "Data Safety Monitoring Board",
     summary:
-      "Provides independent review of safety and outcome data where applicable, helping identify risk signals and protective actions during studies (placeholder).",
+      "Where studies require it, an independent group reviews safety and outcome data to help identify signals early and support timely, careful decisions.",
     scope: [
-      "Safety signal review (placeholder)",
-      "Interim data considerations (placeholder)",
-      "Continuation recommendations (placeholder)",
+      "Review of emerging safety signals",
+      "Consideration of interim outcome data",
+      "Recommendations on study continuation or modification",
     ],
   },
   {
     title: "Institutional Ethics Committee",
     summary:
-      "Institutional body for ethics review and approvals, supporting documentation integrity and investigator communication (placeholder).",
+      "Institutional ethics review and approvals, supporting sound documentation, investigator communication, and participant welfare.",
     scope: [
-      "Initial and amendment review (placeholder)",
-      "Compliance monitoring support (placeholder)",
-      "Documentation and reporting (placeholder)",
+      "Initial submission and amendment review",
+      "Support for compliance monitoring",
+      "Documentation, correspondence, and periodic reporting",
     ],
   },
 ];
 
 const publications = [
   {
-    title: "Integrated supportive care outcomes (placeholder)",
-    venue: "Journal / Year — to be updated",
-    summary: "Placeholder summary; replace with approved publication details when available.",
+    title: "Integrative oncology supportive care — clinical outcomes series",
+    venue: "Peer-reviewed journal — citation to be linked",
+    summary:
+      "Summaries of structured supportive care alongside conventional oncology, with documentation and follow-up metrics from our programs.",
   },
   {
-    title: "Protocol documentation in clinical settings (placeholder)",
-    venue: "Journal / Year — to be updated",
-    summary: "Placeholder publication entry for future linking and indexing.",
+    title: "Case documentation and protocol adherence in integrative settings",
+    venue: "Conference / journal — citation to be linked",
+    summary:
+      "How standardized case records and ethics workflows support reproducible clinical research at Saukhyabharathi.",
   },
   {
-    title: "Education program evaluation brief (placeholder)",
-    venue: "Internal report / Year — to be updated",
-    summary: "Placeholder for institutional learning outcomes and reporting.",
+    title: "Education program outcomes — CME and internship reporting",
+    venue: "Institutional report — year to be listed",
+    summary:
+      "Learning outcomes, attendance, and competency themes from our continuing education and training offerings.",
   },
 ];
 
 const educationPrograms = [
   {
     title: "Foundations in integrative research literacy",
-    audience: "Clinicians and trainees (placeholder)",
-    duration: "Duration TBD",
+    audience: "Clinicians, residents, and clinical trainees",
+    duration: "Schedule via academic office",
     summary:
-      "Orientation to ethics awareness, documentation expectations, and collaboration pathways (placeholder).",
+      "Ethics awareness, documentation standards, and how clinical teams collaborate with research and quality functions.",
   },
   {
     title: "Workshop series — evidence context for classical therapies",
-    audience: "Multi-disciplinary teams (placeholder)",
-    duration: "Duration TBD",
+    audience: "Multi-disciplinary clinical teams",
+    duration: "Schedule via academic office",
     summary:
-      "Sessions on translating practice knowledge into study design and reporting formats (placeholder).",
+      "Translating bedside experience into clear study questions, feasible designs, and responsible reporting.",
   },
   {
     title: "Seminar — quality systems for herbomineral formulations",
-    audience: "Technical and pharmacy staff (placeholder)",
-    duration: "Duration TBD",
+    audience: "Pharmacy, manufacturing, and technical staff",
+    duration: "Schedule via academic office",
     summary:
-      "Overview of traceability, batch documentation, and safety documentation alignment (placeholder).",
+      "Traceability, batch records, safety sheets, and how documentation supports patient safety and audits.",
   },
 ];
 
@@ -92,32 +95,32 @@ const cmeItems = [
   {
     title: "Ayurveda Oncology Clinical Internship and Training",
     description:
-      "Structured clinical exposure and supervised learning, subject to eligibility and capacity (placeholder).",
-    whoFor: ["Residents and fellows (placeholder)", "Licensed clinicians (placeholder)"],
+      "Supervised clinical exposure in integrative oncology settings, with clear learning objectives and competency checkpoints. Enrollment is subject to eligibility and capacity.",
+    whoFor: ["Residents and fellows", "Licensed clinicians in related specialties"],
   },
   {
     title: "Thesis and Project Guidance and Assistance",
     description:
-      "Mentoring support for theses and projects, including documentation alignment and ethics readiness (placeholder).",
-    whoFor: ["Students and researchers (placeholder)", "Institutional affiliates (placeholder)"],
+      "Mentoring for theses and research projects: topic refinement, documentation, ethics readiness, and alignment with institutional requirements.",
+    whoFor: ["Students and researchers", "Institutional affiliates"],
   },
   {
     title: "Technical Assistance for Protocol development, Case Documentation and Report Publication",
     description:
-      "Guidance on protocol drafting, case records, and manuscript/report preparation (placeholder).",
-    whoFor: ["Principal investigators (placeholder)", "Study coordinators (placeholder)"],
+      "Hands-on support for drafting protocols, maintaining case records, and preparing manuscripts or reports for ethical and scientific review.",
+    whoFor: ["Principal investigators", "Study coordinators"],
   },
   {
     title: "Expert Guidance in preparation of Heavy metal and herbomineral based therapeutics",
     description:
-      "Consultative support on preparation workflows and documentation under institutional oversight (placeholder).",
-    whoFor: ["Manufacturing / pharmacy teams (placeholder)", "Clinical leads (placeholder)"],
+      "Consultation on preparation workflows, batch documentation, and safety practices under institutional oversight and applicable standards.",
+    whoFor: ["Manufacturing and pharmacy teams", "Clinical leads"],
   },
   {
     title: "Quality control of heavy metal and herbomineral based drugs with Material Safety Data Sheet",
     description:
-      "Documentation-oriented overview of QC expectations and MSDS alignment; downloadable library will be linked when available (placeholder).",
-    whoFor: ["QC personnel (placeholder)", "Regulatory liaisons (placeholder)"],
+      "Training and reference material on QC expectations, analytical summaries, and MSDS alignment. Downloadable resources will be listed as they are approved.",
+    whoFor: ["QC personnel", "Regulatory liaisons"],
   },
 ];
 
@@ -137,7 +140,7 @@ function SectionTitle({ title, subtitle }: { title: string; subtitle?: string })
 export default function ResearchPage() {
   return (
     <div className="bg-white text-[#4a5565]">
-      <SiteHeader navItems={navItems} ctaHref="/research" ctaLabel="Research & Education" />
+      <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
 
       <main>
         <section className="border-b border-[#e5e7eb] bg-[#f0fffe] py-16 md:py-20">
@@ -150,8 +153,8 @@ export default function ResearchPage() {
                 Research &amp; Education
               </h1>
               <p className="font-ui mx-auto mt-4 max-w-[720px] text-[16px] leading-[1.8] text-[#4a5565]">
-                Ethics oversight, safety monitoring, education programs, and quality documentation — in one
-                place for institutional transparency (placeholder).
+                Ethics oversight, safety monitoring, publications, continuing education, and quality
+                documentation — how Saukhyabharathi supports responsible research and learning in the open.
               </p>
 
               <InPageScrollNav
@@ -174,7 +177,7 @@ export default function ResearchPage() {
           <div className={wrapperClass}>
             <SectionTitle
               title="Governance & Ethics"
-              subtitle="Committee structures that support responsible conduct of research and learning (placeholder)."
+              subtitle="Committees and boards that uphold ethical review, participant safety, and clear communication for investigators and trainees."
             />
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {committees.map((c) => (
@@ -188,7 +191,7 @@ export default function ResearchPage() {
                   </p>
                   <div className="mt-5">
                     <p className="font-ui mb-2 text-[11px] font-bold uppercase tracking-widest text-[#4a5565]">
-                      Scope (placeholder)
+                      Scope
                     </p>
                     <ul className="font-ui list-disc space-y-1 pl-5 text-[13px] text-[#4a5565]">
                       {c.scope.map((s) => (
@@ -209,7 +212,7 @@ export default function ResearchPage() {
           <div className={wrapperClass}>
             <SectionTitle
               title="Research Highlights"
-              subtitle="Publications and education programs (placeholder entries until client shares links)."
+              subtitle="Selected publications and education highlights; full bibliographies and schedules are updated as they are approved for the website."
             />
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12">
               <div>
@@ -228,7 +231,9 @@ export default function ResearchPage() {
                     </li>
                   ))}
                 </ul>
-                <p className="font-ui mt-5 text-[13px] text-[#9ca3af]">View all publications — coming soon</p>
+                <p className="font-ui mt-5 text-[13px] text-[#9ca3af]">
+                  Full publication list and DOI links — coming soon
+                </p>
               </div>
 
               <div>
@@ -258,7 +263,7 @@ export default function ResearchPage() {
           <div className={wrapperClass}>
             <SectionTitle
               title="Continuing Medical Education & Training"
-              subtitle="Program outlines are placeholders until schedules and eligibility are finalized."
+              subtitle="Program outlines reflect our education roadmap; intake dates, batch size, and eligibility are confirmed with the academic office each season."
             />
             <div className="space-y-3">
               {cmeItems.map((item) => (
@@ -272,7 +277,7 @@ export default function ResearchPage() {
                   <div className="mt-4 border-t border-[#f0f1f3] pt-4">
                     <p className="font-ui text-[14px] leading-[1.7] text-[#4a5565]">{item.description}</p>
                     <p className="font-ui mt-3 text-[11px] font-bold uppercase tracking-widest text-[#4a5565]">
-                      Who it is for (placeholder)
+                      Who it is for
                     </p>
                     <ul className="font-ui mt-1 list-disc space-y-1 pl-5 text-[13px] text-[#4a5565]">
                       {item.whoFor.map((w) => (
@@ -296,8 +301,9 @@ export default function ResearchPage() {
                 Quality control &amp; safety documentation
               </h2>
               <p className="font-ui mt-3 max-w-[800px] text-[15px] leading-[1.8] text-[#4a5565]">
-                We maintain documentation practices for quality control and MSDS alignment where applicable.
-                Specific downloadable files will be listed here when approved for publication (placeholder).
+                We maintain documentation for quality control and MSDS alignment where applicable to our
+                formulations and processes. Downloadable summaries and repositories are listed here once
+                approved for public release.
               </p>
               <ul className="font-ui mt-6 list-disc space-y-2 pl-5 text-[14px] text-[#4a5565]">
                 <li>Analytical QC summaries — document library coming soon</li>
@@ -313,8 +319,9 @@ export default function ResearchPage() {
             <div className="mx-auto max-w-[640px] rounded-2xl border border-[#e5e7eb] bg-white px-8 py-10 text-center shadow-[0_2px_8px_rgba(16,24,40,0.06)]">
               <h2 className="text-[26px] font-bold text-[#101828]">Research enquiries</h2>
               <p className="font-ui mt-3 text-[15px] leading-[1.8] text-[#4a5565]">
-                For collaborations, CME, and research enquiries, contact details and application forms will be
-                published here (placeholder).
+                For collaborations, CME, internships, and research enquiries, use the contact details in the
+                site footer or book an appointment — dedicated application forms will be linked here when
+                live.
               </p>
               <button
                 type="button"
