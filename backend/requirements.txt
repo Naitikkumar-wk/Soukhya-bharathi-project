@@ -11,4 +11,7 @@ psycopg[binary]>=3.2
 
 # Utilities
 python-dotenv>=1.0
+passlib[bcrypt]>=1.7
+PyJWT>=2.9
+pytest>=8.0
 

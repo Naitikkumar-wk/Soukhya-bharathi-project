@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     env: str = "dev"
     database_url: str
     allowed_origins: str = "http://localhost:3000"
+    allowed_origin_regex: str = r"^https?://([a-z0-9-]+\.)?localhost(:\d+)?$|^https?://127\.0\.0\.1(:\d+)?$"
 
     default_bucket_max_capacity: int = 10
     duplicate_booking_window_hours: int = 24
@@ -15,6 +16,11 @@ class Settings(BaseSettings):
 
     db_pool_size: int = 5
     db_max_overflow: int = 10
+    admin_jwt_secret: str = "change-me"
+    admin_jwt_algorithm: str = "HS256"
+    admin_jwt_ttl_minutes: int = 480
+    admin_bootstrap_email: str | None = None
+    admin_bootstrap_password: str | None = None
 
     @property
     def allowed_origins_list(self) -> list[str]:
