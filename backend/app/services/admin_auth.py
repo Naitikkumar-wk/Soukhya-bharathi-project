@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -39,3 +39,23 @@ def authenticate_admin_user(session: Session, *, email: str, password: str) -> A
     session.commit()
     session.refresh(user)
     return user
+
+
+def get_admin_bootstrap_status(session: Session) -> dict[str, bool]:
+    has_any_admin = (
+        session.scalar(select(func.count()).select_from(AdminUser).where(AdminUser.role == "admin")) or 0
+    ) > 0
+    has_active_admin = (
+        session.scalar(
+            select(func.count())
+            .select_from(AdminUser)
+            .where(AdminUser.role == "admin", AdminUser.is_active.is_(True))
+        )
+        or 0
+    ) > 0
+    bootstrap_configured = bool(settings.admin_bootstrap_email and settings.admin_bootstrap_password)
+    return {
+        "has_any_admin": has_any_admin,
+        "has_active_admin": has_active_admin,
+        "bootstrap_configured": bootstrap_configured,
+    }

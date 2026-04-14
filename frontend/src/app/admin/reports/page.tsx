@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminEmptyState, AdminStatCard } from "@/components/admin/AdminUi";
 import {
   AdminApiError,
   AdminReportSummary,
@@ -45,19 +46,28 @@ export default function AdminReportsPage() {
       {!summary ? (
         <p className="text-sm text-slate-500">Loading reports...</p>
       ) : (
-        <div className="space-y-2 text-sm text-slate-700">
-          <p>Total appointments: {summary.total}</p>
-          <p>Confirmed: {summary.confirmed}</p>
-          <p>Cancelled: {summary.cancelled}</p>
-          <p>Morning: {summary.morning}</p>
-          <p>Afternoon: {summary.afternoon}</p>
-          <p>Evening: {summary.evening}</p>
+        <div>
+          {summary.total === 0 ? (
+            <AdminEmptyState
+              title="No report data yet"
+              description="Reports will populate as appointments are confirmed or cancelled."
+              className="mb-4"
+            />
+          ) : null}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <AdminStatCard label="Total appointments" value={summary.total} />
+            <AdminStatCard label="Confirmed" value={summary.confirmed} tone="success" />
+            <AdminStatCard label="Cancelled" value={summary.cancelled} tone="warning" />
+            <AdminStatCard label="Morning" value={summary.morning} />
+            <AdminStatCard label="Afternoon" value={summary.afternoon} />
+            <AdminStatCard label="Evening" value={summary.evening} />
+          </div>
           <button
             type="button"
-            className="inline-block rounded-md border border-slate-300 px-3 py-2 font-medium text-slate-700"
+            className="mt-4 inline-block rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             onClick={downloadCsv}
           >
-            Download CSV
+            Download appointments CSV
           </button>
         </div>
       )}
