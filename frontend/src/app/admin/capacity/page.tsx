@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminBadge, AdminEmptyState } from "@/components/admin/AdminUi";
 import { AdminApiError, AdminCapacityRow, fetchAdminCapacity } from "@/lib/admin-api";
 
 export default function AdminCapacityPage() {
@@ -20,27 +21,42 @@ export default function AdminCapacityPage() {
   return (
     <AdminShell title="Capacity">
       {error && <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
-      <div className="overflow-x-auto">
+      {rows.length === 0 ? (
+        <AdminEmptyState
+          title="No capacity rows found"
+          description="Capacity records are created when booking or scheduling operations touch a date and time bucket."
+        />
+      ) : null}
+      <div className="overflow-x-auto rounded-xl border border-slate-200">
         <table className="min-w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-slate-200 text-left text-slate-600">
-              <th className="py-2 pr-3">Service</th>
-              <th className="py-2 pr-3">Date</th>
-              <th className="py-2 pr-3">Bucket</th>
-              <th className="py-2 pr-3">Max</th>
-              <th className="py-2 pr-3">Used</th>
-              <th className="py-2 pr-3">Remaining</th>
+            <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
+              <th className="px-3 py-3">Service</th>
+              <th className="px-3 py-3">Date</th>
+              <th className="px-3 py-3">Bucket</th>
+              <th className="px-3 py-3">Max</th>
+              <th className="px-3 py-3">Used</th>
+              <th className="px-3 py-3">Remaining</th>
+              <th className="px-3 py-3">Load</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={`${row.service_id}-${row.appointment_date}-${row.time_bucket}`} className="border-b border-slate-100">
-                <td className="py-2 pr-3">{row.service_id}</td>
-                <td className="py-2 pr-3">{row.appointment_date}</td>
-                <td className="py-2 pr-3">{row.time_bucket}</td>
-                <td className="py-2 pr-3">{row.max_capacity}</td>
-                <td className="py-2 pr-3">{row.used_capacity}</td>
-                <td className="py-2 pr-3">{row.remaining}</td>
+              <tr
+                key={`${row.service_id}-${row.appointment_date}-${row.time_bucket}`}
+                className="border-b border-slate-100 text-slate-700 hover:bg-slate-50/70"
+              >
+                <td className="px-3 py-2.5 font-medium">{row.service_id}</td>
+                <td className="px-3 py-2.5">{row.appointment_date}</td>
+                <td className="px-3 py-2.5 capitalize">{row.time_bucket}</td>
+                <td className="px-3 py-2.5">{row.max_capacity}</td>
+                <td className="px-3 py-2.5">{row.used_capacity}</td>
+                <td className="px-3 py-2.5">{row.remaining}</td>
+                <td className="px-3 py-2.5">
+                  <AdminBadge tone={getCapacityTone(row)}>
+                    {row.remaining <= 0 ? "Full" : row.remaining <= 2 ? "Critical" : "Available"}
+                  </AdminBadge>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -48,4 +64,10 @@ export default function AdminCapacityPage() {
       </div>
     </AdminShell>
   );
+}
+
+function getCapacityTone(row: AdminCapacityRow): "default" | "success" | "warning" | "danger" | "info" {
+  if (row.remaining <= 0) return "danger";
+  if (row.remaining <= 2) return "warning";
+  return "success";
 }

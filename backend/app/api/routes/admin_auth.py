@@ -5,8 +5,13 @@ from app.api.deps.admin_auth import get_current_admin_user
 from app.core.config import settings
 from app.db.models import AdminUser
 from app.db.session import get_db
-from app.schemas.admin import AdminLoginRequest, AdminLoginResponse, AdminUserRead
-from app.services.admin_auth import authenticate_admin_user
+from app.schemas.admin import (
+    AdminBootstrapStatusResponse,
+    AdminLoginRequest,
+    AdminLoginResponse,
+    AdminUserRead,
+)
+from app.services.admin_auth import authenticate_admin_user, get_admin_bootstrap_status
 from app.services.security import create_admin_access_token
 
 router = APIRouter(prefix="/admin/auth")
@@ -40,3 +45,8 @@ def logout_admin():
 @router.get("/me", response_model=AdminUserRead)
 def current_admin_user(current_user: AdminUser = Depends(get_current_admin_user)):
     return _to_user_read(current_user)
+
+
+@router.get("/bootstrap-status", response_model=AdminBootstrapStatusResponse)
+def admin_bootstrap_status(db: Session = Depends(get_db)):
+    return get_admin_bootstrap_status(db)

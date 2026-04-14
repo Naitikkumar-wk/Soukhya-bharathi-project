@@ -18,6 +18,12 @@ export type AdminLoginResponse = {
   user: AdminUser;
 };
 
+export type AdminBootstrapStatus = {
+  has_any_admin: boolean;
+  has_active_admin: boolean;
+  bootstrap_configured: boolean;
+};
+
 export type AdminAppointment = {
   id: string;
   booking_reference: string;
@@ -33,6 +39,16 @@ export type AdminAppointment = {
   internal_notes: string | null;
   source: string;
   created_at: string;
+};
+
+export type AdminAppointmentsFilters = {
+  date_from?: string;
+  date_to?: string;
+  status?: string;
+  service_id?: string;
+  phone?: string;
+  booking_reference?: string;
+  limit?: number;
 };
 
 export type AdminCapacityRow = {
@@ -143,8 +159,23 @@ export function adminMe(): Promise<AdminUser> {
   return requestJson<AdminUser>("/admin/auth/me");
 }
 
-export function fetchAdminAppointments(): Promise<{ items: AdminAppointment[] }> {
-  return requestJson<{ items: AdminAppointment[] }>("/admin/appointments");
+export function fetchAdminBootstrapStatus(): Promise<AdminBootstrapStatus> {
+  return requestJson<AdminBootstrapStatus>("/admin/auth/bootstrap-status");
+}
+
+export function fetchAdminAppointments(filters?: AdminAppointmentsFilters): Promise<{ items: AdminAppointment[] }> {
+  const query = new URLSearchParams();
+  if (filters?.date_from) query.set("date_from", filters.date_from);
+  if (filters?.date_to) query.set("date_to", filters.date_to);
+  if (filters?.status) query.set("status", filters.status);
+  if (filters?.service_id) query.set("service_id", filters.service_id);
+  if (filters?.phone) query.set("phone", filters.phone);
+  if (filters?.booking_reference) query.set("booking_reference", filters.booking_reference);
+  if (typeof filters?.limit === "number") query.set("limit", String(filters.limit));
+  const suffix = query.toString();
+  return requestJson<{ items: AdminAppointment[] }>(
+    suffix ? `/admin/appointments?${suffix}` : "/admin/appointments"
+  );
 }
 
 export function fetchAdminAppointment(appointmentId: string): Promise<AdminAppointment> {

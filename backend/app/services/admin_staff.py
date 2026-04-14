@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import ApiError
@@ -44,6 +44,21 @@ def set_staff_active_state(
     user = session.get(AdminUser, user_id)
     if user is None:
         raise ApiError("NOT_FOUND", "Staff user not found", 404)
+    if not is_active and user.is_active and user.role == "admin":
+        active_admin_count = (
+            session.scalar(
+                select(func.count())
+                .select_from(AdminUser)
+                .where(AdminUser.role == "admin", AdminUser.is_active.is_(True))
+            )
+            or 0
+        )
+        if active_admin_count <= 1:
+            raise ApiError(
+                "VALIDATION_ERROR",
+                "At least one active admin account is required",
+                409,
+            )
     before = {"is_active": user.is_active}
     user.is_active = is_active
     session.add(user)

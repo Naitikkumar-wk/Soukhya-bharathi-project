@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 
 import { AdminShell } from "@/components/admin/AdminShell";
+import { AdminBadge, AdminEmptyState, AdminToolbar } from "@/components/admin/AdminUi";
 import {
   AdminApiError,
   AdminUser,
@@ -66,64 +67,79 @@ export default function AdminStaffPage() {
   return (
     <AdminShell title="Staff Management">
       {error && <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
-      <form className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-4" onSubmit={onCreate}>
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="staff@email.com"
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
-        />
-        <input
-          type="password"
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
-        />
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value as "admin" | "staff")}
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm"
-        >
-          <option value="staff">Staff</option>
-          <option value="admin">Admin</option>
-        </select>
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded-md bg-teal-600 px-3 py-2 text-sm font-semibold text-white"
-        >
-          Add User
-        </button>
-      </form>
-      <div className="space-y-2">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm"
+      <AdminToolbar className="mb-4">
+        <form className="grid grid-cols-1 gap-2 sm:grid-cols-4" onSubmit={onCreate}>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="staff@email.com"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          />
+          <input
+            type="password"
+            required
+            minLength={8}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          />
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value as "admin" | "staff")}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
           >
-            <p>
-              {item.email} ({item.role})
-            </p>
-            <button
-              type="button"
-              onClick={() => toggleUser(item)}
-              disabled={saving}
-              className={`rounded-md px-3 py-1 font-medium ${
-                item.is_active
-                  ? "border border-red-300 text-red-600"
-                  : "border border-slate-300 text-slate-600"
-              }`}
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button
+            type="submit"
+            disabled={saving}
+            className="rounded-lg bg-teal-600 px-3 py-2 text-sm font-semibold text-white transition hover:brightness-95 disabled:opacity-60"
+          >
+            Add user
+          </button>
+        </form>
+      </AdminToolbar>
+      {items.length === 0 ? (
+        <AdminEmptyState
+          title="No staff users available"
+          description="Create the first team member account above. You can assign either staff or admin role."
+        />
+      ) : (
+        <div className="space-y-2">
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm"
             >
-              {item.is_active ? "Disable" : "Enable"}
-            </button>
-          </div>
-        ))}
-      </div>
+              <div>
+                <p className="font-medium text-slate-900">{item.email}</p>
+                <div className="mt-1 flex items-center gap-2">
+                  <AdminBadge tone={item.role === "admin" ? "info" : "default"}>{item.role}</AdminBadge>
+                  <AdminBadge tone={item.is_active ? "success" : "warning"}>
+                    {item.is_active ? "Active" : "Disabled"}
+                  </AdminBadge>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => toggleUser(item)}
+                disabled={saving}
+                className={`rounded-lg px-3 py-1.5 font-semibold transition ${
+                  item.is_active
+                    ? "border border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                    : "border border-slate-300 bg-white text-slate-600 hover:bg-slate-50"
+                }`}
+              >
+                {item.is_active ? "Disable user" : "Enable user"}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </AdminShell>
   );
 }
