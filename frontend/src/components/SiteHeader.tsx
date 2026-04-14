@@ -36,6 +36,23 @@ const wellnessMenuItems: NavItem[] = [
   { href: "/treatments?section=integrated-care", label: "Integrated Healthcare" },
 ];
 
+function MobileChevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      aria-hidden
+      className={`h-4 w-4 shrink-0 text-[#4a5565] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
+      <path
+        fillRule="evenodd"
+        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
 export function SiteHeader({
   brandName = "Saukhyabharathi",
   navItems,
@@ -43,6 +60,11 @@ export function SiteHeader({
   ctaLabel,
 }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSubOpen, setMobileSubOpen] = useState<{ Care: boolean; Wellness: boolean }>({
+    Care: false,
+    Wellness: false,
+  });
+
   const withDirectRoutes = navItems.map((item) => {
     if (item.label === "Care") return { ...item, href: "/care" };
     if (item.label === "Wellness") return { ...item, href: "/treatments" };
@@ -114,7 +136,12 @@ export function SiteHeader({
 
         <button
           type="button"
-          onClick={() => setMobileOpen((s) => !s)}
+          onClick={() =>
+            setMobileOpen((s) => {
+              if (s) setMobileSubOpen({ Care: false, Wellness: false });
+              return !s;
+            })
+          }
           className="flex min-h-[44px] min-w-[44px] cursor-pointer flex-col items-center justify-center gap-[5px] border-0 bg-transparent p-2 lg:hidden"
           aria-label="Toggle navigation"
           aria-expanded={mobileOpen}
@@ -143,7 +170,7 @@ export function SiteHeader({
       </div>
 
       {mobileOpen ? (
-        <nav className="font-ui flex flex-col gap-4 border-t border-[#e5e7eb] bg-white px-6 py-5 lg:hidden">
+        <nav className="font-ui flex max-h-[min(72dvh,calc(100dvh-68px))] flex-col gap-1 overflow-y-auto overscroll-contain border-t border-[#e5e7eb] bg-white px-6 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] lg:hidden">
           {withDirectRoutes.map((item) => {
             const menuItems =
               item.label === "Care"
@@ -151,22 +178,59 @@ export function SiteHeader({
                 : item.label === "Wellness"
                   ? wellnessMenuItems
                   : null;
+            const subKey = item.label === "Care" ? "Care" : item.label === "Wellness" ? "Wellness" : null;
+            const expanded = subKey ? mobileSubOpen[subKey] : false;
+
+            if (!menuItems) {
+              return (
+                <div key={item.label} className="border-b border-[#f0f1f3] py-1 last:border-b-0">
+                  <a
+                    href={item.href}
+                    className="block py-2.5 text-[16px] text-[#4a5565]"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                </div>
+              );
+            }
+
             return (
-              <div key={item.label} className="border-b border-[#f0f1f3] pb-2 last:border-b-0">
-                <a
-                  href={item.href}
-                  className="block py-2 text-[16px] text-[#4a5565]"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.label}
-                </a>
-                {menuItems ? (
-                  <div className="ml-3 mt-1 space-y-1">
+              <div key={item.label} className="border-b border-[#f0f1f3] py-1 last:border-b-0">
+                <div className="flex min-h-[44px] items-stretch gap-1">
+                  <a
+                    href={item.href}
+                    className="flex flex-1 items-center py-2.5 text-[16px] text-[#4a5565]"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                  <button
+                    type="button"
+                    className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg border-0 bg-transparent text-[#4a5565]"
+                    aria-expanded={expanded}
+                    aria-controls={`mobile-sub-${item.label}`}
+                    onClick={() =>
+                      subKey &&
+                      setMobileSubOpen((s) => ({
+                        ...s,
+                        [subKey]: !s[subKey],
+                      }))
+                    }
+                  >
+                    <MobileChevron open={expanded} />
+                    <span className="sr-only">
+                      {expanded ? "Collapse" : "Expand"} {item.label} submenu
+                    </span>
+                  </button>
+                </div>
+                {expanded ? (
+                  <div id={`mobile-sub-${item.label}`} className="ml-1 border-l-2 border-[#e8eaed] pl-3">
                     {menuItems.map((menuItem) => (
                       <a
                         key={menuItem.href}
                         href={menuItem.href}
-                        className="block py-1 text-[14px] text-[#5b6571]"
+                        className="block py-2 text-[14px] text-[#5b6571]"
                         onClick={() => setMobileOpen(false)}
                       >
                         {menuItem.label}
@@ -179,7 +243,7 @@ export function SiteHeader({
           })}
           <a
             href={ctaHref}
-            className="mt-2 rounded-full bg-[#1f948e] px-5 py-3 text-center text-[15px] font-bold text-white"
+            className="mt-3 shrink-0 rounded-full bg-[#1f948e] px-5 py-3 text-center text-[15px] font-bold text-white"
             onClick={() => setMobileOpen(false)}
           >
             {ctaLabel}
