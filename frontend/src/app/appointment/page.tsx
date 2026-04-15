@@ -32,7 +32,7 @@ type Service = {
   group: "specialty" | "wellness";
 };
 
-type TimePreference = "morning" | "afternoon" | "evening";
+type TimePreference = string;
 type Gender = "male" | "female" | "other";
 
 type BookingState = {
@@ -168,25 +168,29 @@ const STEPS = [
   { number: 4, label: "Confirm" },
 ] as const;
 
-const TIME_PREFS = [
-  {
-    id: "morning" as TimePreference,
-    label: "Morning",
-    range: "8:00 AM – 12:00 PM",
-    icon: "sun" as const,
-  },
-  {
-    id: "afternoon" as TimePreference,
-    label: "Afternoon",
-    range: "12:00 PM – 4:00 PM",
-    icon: "cloud-sun" as const,
-  },
-  {
-    id: "evening" as TimePreference,
-    label: "Evening",
-    range: "4:00 PM – 7:00 PM",
-    icon: "moon" as const,
-  },
+const SLOT_TIMES: TimePreference[] = [
+  "8:00 AM",
+  "8:30 AM",
+  "9:00 AM",
+  "9:30 AM",
+  "10:00 AM",
+  "10:30 AM",
+  "11:00 AM",
+  "11:30 AM",
+  "12:00 PM",
+  "12:30 PM",
+  "2:00 PM",
+  "2:30 PM",
+  "3:00 PM",
+  "3:30 PM",
+  "4:00 PM",
+  "4:30 PM",
+  "5:00 PM",
+  "5:30 PM",
+  "6:00 PM",
+  "6:30 PM",
+  "7:00 PM",
+  "7:30 PM",
 ];
 
 const GENDER_OPTIONS: { value: Gender; label: string }[] = [
@@ -283,65 +287,6 @@ function ChevronRightIcon({ size = 16 }: { size?: number }) {
       strokeLinejoin="round"
     >
       <polyline points="9 18 15 12 9 6" />
-    </svg>
-  );
-}
-
-function SunIcon({ size = 28, color }: { size?: number; color: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="5" />
-      <line x1="12" y1="1" x2="12" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="23" />
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-      <line x1="1" y1="12" x2="3" y2="12" />
-      <line x1="21" y1="12" x2="23" y2="12" />
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-    </svg>
-  );
-}
-
-function CloudSunIcon({ size = 28, color }: { size?: number; color: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 2v2M4.93 4.93l1.41 1.41M2 12h2M4.93 19.07l1.41-1.41M20 10a4 4 0 1 0-7.93.8A5.5 5.5 0 1 0 12 21h8a4 4 0 0 0 0-8z" />
-    </svg>
-  );
-}
-
-function MoonIcon({ size = 28, color }: { size?: number; color: string }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke={color}
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
   );
 }
@@ -861,10 +806,10 @@ export default function BookPage() {
         if (isDisposed) return;
         const nextState: Partial<Record<TimePreference, { available: boolean; remaining: number }>> =
           {};
-        for (const bucket of payload.buckets) {
-          nextState[bucket.time_bucket] = {
-            available: bucket.available,
-            remaining: bucket.remaining,
+        for (const slot of payload.slots) {
+          nextState[slot.slot_time] = {
+            available: slot.available,
+            remaining: slot.remaining,
           };
         }
         setAvailabilityByBucket(nextState);
@@ -945,7 +890,7 @@ export default function BookPage() {
         {
           service_id: booking.service.id,
           appointment_date: toLocalYyyyMmDd(booking.date),
-          time_bucket: booking.timePreference,
+          slot_time: booking.timePreference,
           name: booking.name.trim(),
           phone: booking.phone.trim(),
           age: Number(booking.age),
@@ -997,7 +942,7 @@ export default function BookPage() {
     [services, activeTab]
   );
 
-  const timePref = TIME_PREFS.find((t) => t.id === booking.timePreference);
+  const timePref = booking.timePreference;
 
   const nextDisabled =
     (step === 1 && !booking.service) ||
@@ -1155,56 +1100,32 @@ export default function BookPage() {
                   {availabilityError && (
                     <p className="font-ui mb-2 text-[12px] text-red-600">{availabilityError}</p>
                   )}
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3 lg:grid-cols-3 lg:gap-2">
-                    {TIME_PREFS.map((t) => {
-                      const bucket = availabilityByBucket[t.id];
-                      const isUnavailable = bucket ? !bucket.available : false;
-                      const sel = booking.timePreference === t.id;
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+                    {SLOT_TIMES.map((slotTime) => {
+                      const slot = availabilityByBucket[slotTime];
+                      const isUnavailable = slot ? !slot.available : false;
+                      const sel = booking.timePreference === slotTime;
                       return (
                         <button
-                          key={t.id}
+                          key={slotTime}
                           type="button"
                           disabled={isUnavailable}
-                          onClick={() => handleTimeSelect(t.id)}
-                          className={`flex flex-col items-center justify-center rounded-2xl transition sm:py-8 lg:rounded-xl lg:py-3.5 lg:px-1.5 ${
+                          onClick={() => handleTimeSelect(slotTime)}
+                          className={`rounded-xl border px-3 py-3 text-center transition ${
                             isUnavailable
-                              ? "cursor-not-allowed gap-3 border-2 border-[#f3d1d1] bg-[#fbf2f2] py-6 text-[#9b4f4f] lg:gap-1.5 lg:border"
+                              ? "cursor-not-allowed border-[#f3d1d1] bg-[#fbf2f2] text-[#9b4f4f]"
                               : sel
-                              ? "gap-3 border-2 border-[#1f948e] bg-[#1f948e] py-6 text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)] lg:gap-1.5 lg:border-2"
-                              : "gap-3 border-2 border-[#e5e7eb] bg-white py-6 text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)] lg:gap-1.5 lg:border lg:border-[#e5e7eb] lg:shadow-none hover:lg:border-[#a7e9e3]"
+                                ? "border-[#1f948e] bg-[#1f948e] text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)]"
+                                : "border-[#e5e7eb] bg-white text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)]"
                           }`}
                         >
-                          {t.icon === "sun" && (
-                            <SunIcon size={24} color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"} />
-                          )}
-                          {t.icon === "cloud-sun" && (
-                            <CloudSunIcon
-                              size={24}
-                              color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"}
-                            />
-                          )}
-                          {t.icon === "moon" && (
-                            <MoonIcon size={24} color={sel ? "white" : isUnavailable ? "#c48b8b" : "#1f948e"} />
-                          )}
-                          <div className="text-center lg:min-w-0 lg:px-0.5">
-                            <div className="text-[17px] font-bold sm:text-[18px] lg:text-[14px] lg:leading-tight">
-                              {t.label}
-                            </div>
-                            <div
-                              className={`font-ui mt-0.5 text-[12px] sm:text-[13px] lg:text-[10px] lg:leading-snug ${
-                                sel ? "text-white/80" : isUnavailable ? "text-[#9b4f4f]" : "text-[#4a5565]"
-                              }`}
-                            >
-                              {isUnavailable ? "Full" : t.range}
-                            </div>
-                            {!isUnavailable && bucket && (
-                              <div className="font-ui mt-0.5 text-[11px] text-[#6b7280]">
-                                {bucket.remaining} slots left
-                              </div>
-                            )}
-                            {isUnavailable && (
-                              <div className="font-ui mt-0.5 text-[11px] text-[#9b4f4f]">Not available</div>
-                            )}
+                          <div className="text-[14px] font-bold">{slotTime}</div>
+                          <div
+                            className={`font-ui mt-0.5 text-[11px] ${
+                              sel ? "text-white/80" : isUnavailable ? "text-[#9b4f4f]" : "text-[#4a5565]"
+                            }`}
+                          >
+                            {isUnavailable ? "Full" : `${slot?.remaining ?? 0} slots left`}
                           </div>
                         </button>
                       );
@@ -1393,7 +1314,7 @@ export default function BookPage() {
                   />
                   <SummaryRow
                     label="Time Slot"
-                    value={timePref ? `${timePref.label} (${timePref.range})` : ""}
+                    value={timePref ?? ""}
                   />
                   <div className="border-t border-[#a7e9e3]" />
                   <SummaryRow label="Patient Name" value={booking.name} />
@@ -1474,7 +1395,7 @@ export default function BookPage() {
                       Time Slot
                     </span>
                     <p className="font-ui mt-0.5 text-[14px] font-semibold text-[#101828]">
-                      {timePref ? `${timePref.label} (${timePref.range})` : ""}
+                      {timePref ?? ""}
                     </p>
                   </div>
                 </div>

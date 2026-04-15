@@ -36,7 +36,7 @@ export default function AdminAppointmentDetailPage() {
           <Info label="Status" value={item.status} />
           <Info label="Service" value={item.service_id} />
           <Info label="Date" value={item.appointment_date} />
-          <Info label="Bucket" value={item.time_bucket} />
+          <Info label="Slot time" value={item.slot_time} />
           <Info label="Patient" value={item.name} />
           <Info label="Phone" value={item.phone} />
           <Info label="Age" value={String(item.age)} />

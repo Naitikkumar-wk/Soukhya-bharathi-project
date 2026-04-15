@@ -43,12 +43,12 @@ export default function AdminCapacityPage() {
           <tbody>
             {rows.map((row) => (
               <tr
-                key={`${row.service_id}-${row.appointment_date}-${row.time_bucket}`}
+                key={`${row.service_id}-${row.appointment_date}-${row.slot_time}`}
                 className="border-b border-slate-100 text-slate-700 hover:bg-slate-50/70"
               >
                 <td className="px-3 py-2.5 font-medium">{row.service_id}</td>
                 <td className="px-3 py-2.5">{row.appointment_date}</td>
-                <td className="px-3 py-2.5 capitalize">{row.time_bucket}</td>
+                <td className="px-3 py-2.5">{row.slot_time}</td>
                 <td className="px-3 py-2.5">{row.max_capacity}</td>
                 <td className="px-3 py-2.5">{row.used_capacity}</td>
                 <td className="px-3 py-2.5">{row.remaining}</td>

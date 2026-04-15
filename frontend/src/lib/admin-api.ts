@@ -30,7 +30,7 @@ export type AdminAppointment = {
   status: string;
   service_id: string;
   appointment_date: string;
-  time_bucket: "morning" | "afternoon" | "evening";
+  slot_time: string;
   name: string;
   phone: string;
   age: number;
@@ -46,6 +46,7 @@ export type AdminAppointmentsFilters = {
   date_to?: string;
   status?: string;
   service_id?: string;
+  slot_time?: string;
   phone?: string;
   booking_reference?: string;
   limit?: number;
@@ -54,7 +55,7 @@ export type AdminAppointmentsFilters = {
 export type AdminCapacityRow = {
   service_id: string;
   appointment_date: string;
-  time_bucket: "morning" | "afternoon" | "evening";
+  slot_time: string;
   max_capacity: number;
   used_capacity: number;
   remaining: number;
@@ -169,6 +170,7 @@ export function fetchAdminAppointments(filters?: AdminAppointmentsFilters): Prom
   if (filters?.date_to) query.set("date_to", filters.date_to);
   if (filters?.status) query.set("status", filters.status);
   if (filters?.service_id) query.set("service_id", filters.service_id);
+  if (filters?.slot_time) query.set("slot_time", filters.slot_time);
   if (filters?.phone) query.set("phone", filters.phone);
   if (filters?.booking_reference) query.set("booking_reference", filters.booking_reference);
   if (typeof filters?.limit === "number") query.set("limit", String(filters.limit));
@@ -224,7 +226,7 @@ export function cancelAdminAppointment(appointmentId: string, reason?: string) {
 
 export function rescheduleAdminAppointment(
   appointmentId: string,
-  payload: { appointment_date: string; time_bucket: "morning" | "afternoon" | "evening" }
+  payload: { appointment_date: string; slot_time: string }
 ) {
   return requestJson<AdminAppointment>(`/admin/appointments/${appointmentId}/reschedule`, {
     method: "POST",
