@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.models import Appointment
+from app.services.slots import slot_period
 
 
 def get_appointment_summary(
@@ -17,13 +18,14 @@ def get_appointment_summary(
     if date_to is not None:
         query = query.where(Appointment.appointment_date <= date_to)
     rows = session.scalars(query).all()
+    periods = [slot_period(row.slot_time) for row in rows]
     return {
         "total": len(rows),
         "confirmed": sum(1 for row in rows if row.status == "confirmed"),
         "cancelled": sum(1 for row in rows if row.status == "cancelled"),
-        "morning": sum(1 for row in rows if row.time_bucket == "morning"),
-        "afternoon": sum(1 for row in rows if row.time_bucket == "afternoon"),
-        "evening": sum(1 for row in rows if row.time_bucket == "evening"),
+        "morning": sum(1 for period in periods if period == "morning"),
+        "afternoon": sum(1 for period in periods if period == "afternoon"),
+        "evening": sum(1 for period in periods if period == "evening"),
     }
 
 
@@ -52,7 +54,7 @@ def build_appointment_csv(
             "status",
             "service_id",
             "appointment_date",
-            "time_bucket",
+            "slot_time",
             "name",
             "phone",
             "age",
@@ -68,7 +70,7 @@ def build_appointment_csv(
                 row.status,
                 row.service_id,
                 row.appointment_date.isoformat(),
-                row.time_bucket,
+                row.slot_time,
                 row.name,
                 row.phone,
                 row.age,

@@ -7,10 +7,10 @@ from sqlalchemy.orm import Session
 from app.core.exceptions import ApiError
 from app.db.models import Appointment, DailyBucketCapacity
 from app.services.admin_audit import add_audit_log
-from app.services.booking import _ensure_bucket_row, appointment_to_response
+from app.services.booking import _ensure_slot_row, appointment_to_response
+from app.services.slots import is_valid_slot_time
 
 VALID_STATUSES = {"confirmed", "cancelled"}
-VALID_BUCKETS = {"morning", "afternoon", "evening"}
 
 
 def _appointment_to_admin_response(a: Appointment) -> dict:
@@ -27,6 +27,7 @@ def list_admin_appointments(
     date_to: date | None,
     status: str | None,
     service_id: str | None,
+    slot_time: str | None,
     phone: str | None,
     booking_reference: str | None,
     limit: int,
@@ -40,6 +41,8 @@ def list_admin_appointments(
         query = query.where(Appointment.status == status)
     if service_id:
         query = query.where(Appointment.service_id == service_id)
+    if slot_time:
+        query = query.where(Appointment.slot_time == slot_time)
     if phone:
         query = query.where(Appointment.phone.ilike(f"%{phone.strip()}%"))
     if booking_reference:
@@ -110,7 +113,7 @@ def cancel_admin_appointment(
         .where(
             DailyBucketCapacity.service_id == appointment.service_id,
             DailyBucketCapacity.appointment_date == appointment.appointment_date,
-            DailyBucketCapacity.time_bucket == appointment.time_bucket,
+            DailyBucketCapacity.slot_time == appointment.slot_time,
         )
         .with_for_update()
     )
@@ -146,22 +149,22 @@ def reschedule_admin_appointment(
     appointment: Appointment,
     actor_user_id,
     appointment_date: date,
-    time_bucket: str,
+    slot_time: str,
 ) -> dict:
-    if time_bucket not in VALID_BUCKETS:
-        raise ApiError("VALIDATION_ERROR", "Invalid time bucket", 422)
+    if not is_valid_slot_time(slot_time):
+        raise ApiError("VALIDATION_ERROR", "Invalid slot_time", 422)
     if appointment.status == "cancelled":
         raise ApiError("VALIDATION_ERROR", "Cancelled appointment cannot be rescheduled", 409)
     if appointment_date.weekday() == 6:
         raise ApiError("VALIDATION_ERROR", "Sunday bookings are not available", 422)
 
-    old_bucket = _ensure_bucket_row(
+    old_bucket = _ensure_slot_row(
         session,
         appointment.service_id,
         appointment.appointment_date,
-        appointment.time_bucket,
+        appointment.slot_time,
     )
-    new_bucket = _ensure_bucket_row(session, appointment.service_id, appointment_date, time_bucket)
+    new_bucket = _ensure_slot_row(session, appointment.service_id, appointment_date, slot_time)
     if new_bucket.used_capacity >= new_bucket.max_capacity:
         raise ApiError("BUCKET_FULL", "Selected bucket is no longer available", 409)
 
@@ -170,7 +173,7 @@ def reschedule_admin_appointment(
         old_bucket.used_capacity -= 1
     new_bucket.used_capacity += 1
     appointment.appointment_date = appointment_date
-    appointment.time_bucket = time_bucket
+    appointment.slot_time = slot_time
     session.add(old_bucket)
     session.add(new_bucket)
     session.add(appointment)

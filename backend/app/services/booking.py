@@ -19,6 +19,7 @@ from app.db.models import (
 )
 from app.services.idempotency import hash_appointment_payload
 from app.services.phone import is_plausible_in_mobile, normalize_phone
+from app.services.slots import is_valid_slot_time
 
 try:
     from zoneinfo import ZoneInfo
@@ -26,7 +27,6 @@ except ImportError:
     ZoneInfo = None  # type: ignore[misc, assignment]
 
 IST = ZoneInfo("Asia/Kolkata") if ZoneInfo else None
-TIME_BUCKETS = frozenset({"morning", "afternoon", "evening"})
 
 
 def _today_booking_calendar() -> date:
@@ -46,15 +46,15 @@ def generate_booking_reference(appointment_date: date) -> str:
     return f"SBH-{appointment_date.strftime('%Y%m%d')}-{suffix}"
 
 
-def _ensure_bucket_row(
-    session: Session, service_id: str, appointment_date: date, time_bucket: str
+def _ensure_slot_row(
+    session: Session, service_id: str, appointment_date: date, slot_time: str
 ) -> DailyBucketCapacity:
     row = session.scalar(
         select(DailyBucketCapacity)
         .where(
             DailyBucketCapacity.service_id == service_id,
             DailyBucketCapacity.appointment_date == appointment_date,
-            DailyBucketCapacity.time_bucket == time_bucket,
+            DailyBucketCapacity.slot_time == slot_time,
         )
         .with_for_update()
     )
@@ -64,7 +64,7 @@ def _ensure_bucket_row(
     candidate = DailyBucketCapacity(
         service_id=service_id,
         appointment_date=appointment_date,
-        time_bucket=time_bucket,
+        slot_time=slot_time,
         max_capacity=settings.default_bucket_max_capacity,
         used_capacity=0,
         version=0,
@@ -81,7 +81,7 @@ def _ensure_bucket_row(
         .where(
             DailyBucketCapacity.service_id == service_id,
             DailyBucketCapacity.appointment_date == appointment_date,
-            DailyBucketCapacity.time_bucket == time_bucket,
+            DailyBucketCapacity.slot_time == slot_time,
         )
         .with_for_update()
     )
@@ -101,7 +101,7 @@ def appointment_to_response(a: Appointment) -> dict[str, Any]:
         "status": a.status,
         "service_id": a.service_id,
         "appointment_date": a.appointment_date.isoformat(),
-        "time_bucket": a.time_bucket,
+        "slot_time": a.slot_time,
         "name": a.name,
         "phone": a.phone,
         "age": a.age,
@@ -116,7 +116,7 @@ def create_booking(
     *,
     service_id: str,
     appointment_date: date,
-    time_bucket: str,
+    slot_time: str,
     name: str,
     phone_raw: str,
     age: int,
@@ -134,8 +134,8 @@ def create_booking(
             422,
         )
 
-    if time_bucket not in TIME_BUCKETS:
-        raise ApiError("VALIDATION_ERROR", "Invalid time_bucket", 422)
+    if not is_valid_slot_time(slot_time):
+        raise ApiError("VALIDATION_ERROR", "Invalid slot_time", 422)
 
     if gender not in ("male", "female", "other"):
         raise ApiError("VALIDATION_ERROR", "Invalid gender", 422)
@@ -185,7 +185,7 @@ def create_booking(
             Appointment.phone_normalized == normalized_phone,
             Appointment.service_id == service_id,
             Appointment.appointment_date == appointment_date,
-            Appointment.time_bucket == time_bucket,
+            Appointment.slot_time == slot_time,
             Appointment.status == "confirmed",
             Appointment.created_at >= _duplicate_cutoff_utc(),
         )
@@ -197,7 +197,7 @@ def create_booking(
             409,
         )
 
-    bucket = _ensure_bucket_row(session, service_id, appointment_date, time_bucket)
+    bucket = _ensure_slot_row(session, service_id, appointment_date, slot_time)
     if bucket.used_capacity >= bucket.max_capacity:
         raise ApiError(
             "BUCKET_FULL",
@@ -214,7 +214,7 @@ def create_booking(
             booking_reference=booking_ref,
             service_id=service_id,
             appointment_date=appointment_date,
-            time_bucket=time_bucket,
+            slot_time=slot_time,
             status="confirmed",
             name=nm,
             phone=normalized_phone,

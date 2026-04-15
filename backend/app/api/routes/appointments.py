@@ -37,7 +37,7 @@ def post_appointment(
             db,
             service_id=body.service_id,
             appointment_date=body.appointment_date,
-            time_bucket=body.time_bucket,
+            slot_time=body.slot_time,
             name=body.name,
             phone_raw=body.phone,
             age=body.age,

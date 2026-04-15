@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     allowed_origins: str = "http://localhost:3000"
     allowed_origin_regex: str = r"^https?://([a-z0-9-]+\.)?localhost(:\d+)?$|^https?://127\.0\.0\.1(:\d+)?$"
 
-    default_bucket_max_capacity: int = 10
+    default_bucket_max_capacity: int = 3
     duplicate_booking_window_hours: int = 24
     sms_template_id: str = "booking_confirmed"
     sms_provider_stub: str = "stub"

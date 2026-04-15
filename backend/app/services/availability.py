@@ -6,8 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.exceptions import ApiError
 from app.db.models import DailyBucketCapacity, Service
-
-ORDERED_BUCKETS = ("morning", "afternoon", "evening")
+from app.services.slots import SLOT_TIMES
 
 
 def get_availability(session: Session, service_id: str, appointment_date: date) -> dict:
@@ -15,13 +14,13 @@ def get_availability(session: Session, service_id: str, appointment_date: date) 
     if not service or not service.is_active:
         raise ApiError("SERVICE_NOT_FOUND", "Service not found", 404)
 
-    buckets_out: list[dict] = []
-    for tb in ORDERED_BUCKETS:
+    slots_out: list[dict] = []
+    for slot_time in SLOT_TIMES:
         row = session.scalar(
             select(DailyBucketCapacity).where(
                 DailyBucketCapacity.service_id == service_id,
                 DailyBucketCapacity.appointment_date == appointment_date,
-                DailyBucketCapacity.time_bucket == tb,
+                DailyBucketCapacity.slot_time == slot_time,
             )
         )
         if row is None:
@@ -31,9 +30,9 @@ def get_availability(session: Session, service_id: str, appointment_date: date) 
             max_cap = row.max_capacity
             remaining = max(0, max_cap - row.used_capacity)
 
-        buckets_out.append(
+        slots_out.append(
             {
-                "time_bucket": tb,
+                "slot_time": slot_time,
                 "available": remaining > 0,
                 "remaining": remaining,
             }
@@ -42,5 +41,5 @@ def get_availability(session: Session, service_id: str, appointment_date: date) 
     return {
         "service_id": service_id,
         "appointment_date": appointment_date.isoformat(),
-        "buckets": buckets_out,
+        "slots": slots_out,
     }

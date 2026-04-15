@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 class AppointmentCreate(BaseModel):
     service_id: str = Field(..., max_length=64)
     appointment_date: date
-    time_bucket: Literal["morning", "afternoon", "evening"]
+    slot_time: str = Field(..., max_length=16)
     name: str = Field(..., max_length=120)
     phone: str = Field(..., max_length=32)
     age: int = Field(..., ge=1, le=120)
@@ -24,7 +24,7 @@ class AppointmentRead(BaseModel):
     status: str
     service_id: str
     appointment_date: str
-    time_bucket: str
+    slot_time: str
     name: str
     phone: str
     age: int
