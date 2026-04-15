@@ -28,13 +28,13 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
             <span className="grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-xl bg-[#1f948e]">
               <Image
                 src="/images/logo.png"
-                alt="Soukhya Bharathi logo"
+                alt="Saukhyabharathi logo"
                 width={52}
                 height={52}
                 className="object-contain"
               />
             </span>
-            <span className="text-[24px] font-bold text-white">SaukhyaBharathi</span>
+            <span className="text-[24px] font-bold text-white">Saukhyabharathi</span>
           </div>
           <p className="font-ui mt-3.5 mb-4.5 text-[14px]">
             Integrative Ayurveda and modern medicine under one roof — medical specialties, classical
@@ -113,7 +113,7 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
       <div
         className={`${wrapperClass} flex h-auto flex-col items-start justify-between gap-4 border-t border-white/15 py-4 text-[14px] text-white/60 md:h-[62px] md:flex-row md:items-center`}
       >
-        <span>© 2026 Soukhya Bharathi. All rights reserved.</span>
+        <span>© 2026 Saukhyabharathi. All rights reserved.</span>
         <div className="font-ui flex gap-4">
           <button type="button" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
             Privacy Policy

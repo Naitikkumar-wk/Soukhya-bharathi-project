@@ -85,7 +85,7 @@ export default function StoriesPage() {
                   </div>
                   <div className="p-5">
                     <h3 className="text-[18px] font-bold text-[#101828]">{item.title}</h3>
-                    <p className="font-ui mt-1 text-[14px] text-[#4a5565]">{item.subtitle}</p>
+                    <p className="font-ui mt-1 text-[15px] leading-[1.65] text-[#4a5565]">{item.subtitle}</p>
                   </div>
                 </article>
               ))}
@@ -97,7 +97,7 @@ export default function StoriesPage() {
           <div className={wrapperClass}>
             <div className="mb-11 text-center">
               <h2 className="text-[34px] leading-[1.1] font-bold text-[#101828] md:text-[40px]">Reviews</h2>
-              <p className="font-ui mt-2 text-[14px] text-[#4a5565]">
+              <p className="font-ui mt-2 text-[15px] leading-[1.65] text-[#4a5565]">
                 A sample of feedback we hear from patients and families. Names may use initials for privacy;
                 expand this section with approved full stories and ratings as you collect them.
               </p>
