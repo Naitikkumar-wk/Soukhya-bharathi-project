@@ -12,7 +12,7 @@ export type ReviewItem = {
 export const videoTestimonials: VideoTestimonial[] = [
   {
     title: "Healing journey — wellness and recovery",
-    subtitle: "Illustrative embed; replace with Soukhya Bharathi patient story",
+    subtitle: "Illustrative embed; replace with Saukhyabharathi patient story",
     embedUrl:
       "https://www.youtube-nocookie.com/embed?listType=search&list=patient%20testimonial%20wellness%20recovery",
   },
@@ -32,7 +32,7 @@ export const videoTestimonials: VideoTestimonial[] = [
 
 export const reviewItems: ReviewItem[] = [
   {
-    text: "Within two weeks my sleep and digestion felt steadier. The Soukhya Bharathi team explained every step and tailored the plan to my work schedule.",
+    text: "Within two weeks my sleep and digestion felt steadier. The Saukhyabharathi team explained every step and tailored the plan to my work schedule.",
     name: "Aditya R.",
   },
   {

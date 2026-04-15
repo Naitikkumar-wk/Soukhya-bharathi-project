@@ -72,7 +72,7 @@ const researchCards = [
     src: "/images/research-highlights.webp",
     alt: "Research highlights",
     title: "Research Highlights",
-    text: "Ethics oversight, publications, and education programs — how Soukhya Bharathi supports responsible research.",
+    text: "Ethics oversight, publications, and education programs — how Saukhyabharathi supports responsible research.",
     href: "/research",
     linkLabel: "View Research & Education",
   },
@@ -96,7 +96,7 @@ const researchCards = [
 
 const testimonials = [
   {
-    text: "Within two weeks my sleep and digestion felt steadier. The Soukhya Bharathi team explained every step and tailored the plan to my work schedule.",
+    text: "Within two weeks my sleep and digestion felt steadier. The Saukhyabharathi team explained every step and tailored the plan to my work schedule.",
     name: "Aditya R.",
   },
   {
@@ -150,7 +150,7 @@ function ImageCard({
       </div>
       <div className="p-6">
         <h3 className="text-[24px] font-bold text-[#101828]">{title}</h3>
-        <p className="font-ui mt-2 mb-4 text-[14px] text-[#4a5565]">{text}</p>
+        <p className="font-ui mt-2 mb-4 text-[15px] leading-[1.65] text-[#4a5565]">{text}</p>
         <a href={href} className="font-ui text-[14px] font-medium text-[#1e3a8a]">
           {linkLabel} →
         </a>
@@ -168,7 +168,7 @@ export default function Home() {
         <section id="hero" className="relative flex min-h-[630px] items-center overflow-hidden text-white">
           <Image
             src="/images/home-hero.webp"
-            alt="Soukhya Bharathi reception"
+            alt="Saukhyabharathi reception"
             fill
             priority
             className="object-cover"
@@ -185,7 +185,7 @@ export default function Home() {
                 Mind, Body &amp; Spirit
               </h1>
               <p className="font-ui mt-5 mb-8 max-w-[520px] text-[18px] leading-[1.55] text-white/90">
-                At Soukhya Bharathi, classical Ayurveda meets modern medicine — personalized consultations,
+                At Saukhyabharathi, classical Ayurveda meets modern medicine — personalized consultations,
                 evidence-informed therapies, and wellness programs for lasting balance.
               </p>
               <div className="font-ui flex flex-wrap gap-3.5">
@@ -209,7 +209,7 @@ export default function Home() {
         <section id="about" className="border-b border-[#e5e7eb] bg-[#f9fafb] py-12 md:py-14">
           <div className={wrapperClass}>
             <div className="mx-auto max-w-[720px] text-center">
-              <h2 className="text-[26px] font-bold text-[#101828] md:text-[30px]">About Soukhya Bharathi</h2>
+              <h2 className="text-[26px] font-bold text-[#101828] md:text-[30px]">About Saukhyabharathi</h2>
               <p className="font-ui mt-3 text-[15px] leading-[1.75] text-[#4a5565]">
                 Our philosophy, mission, values, and team — built around responsible Ayurvedic care, education,
                 and transparency. Read the full overview on the About page.
@@ -227,7 +227,7 @@ export default function Home() {
         <section id="care" className="py-20">
           <div className={wrapperClass}>
             <SectionTitle
-              title="Care @ SaukhyaBharathi"
+              title="Care @ Saukhyabharathi"
               subtitle="Explore medical specialties and pathways to our team, patient stories, and appointment booking."
             />
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">

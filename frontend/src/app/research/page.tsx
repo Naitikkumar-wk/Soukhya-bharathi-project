@@ -186,7 +186,7 @@ export default function ResearchPage() {
                   className="flex h-full flex-col rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
                 >
                   <h3 className="text-[22px] font-bold text-[#101828]">{c.title}</h3>
-                  <p className="font-ui mt-3 flex-1 text-[14px] leading-[1.7] text-[#4a5565]">
+                  <p className="font-ui mt-3 flex-1 text-[15px] leading-[1.7] text-[#4a5565]">
                     {c.summary}
                   </p>
                   <div className="mt-5">
@@ -227,7 +227,7 @@ export default function ResearchPage() {
                       <p className="font-ui mt-1 text-[12px] font-semibold uppercase tracking-wide text-[#1f948e]">
                         {p.venue}
                       </p>
-                      <p className="font-ui mt-2 text-[14px] leading-[1.6] text-[#4a5565]">{p.summary}</p>
+                      <p className="font-ui mt-2 text-[15px] leading-[1.65] text-[#4a5565]">{p.summary}</p>
                     </li>
                   ))}
                 </ul>
@@ -250,7 +250,7 @@ export default function ResearchPage() {
                         {" · "}
                         {prog.duration}
                       </p>
-                      <p className="font-ui mt-2 text-[14px] leading-[1.6] text-[#4a5565]">{prog.summary}</p>
+                      <p className="font-ui mt-2 text-[15px] leading-[1.65] text-[#4a5565]">{prog.summary}</p>
                     </article>
                   ))}
                 </div>
@@ -275,7 +275,7 @@ export default function ResearchPage() {
                     {item.title}
                   </summary>
                   <div className="mt-4 border-t border-[#f0f1f3] pt-4">
-                    <p className="font-ui text-[14px] leading-[1.7] text-[#4a5565]">{item.description}</p>
+                    <p className="font-ui text-[15px] leading-[1.7] text-[#4a5565]">{item.description}</p>
                     <p className="font-ui mt-3 text-[11px] font-bold uppercase tracking-widest text-[#4a5565]">
                       Who it is for
                     </p>

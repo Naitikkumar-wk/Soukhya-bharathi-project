@@ -295,7 +295,7 @@ function SpecialtySection({
             <h2 className="text-[26px] font-bold leading-tight text-[#101828] md:text-[30px]">
               {specialty.label}
             </h2>
-            <p className="font-ui mt-2 text-[14px] leading-[1.7] text-[#4a5565]">
+            <p className="font-ui mt-2 text-[15px] leading-[1.7] text-[#4a5565]">
               {specialty.description}
             </p>
           </div>
@@ -343,7 +343,7 @@ function TherapyCard({
       </div>
       <div className="p-6">
         <h3 className="text-[22px] font-bold text-[#101828]">{title}</h3>
-        <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">{text}</p>
+        <p className="font-ui mt-2 mb-5 text-[15px] leading-[1.65] text-[#4a5565]">{text}</p>
         <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">
           Book a Session →
         </a>
@@ -388,31 +388,34 @@ export default function CarePage() {
       <SiteHeader navItems={navItems} ctaHref="/appointment" ctaLabel="Book Appointment" />
 
       <main>
-        <section className="border-b border-[#e5e7eb] py-16 text-center">
+        <section className="relative overflow-hidden border-b border-[#e5e7eb] bg-[#f0fffe] py-14 text-center md:py-16">
           <div className={wrapperClass}>
-            <h1 className="text-[42px] font-bold leading-tight text-[#101828] md:text-[52px]">
-              Care @ SaukhyaBharathi
+            <p className="font-ui text-[12px] font-bold uppercase tracking-[0.12em] text-[#1f948e] md:text-[13px]">
+              Clinical Care
+            </p>
+            <h1 className="mt-2.5 text-[36px] font-bold leading-[1.1] text-[#101828] md:mt-3 md:text-[48px]">
+              Care @ Saukhyabharathi
             </h1>
-              <p className="font-ui mx-auto mt-4 max-w-[680px] text-[17px] leading-[1.7] text-[#4a5565]">
+            <p className="font-ui mx-auto mt-3 max-w-[760px] text-[15px] leading-[1.75] text-[#4a5565] md:mt-4 md:text-[16px] md:leading-[1.8]">
               Integrated Ayurveda and modern medicine under one roof — 11 specialties, expert doctors, and
               personalized care plans for every condition.
             </p>
 
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <div className="mt-5 flex flex-wrap justify-center gap-2 md:mt-6">
               {trustBadges.map((b) => (
                 <span
                   key={b}
-                  className="font-ui rounded-full border border-[#a7e9e3] bg-[#f0fffe] px-4 py-1.5 text-[14px] font-medium text-[#1f7474]"
+                  className="font-ui rounded-full border border-[#a7e9e3] bg-white px-3.5 py-1.5 text-[13px] font-medium text-[#1f7474]"
                 >
                   {b}
                 </span>
               ))}
             </div>
 
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <div className="mt-6 flex flex-wrap justify-center gap-2.5 md:mt-7 md:gap-3">
               <a
                 href="/appointment"
-                className="font-ui inline-flex items-center justify-center rounded-full bg-[#1f948e] px-7 py-3 text-[14px] font-bold text-white transition hover:brightness-95"
+                className="font-ui inline-flex items-center justify-center rounded-full bg-[#1f948e] px-6 py-2.5 text-[13px] font-bold text-white transition hover:brightness-95 md:px-7 md:py-3 md:text-[14px]"
               >
                 Book Consultation
               </a>
@@ -421,7 +424,7 @@ export default function CarePage() {
                 onClick={() => {
                   document.getElementById("cancer-care")?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="font-ui inline-flex items-center justify-center rounded-full border border-[#1f948e] px-7 py-3 text-[14px] font-bold text-[#1f948e] transition hover:bg-[#f0fffe]"
+                className="font-ui inline-flex items-center justify-center rounded-full border border-[#1f948e] bg-white px-6 py-2.5 text-[13px] font-bold text-[#1f948e] transition hover:bg-[#f0fffe] md:px-7 md:py-3 md:text-[14px]"
               >
                 Explore Specialties ↓
               </button>
@@ -507,7 +510,7 @@ export default function CarePage() {
                         Step {item.step}
                       </div>
                       <h3 className="text-[22px] font-bold text-[#101828]">{item.title}</h3>
-                      <p className="font-ui mt-2 text-[14px] leading-[1.6] text-[#4a5565]">{item.text}</p>
+                      <p className="font-ui mt-2 text-[15px] leading-[1.65] text-[#4a5565]">{item.text}</p>
                     </div>
                   ))}
                 </div>
@@ -532,7 +535,7 @@ export default function CarePage() {
                 <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
                   <article className="rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
                     <h3 className="text-[22px] font-bold text-[#101828]">Yoga Therapy</h3>
-                    <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">
+                    <p className="font-ui mt-2 mb-5 text-[15px] leading-[1.65] text-[#4a5565]">
                       Therapeutic yoga sequences tailored to your condition for physical and mental restoration.
                     </p>
                     <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">
@@ -541,7 +544,7 @@ export default function CarePage() {
                   </article>
                   <article className="rounded-2xl border border-[#e5e7eb] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)] transition hover:shadow-[0_8px_20px_rgba(16,24,40,0.12)]">
                     <h3 className="text-[22px] font-bold text-[#101828]">Kalari Marma Therapy</h3>
-                    <p className="font-ui mt-2 mb-5 text-[14px] leading-[1.6] text-[#4a5565]">
+                    <p className="font-ui mt-2 mb-5 text-[15px] leading-[1.65] text-[#4a5565]">
                       Ancient Kerala martial-art-derived marma point stimulation for deep tissue healing and pain relief.
                     </p>
                     <a href="/appointment" className="font-ui text-[13px] font-bold text-[#1f948e]">

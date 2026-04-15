@@ -165,7 +165,7 @@ export default function AboutPage() {
                   className="flex h-full flex-col rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
                 >
                   <h3 className="text-[18px] font-bold text-[#101828]">{v.title}</h3>
-                  <p className="font-ui mt-3 flex-1 text-[14px] leading-[1.7] text-[#4a5565]">{v.text}</p>
+                  <p className="font-ui mt-3 flex-1 text-[15px] leading-[1.7] text-[#4a5565]">{v.text}</p>
                 </article>
               ))}
             </div>
