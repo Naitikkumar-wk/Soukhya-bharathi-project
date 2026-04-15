@@ -15,6 +15,31 @@ import {
   updateAdminAppointment,
 } from "@/lib/admin-api";
 
+const SLOT_TIMES = [
+  "8:00 AM",
+  "8:30 AM",
+  "9:00 AM",
+  "9:30 AM",
+  "10:00 AM",
+  "10:30 AM",
+  "11:00 AM",
+  "11:30 AM",
+  "12:00 PM",
+  "12:30 PM",
+  "2:00 PM",
+  "2:30 PM",
+  "3:00 PM",
+  "3:30 PM",
+  "4:00 PM",
+  "4:30 PM",
+  "5:00 PM",
+  "5:30 PM",
+  "6:00 PM",
+  "6:30 PM",
+  "7:00 PM",
+  "7:30 PM",
+] as const;
+
 export default function AdminAppointmentsPage() {
   const [items, setItems] = useState<AdminAppointment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +47,7 @@ export default function AdminAppointmentsPage() {
   const [filters, setFilters] = useState<AdminAppointmentsFilters>({
     status: "",
     service_id: "",
+    slot_time: "",
     phone: "",
     booking_reference: "",
     date_from: "",
@@ -73,6 +99,7 @@ export default function AdminAppointmentsPage() {
     const reset: AdminAppointmentsFilters = {
       status: "",
       service_id: "",
+      slot_time: "",
       phone: "",
       booking_reference: "",
       date_from: "",
@@ -129,6 +156,23 @@ export default function AdminAppointmentsPage() {
               placeholder="e.g. ayurveda-consultation"
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
             />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Slot time
+            </label>
+            <select
+              value={filters.slot_time ?? ""}
+              onChange={(event) => setFilter("slot_time", event.target.value)}
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+            >
+              <option value="">All slots</option>
+              {SLOT_TIMES.map((slotTime) => (
+                <option key={slotTime} value={slotTime}>
+                  {slotTime}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Phone</label>
@@ -235,9 +279,7 @@ function AppointmentRow({
 }) {
   const [notes, setNotes] = useState(item.internal_notes ?? "");
   const [rescheduleDate, setRescheduleDate] = useState(item.appointment_date);
-  const [rescheduleBucket, setRescheduleBucket] = useState<"morning" | "afternoon" | "evening">(
-    item.time_bucket
-  );
+  const [rescheduleSlotTime, setRescheduleSlotTime] = useState(item.slot_time);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -275,7 +317,7 @@ function AppointmentRow({
     try {
       await rescheduleAdminAppointment(item.id, {
         appointment_date: rescheduleDate,
-        time_bucket: rescheduleBucket,
+        slot_time: rescheduleSlotTime,
       });
       await onChanged();
     } catch (err) {
@@ -304,7 +346,7 @@ function AppointmentRow({
         </div>
       </div>
       <p className="mt-1 text-xs text-slate-600">
-        {item.service_id} | {item.appointment_date} | {item.time_bucket} | {item.phone}
+        {item.service_id} | {item.appointment_date} | {item.slot_time} | {item.phone}
       </p>
       <form className="mt-3 flex gap-2" onSubmit={handleSaveNotes}>
         <input
@@ -329,13 +371,15 @@ function AppointmentRow({
           className="rounded-md border border-slate-300 px-3 py-2 text-sm"
         />
         <select
-          value={rescheduleBucket}
-          onChange={(e) => setRescheduleBucket(e.target.value as "morning" | "afternoon" | "evening")}
+          value={rescheduleSlotTime}
+          onChange={(e) => setRescheduleSlotTime(e.target.value)}
           className="rounded-md border border-slate-300 px-3 py-2 text-sm"
         >
-          <option value="morning">Morning</option>
-          <option value="afternoon">Afternoon</option>
-          <option value="evening">Evening</option>
+          {SLOT_TIMES.map((slotTime) => (
+            <option key={slotTime} value={slotTime}>
+              {slotTime}
+            </option>
+          ))}
         </select>
         <button
           type="submit"

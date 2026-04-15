@@ -13,7 +13,7 @@ export type ServicesResponse = {
 };
 
 export type AvailabilityBucket = {
-  time_bucket: "morning" | "afternoon" | "evening";
+  slot_time: string;
   available: boolean;
   remaining: number;
 };
@@ -21,13 +21,13 @@ export type AvailabilityBucket = {
 export type AvailabilityResponse = {
   service_id: string;
   appointment_date: string;
-  buckets: AvailabilityBucket[];
+  slots: AvailabilityBucket[];
 };
 
 export type AppointmentCreatePayload = {
   service_id: string;
   appointment_date: string;
-  time_bucket: "morning" | "afternoon" | "evening";
+  slot_time: string;
   name: string;
   phone: string;
   age: number;
@@ -44,7 +44,7 @@ export type AppointmentResponse = {
   status: string;
   service_id: string;
   appointment_date: string;
-  time_bucket: "morning" | "afternoon" | "evening";
+  slot_time: string;
   name: string;
   phone: string;
   age: number;
