@@ -33,7 +33,7 @@ class DailyBucketCapacity(Base):
     __tablename__ = "daily_bucket_capacities"
     __table_args__ = (
         UniqueConstraint(
-            "service_id", "appointment_date", "time_bucket", name="uq_bucket_service_date_slot"
+            "service_id", "appointment_date", "slot_time", name="uq_capacity_service_date_slot_time"
         ),
     )
 
@@ -42,7 +42,7 @@ class DailyBucketCapacity(Base):
     )
     service_id: Mapped[str] = mapped_column(String(64), ForeignKey("services.id"), nullable=False)
     appointment_date: Mapped[date] = mapped_column(Date, nullable=False)
-    time_bucket: Mapped[str] = mapped_column(String(16), nullable=False)
+    slot_time: Mapped[str] = mapped_column(String(16), nullable=False)
     max_capacity: Mapped[int] = mapped_column(Integer, nullable=False)
     used_capacity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     version: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
@@ -56,7 +56,7 @@ class Appointment(Base):
             "phone_normalized",
             "service_id",
             "appointment_date",
-            "time_bucket",
+            "slot_time",
         ),
     )
 
@@ -66,7 +66,7 @@ class Appointment(Base):
     booking_reference: Mapped[str] = mapped_column(String(32), unique=True, nullable=False)
     service_id: Mapped[str] = mapped_column(String(64), ForeignKey("services.id"), nullable=False)
     appointment_date: Mapped[date] = mapped_column(Date, nullable=False)
-    time_bucket: Mapped[str] = mapped_column(String(16), nullable=False)
+    slot_time: Mapped[str] = mapped_column(String(16), nullable=False)
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="confirmed")
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     phone: Mapped[str] = mapped_column(String(32), nullable=False)

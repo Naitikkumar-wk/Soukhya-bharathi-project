@@ -35,11 +35,11 @@ def admin_list_capacity(
     }
 
 
-@router.patch("/{service_id}/{date_str}/{time_bucket}", response_model=AdminCapacityBucket)
+@router.patch("/{service_id}/{date_str}/{slot_time}", response_model=AdminCapacityBucket)
 def admin_update_capacity(
     service_id: str,
     date_str: str,
-    time_bucket: str,
+    slot_time: str,
     body: AdminCapacityPatch,
     current_user: AdminUser = Depends(require_roles("admin", "staff")),
     db: Session = Depends(get_db),
@@ -53,6 +53,6 @@ def admin_update_capacity(
         actor_user_id=current_user.id,
         service_id=service_id,
         appointment_date=appointment_date,
-        time_bucket=time_bucket,
+        slot_time=slot_time,
         max_capacity=body.max_capacity,
     )

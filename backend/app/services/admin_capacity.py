@@ -7,7 +7,8 @@ from app.core.config import settings
 from app.core.exceptions import ApiError
 from app.db.models import DailyBucketCapacity
 from app.services.admin_audit import add_audit_log
-from app.services.booking import _ensure_bucket_row
+from app.services.booking import _ensure_slot_row
+from app.services.slots import is_valid_slot_time, slot_sort_key
 
 
 def list_capacity_rows(
@@ -16,18 +17,26 @@ def list_capacity_rows(
     query = select(DailyBucketCapacity).order_by(
         DailyBucketCapacity.appointment_date.desc(),
         DailyBucketCapacity.service_id.asc(),
-        DailyBucketCapacity.time_bucket.asc(),
+        DailyBucketCapacity.slot_time.asc(),
     )
     if appointment_date is not None:
         query = query.where(DailyBucketCapacity.appointment_date == appointment_date)
     if service_id:
         query = query.where(DailyBucketCapacity.service_id == service_id)
     rows = session.scalars(query.limit(limit)).all()
+    rows = sorted(
+        rows,
+        key=lambda row: (
+            -row.appointment_date.toordinal(),
+            row.service_id,
+            slot_sort_key(row.slot_time),
+        ),
+    )
     return [
         {
             "service_id": row.service_id,
             "appointment_date": row.appointment_date.isoformat(),
-            "time_bucket": row.time_bucket,
+            "slot_time": row.slot_time,
             "max_capacity": row.max_capacity,
             "used_capacity": row.used_capacity,
             "remaining": max(0, row.max_capacity - row.used_capacity),
@@ -42,12 +51,12 @@ def upsert_capacity_row(
     actor_user_id,
     service_id: str,
     appointment_date: date,
-    time_bucket: str,
+    slot_time: str,
     max_capacity: int,
 ) -> dict:
-    if time_bucket not in {"morning", "afternoon", "evening"}:
-        raise ApiError("VALIDATION_ERROR", "Invalid time bucket", 422)
-    row = _ensure_bucket_row(session, service_id, appointment_date, time_bucket)
+    if not is_valid_slot_time(slot_time):
+        raise ApiError("VALIDATION_ERROR", "Invalid slot_time", 422)
+    row = _ensure_slot_row(session, service_id, appointment_date, slot_time)
     before = {
         "max_capacity": row.max_capacity,
         "used_capacity": row.used_capacity,
@@ -74,18 +83,18 @@ def upsert_capacity_row(
     return {
         "service_id": row.service_id,
         "appointment_date": row.appointment_date.isoformat(),
-        "time_bucket": row.time_bucket,
+        "slot_time": row.slot_time,
         "max_capacity": row.max_capacity,
         "used_capacity": row.used_capacity,
         "remaining": max(0, row.max_capacity - row.used_capacity),
     }
 
 
-def default_capacity_view(service_id: str, appointment_date: date, time_bucket: str) -> dict:
+def default_capacity_view(service_id: str, appointment_date: date, slot_time: str) -> dict:
     return {
         "service_id": service_id,
         "appointment_date": appointment_date.isoformat(),
-        "time_bucket": time_bucket,
+        "slot_time": slot_time,
         "max_capacity": settings.default_bucket_max_capacity,
         "used_capacity": 0,
         "remaining": settings.default_bucket_max_capacity,

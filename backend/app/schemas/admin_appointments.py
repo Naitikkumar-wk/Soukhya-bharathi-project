@@ -9,7 +9,7 @@ class AdminAppointmentRead(BaseModel):
     status: str
     service_id: str
     appointment_date: str
-    time_bucket: str
+    slot_time: str
     name: str
     phone: str
     age: int
@@ -35,4 +35,4 @@ class AdminAppointmentCancelBody(BaseModel):
 
 class AdminAppointmentRescheduleBody(BaseModel):
     appointment_date: date
-    time_bucket: str = Field(..., pattern="^(morning|afternoon|evening)$")
+    slot_time: str = Field(..., max_length=16)

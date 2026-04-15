@@ -7,7 +7,7 @@ def hash_appointment_payload(payload: dict[str, Any]) -> str:
     canonical = {
         "appointment_date": payload["appointment_date"],
         "service_id": payload["service_id"],
-        "time_bucket": payload["time_bucket"],
+        "slot_time": payload["slot_time"],
         "name": payload["name"],
         "phone": payload["phone"],
         "age": payload["age"],

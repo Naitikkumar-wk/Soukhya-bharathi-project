@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 class AdminCapacityBucket(BaseModel):
     service_id: str
     appointment_date: str
-    time_bucket: str
+    slot_time: str
     max_capacity: int
     used_capacity: int
     remaining: int
