@@ -29,6 +29,7 @@ export type AppointmentCreatePayload = {
   appointment_date: string;
   slot_time: string;
   name: string;
+  email: string;
   phone: string;
   age: number;
   gender: "male" | "female" | "other";
@@ -46,6 +47,7 @@ export type AppointmentResponse = {
   appointment_date: string;
   slot_time: string;
   name: string;
+  email?: string | null;
   phone: string;
   age: number;
   gender: string;

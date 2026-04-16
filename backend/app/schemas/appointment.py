@@ -9,6 +9,7 @@ class AppointmentCreate(BaseModel):
     appointment_date: date
     slot_time: str = Field(..., max_length=16)
     name: str = Field(..., max_length=120)
+    email: str = Field(..., min_length=5, max_length=255)
     phone: str = Field(..., max_length=32)
     age: int = Field(..., ge=1, le=120)
     gender: Literal["male", "female", "other"]
@@ -26,6 +27,7 @@ class AppointmentRead(BaseModel):
     appointment_date: str
     slot_time: str
     name: str
+    email: str | None
     phone: str
     age: int
     gender: str

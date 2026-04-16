@@ -7,7 +7,7 @@ from app.core.exceptions import ApiError
 from app.db.session import get_db
 from app.schemas.appointment import AppointmentCreate, AppointmentRead
 from app.services.booking import appointment_to_response, create_booking, get_appointment_by_lookup
-from app.services.notification_tasks import process_stub_sms
+from app.services.notification_tasks import process_confirmation_email
 
 router = APIRouter()
 
@@ -39,6 +39,7 @@ def post_appointment(
             appointment_date=body.appointment_date,
             slot_time=body.slot_time,
             name=body.name,
+            email=body.email,
             phone_raw=body.phone,
             age=body.age,
             gender=body.gender,
@@ -50,7 +51,7 @@ def post_appointment(
         )
         if notif_id is not None:
             db.commit()
-            background_tasks.add_task(process_stub_sms, notif_id)
+            background_tasks.add_task(process_confirmation_email, notif_id)
         return result
     except ApiError:
         db.rollback()

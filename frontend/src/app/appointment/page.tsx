@@ -40,6 +40,7 @@ type BookingState = {
   date: Date | null;
   timePreference: TimePreference | null;
   name: string;
+  email: string;
   phone: string;
   age: string;
   gender: Gender | "";
@@ -222,7 +223,7 @@ function mapApiService(item: ApiServiceItem): Service {
 function mapBookingError(error: unknown): string {
   if (error instanceof SbhApiError) {
     if (error.code === "BUCKET_FULL") {
-      return "Selected time bucket is no longer available. Please choose another slot.";
+      return "Selected time slot is no longer available. Please choose another slot.";
     }
     if (error.code === "DUPLICATE_BOOKING") {
       return "A similar booking already exists for this phone number. Please verify your details.";
@@ -759,6 +760,7 @@ export default function BookPage() {
     date: null,
     timePreference: null,
     name: "",
+    email: "",
     phone: "",
     age: "",
     gender: "",
@@ -842,6 +844,9 @@ export default function BookPage() {
   const validateStep4 = () => {
     const errs: Record<string, string> = {};
     if (!booking.name.trim()) errs.name = "Name is required";
+    if (!booking.email.trim()) errs.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(booking.email.trim()))
+      errs.email = "Enter a valid email";
     if (!booking.phone.trim()) errs.phone = "Phone number is required";
     else if (!/^\+?[\d\s\-]{7,15}$/.test(booking.phone.trim()))
       errs.phone = "Enter a valid phone number";
@@ -892,6 +897,7 @@ export default function BookPage() {
           appointment_date: toLocalYyyyMmDd(booking.date),
           slot_time: booking.timePreference,
           name: booking.name.trim(),
+          email: booking.email.trim().toLowerCase(),
           phone: booking.phone.trim(),
           age: Number(booking.age),
           gender: booking.gender as Gender,
@@ -927,6 +933,7 @@ export default function BookPage() {
       date: null,
       timePreference: null,
       name: "",
+      email: "",
       phone: "",
       age: "",
       gender: "",
@@ -1195,6 +1202,30 @@ export default function BookPage() {
                     )}
                   </div>
 
+                  {/* Email */}
+                  <div>
+                    <label className="font-ui mb-1.5 block text-[13px] font-bold text-[#101828]">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={booking.email}
+                      onChange={(e) => {
+                        setBooking((b) => ({ ...b, email: e.target.value }));
+                        setErrors((er) => ({ ...er, email: "" }));
+                      }}
+                      placeholder="yourname@email.com"
+                      className={`font-ui w-full rounded-xl border px-4 py-3.5 text-[15px] text-[#101828] placeholder:text-[#9ca3af] outline-none transition focus:ring-2 focus:ring-[#1f948e]/20 ${
+                        errors.email
+                          ? "border-red-400 bg-red-50 focus:border-red-400"
+                          : "border-[#e5e7eb] bg-white focus:border-[#1f948e]"
+                      }`}
+                    />
+                    {errors.email && (
+                      <p className="font-ui mt-1 text-[12px] text-red-500">{errors.email}</p>
+                    )}
+                  </div>
+
                   {/* Age */}
                   <div>
                     <label className="font-ui mb-1.5 block text-[13px] font-bold text-[#101828]">
@@ -1318,6 +1349,7 @@ export default function BookPage() {
                   />
                   <div className="border-t border-[#a7e9e3]" />
                   <SummaryRow label="Patient Name" value={booking.name} />
+                  <SummaryRow label="Email" value={booking.email} />
                   <SummaryRow label="Phone" value={booking.phone} />
                   <SummaryRow label="Age" value={`${booking.age} years`} />
                   <SummaryRow
@@ -1370,6 +1402,9 @@ export default function BookPage() {
                 <span className="font-bold text-[#101828]">{bookingResult?.name ?? booking.name}</span>. Your
                 booking for{" "}
                 <span className="font-semibold text-[#1f948e]">{booking.service?.label}</span> is confirmed.
+              </p>
+              <p className="font-ui mt-2 text-[13px] text-[#4a5565]">
+                Confirmation has been sent to <span className="font-semibold">{booking.email}</span>.
               </p>
 
               {bookingResult?.booking_reference && (
