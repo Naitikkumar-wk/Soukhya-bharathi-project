@@ -1,4 +1,5 @@
 import json
+import re
 import secrets
 import uuid
 from datetime import date, datetime, timedelta, timezone
@@ -27,6 +28,7 @@ except ImportError:
     ZoneInfo = None  # type: ignore[misc, assignment]
 
 IST = ZoneInfo("Asia/Kolkata") if ZoneInfo else None
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 def _today_booking_calendar() -> date:
@@ -103,6 +105,7 @@ def appointment_to_response(a: Appointment) -> dict[str, Any]:
         "appointment_date": a.appointment_date.isoformat(),
         "slot_time": a.slot_time,
         "name": a.name,
+        "email": a.email,
         "phone": a.phone,
         "age": a.age,
         "gender": a.gender,
@@ -118,6 +121,7 @@ def create_booking(
     appointment_date: date,
     slot_time: str,
     name: str,
+    email: str,
     phone_raw: str,
     age: int,
     gender: str,
@@ -143,6 +147,9 @@ def create_booking(
     nm = name.strip()
     if not nm or len(nm) > 120:
         raise ApiError("VALIDATION_ERROR", "Invalid name", 422)
+    em = email.strip().lower()
+    if len(em) > 255 or not EMAIL_RE.match(em):
+        raise ApiError("VALIDATION_ERROR", "Invalid email", 422)
 
     if concern is not None and len(concern) > 300:
         raise ApiError("VALIDATION_ERROR", "concern exceeds max length", 422)
@@ -217,6 +224,7 @@ def create_booking(
             slot_time=slot_time,
             status="confirmed",
             name=nm,
+            email=em,
             phone=normalized_phone,
             phone_normalized=normalized_phone,
             age=age,
@@ -240,10 +248,16 @@ def create_booking(
 
     notif = NotificationEvent(
         appointment_id=appt.id,
-        provider=settings.sms_provider_stub,
-        template_id=settings.sms_template_id,
+        provider=settings.email_provider,
+        template_id=settings.email_template_id,
         status="queued",
-        request_payload=json.dumps({"to": "***", "template": settings.sms_template_id}),
+        request_payload=json.dumps(
+            {
+                "to": em,
+                "template": settings.email_template_id,
+                "booking_reference": appt.booking_reference,
+            }
+        ),
     )
     session.add(notif)
 

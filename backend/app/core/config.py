@@ -11,8 +11,15 @@ class Settings(BaseSettings):
 
     default_bucket_max_capacity: int = 3
     duplicate_booking_window_hours: int = 24
-    sms_template_id: str = "booking_confirmed"
-    sms_provider_stub: str = "stub"
+    email_provider: str = "stub"
+    email_template_id: str = "booking_confirmed_email"
+    email_from: str = "noreply@soukhyabharathi.in"
+    smtp_host: str | None = None
+    smtp_port: int = 587
+    smtp_username: str | None = None
+    smtp_password: str | None = None
+    smtp_use_tls: bool = True
+    smtp_timeout_seconds: int = 15
 
     db_pool_size: int = 5
     db_max_overflow: int = 10

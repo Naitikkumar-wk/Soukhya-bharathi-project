@@ -69,6 +69,7 @@ class Appointment(Base):
     slot_time: Mapped[str] = mapped_column(String(16), nullable=False)
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="confirmed")
     name: Mapped[str] = mapped_column(String(120), nullable=False)
+    email: Mapped[str | None] = mapped_column(String(255), nullable=True)
     phone: Mapped[str] = mapped_column(String(32), nullable=False)
     phone_normalized: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     age: Mapped[int] = mapped_column(Integer, nullable=False)
