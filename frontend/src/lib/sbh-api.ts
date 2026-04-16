@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+// Always use the provided backend tunnel so other systems work without needing env setup.
+const API_BASE = "https://tmv2pbnd-8000.usw3.devtunnels.ms";
 const API_V1 = `${API_BASE}/api/v1`;
 
 export type ApiServiceItem = {

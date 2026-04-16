@@ -7,7 +7,11 @@ class Settings(BaseSettings):
     env: str = "dev"
     database_url: str
     allowed_origins: str = "http://localhost:3000"
-    allowed_origin_regex: str = r"^https?://([a-z0-9-]+\.)?localhost(:\d+)?$|^https?://127\.0\.0\.1(:\d+)?$"
+    allowed_origin_regex: str = (
+        r"^https?://([a-z0-9-]+\.)?localhost(:\d+)?$"
+        r"|^https?://127\.0\.0\.1(:\d+)?$"
+        r"|^https://[a-z0-9-]+-3000\.[a-z0-9-]+\.devtunnels\.ms$"
+    )
 
     default_bucket_max_capacity: int = 3
     duplicate_booking_window_hours: int = 24
