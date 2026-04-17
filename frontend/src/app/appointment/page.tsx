@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { SiteHeader, type NavItem } from "@/components/SiteHeader";
+import { SiteHeader, type NavItem, NAV_CARE_LABEL, NAV_WELLNESS_LABEL } from "@/components/SiteHeader";
 import {
   type AppointmentResponse,
   type ApiServiceItem,
@@ -16,8 +16,8 @@ const wrapperClass = "mx-auto w-[min(1184px,calc(100%-32px))]";
 
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/care", label: "Care" },
-  { href: "/treatments", label: "Wellness" },
+  { href: "/care", label: NAV_CARE_LABEL },
+  { href: "/treatments", label: NAV_WELLNESS_LABEL },
   { href: "/research", label: "Research" },
   { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },
@@ -1190,7 +1190,7 @@ export default function BookPage() {
                         setBooking((b) => ({ ...b, phone: e.target.value }));
                         setErrors((er) => ({ ...er, phone: "" }));
                       }}
-                      placeholder="+91 98765 43210"
+                      placeholder="+91 93640 87518"
                       className={`font-ui w-full rounded-xl border px-4 py-3.5 text-[15px] text-[#101828] placeholder:text-[#9ca3af] outline-none transition focus:ring-2 focus:ring-[#1f948e]/20 ${
                         errors.phone
                           ? "border-red-400 bg-red-50 focus:border-red-400"

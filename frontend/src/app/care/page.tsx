@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader, type NavItem } from "@/components/SiteHeader";
+import { SiteHeader, type NavItem, NAV_CARE_LABEL, NAV_WELLNESS_LABEL } from "@/components/SiteHeader";
 
 const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
 
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/care", label: "Care" },
-  { href: "/treatments", label: "Wellness" },
+  { href: "/care", label: NAV_CARE_LABEL },
+  { href: "/treatments", label: NAV_WELLNESS_LABEL },
   { href: "/research", label: "Research" },
   { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },
@@ -47,7 +47,7 @@ const specialties: Specialty[] = [
       "Counseling",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1576671081741-c538eafccfff?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-cancer.webp",
     imageAlt: "Doctor administering IV treatment to a cancer patient in a hospital room",
   },
   {
@@ -68,7 +68,7 @@ const specialties: Specialty[] = [
       "Sciatica",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1758691461973-553db5285280?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-neuro.jpg",
     imageAlt: "Doctor showing brain MRI scan on tablet to patient",
   },
   {
@@ -78,7 +78,7 @@ const specialties: Specialty[] = [
       "Preventive and therapeutic cardiology with lifestyle protocols to support heart health and blood pressure management.",
     conditions: ["Preventive Cardiology", "Hypertension"],
     imageSrc:
-      "https://images.unsplash.com/photo-1628348070889-cb656235b4eb?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-cardiac.jpg",
     imageAlt: "Cardiologist reviewing ECG notes with stethoscope",
   },
   {
@@ -93,7 +93,7 @@ const specialties: Specialty[] = [
       "Sinusitis",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-respiratory.jpg",
     imageAlt: "Doctor using stethoscope for chest and lung examination",
   },
   {
@@ -112,7 +112,7 @@ const specialties: Specialty[] = [
       "Endometriosis",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1659353888906-adb3e0041693?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-womens.jpg",
     imageAlt: "Female doctor in consultation for women's health",
   },
   {
@@ -129,7 +129,7 @@ const specialties: Specialty[] = [
       "Tonsil & Adenoid Care",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1758691463331-2ac00e6f676f?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-pediatric.jpg",
     imageAlt: "Doctor examining a young boy with his mother present",
   },
   {
@@ -147,7 +147,7 @@ const specialties: Specialty[] = [
       "Premature Graying of Hair",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1746806942799-b4db209e9a6b?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-skin-hair.jpg",
     imageAlt: "Medical professional performing laser skin treatment on a patient",
   },
   {
@@ -164,7 +164,7 @@ const specialties: Specialty[] = [
       "Fatty Liver",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1584516150909-c43483ee7932?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-digestive.jpg",
     imageAlt: "Gastroenterology specialists in clinical consultation",
   },
   {
@@ -174,7 +174,7 @@ const specialties: Specialty[] = [
       "Evidence-based management of hormonal and metabolic disorders with integrated Ayurvedic lifestyle support.",
     conditions: ["Type 1 & Type 2 Diabetes", "Thyroid Dysfunction", "PCOD / PCOS"],
     imageSrc:
-      "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-endocrinology.jpg",
     imageAlt: "Nurse checking blood glucose for diabetes management",
   },
   {
@@ -190,7 +190,7 @@ const specialties: Specialty[] = [
       "Ligament Injury / Sprains",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1706353399656-210cca727a33?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-musculoskeletal.jpg",
     imageAlt: "Physiotherapist performing hands-on treatment on a patient",
   },
   {
@@ -207,7 +207,7 @@ const specialties: Specialty[] = [
       "Surgical Care",
     ],
     imageSrc:
-      "https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?auto=format&fit=crop&w=800&q=80",
+      "/images/care-tile-other-services.png",
     imageAlt: "Home care nurse visiting and assisting an elderly patient",
   },
 ];
@@ -230,24 +230,6 @@ const wellnessTherapies = [
     alt: "Cupping therapy",
     title: "Cupping Therapy",
     text: "Traditional suction-based therapy for improving circulation and releasing muscle tension.",
-  },
-];
-
-const integratedSteps = [
-  {
-    step: "01",
-    title: "Assess",
-    text: "Holistic consultation combining Ayurvedic Prakriti analysis with modern clinical diagnostics.",
-  },
-  {
-    step: "02",
-    title: "Plan",
-    text: "Integrated treatment plan merging evidence-based medicine protocols with Ayurvedic therapies.",
-  },
-  {
-    step: "03",
-    title: "Recover",
-    text: "Ongoing follow-up, lifestyle protocol, and Panchakarma detox support for sustained wellness.",
   },
 ];
 
@@ -500,19 +482,17 @@ export default function CarePage() {
                     modern medicine for whole-person healing.
                   </p>
                 </div>
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                  {integratedSteps.map((item) => (
-                    <div
-                      key={item.step}
-                      className="rounded-2xl border border-[#a7e9e3] bg-white p-7 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
-                    >
-                      <div className="font-ui mb-3 text-[11px] font-bold uppercase tracking-widest text-[#1f948e]">
-                        Step {item.step}
-                      </div>
-                      <h3 className="text-[22px] font-bold text-[#101828]">{item.title}</h3>
-                      <p className="font-ui mt-2 text-[15px] leading-[1.65] text-[#4a5565]">{item.text}</p>
-                    </div>
-                  ))}
+                <div className="mx-auto max-w-[1100px] overflow-hidden rounded-2xl border border-[#a7e9e3] bg-white shadow-[0_2px_8px_rgba(16,24,40,0.06)]">
+                  <div className="relative h-[340px] sm:h-[420px] md:h-[500px]">
+                    <Image
+                      src="/images/care-patient-process.png"
+                      alt="Integrated care model diagram"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 1100px"
+                      priority
+                    />
+                  </div>
                 </div>
               </section>
 
