@@ -17,31 +17,27 @@ const navItems: NavItem[] = [
   { href: "/stories", label: "Stories" },
 ];
 
-const values = [
-  {
-    title: "Patient dignity",
-    text: "We involve you in decisions, protect your privacy, and respect cultural and personal preferences in how care is planned and delivered.",
-  },
-  {
-    title: "Evidence-informed practice",
-    text: "Protocols, training, and quality review help our clinical and teaching teams stay aligned with safe, up-to-date practice.",
-  },
-  {
-    title: "Integrity & transparency",
-    text: "We explain what we offer, what we do not, and how to reach the right team if you have questions or concerns.",
-  },
-  {
-    title: "Collaboration",
-    text: "Physicians and therapists coordinate with each other—and with outside providers when needed—so your care path stays clear.",
-  },
-];
-
 const teamPlaceholders = [
   { id: "1", label: "Clinical leadership" },
   { id: "2", label: "Ayurvedic physicians" },
   { id: "3", label: "Education & research" },
   { id: "4", label: "Operations & quality" },
 ];
+
+const sectionVisuals = {
+  philosophy: {
+    src: "/images/Body Mind Daily Livi_values.png",
+    alt: "Soukhya Bharathi philosophy visual card",
+  },
+  mission: {
+    src: "/images/Saukhyabharathi mission_white.png",
+    alt: "Soukhya Bharathi mission visual card",
+  },
+  values: {
+    src: "/images/Harmonize Heal Thriv Values.png",
+    alt: "Soukhya Bharathi values visual card",
+  },
+};
 
 export default function AboutPage() {
   return (
@@ -106,45 +102,32 @@ export default function AboutPage() {
           <div className={wrapperClass}>
             <div className="mx-auto max-w-[800px] text-center">
               <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Philosophy</h2>
-              <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                Saukhyabharathi is grounded in classical Ayurvedic principles within clear, modern clinical
-                and educational standards. We focus on diet, daily rhythm, appropriate therapies, and
-                mind–body practices as part of a plan that fits your condition and your physician&apos;s
-                guidance.
-              </p>
-              <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                We communicate honestly about what Ayurveda and integrative care can support, when
-                conventional medical care or referral is the safer choice, and how we work alongside your
-                existing doctors when you need that coordination.
-              </p>
+            </div>
+            <div className="relative mx-auto mt-8 aspect-[4/5] w-full max-w-[460px] overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-[0_8px_32px_rgba(16,24,40,0.12)]">
+              <Image
+                src={sectionVisuals.philosophy.src}
+                alt={sectionVisuals.philosophy.alt}
+                fill
+                className="object-contain object-center"
+                sizes="(max-width: 768px) min(100vw - 48px, 620px), 620px"
+              />
             </div>
           </div>
         </section>
 
         <section id="mission" className="scroll-mt-28 border-t border-[#e5e7eb] bg-[#f9fafb] py-16 md:py-20">
           <div className={wrapperClass}>
-            <div className="flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:gap-14">
-              <div className="relative h-[240px] w-full max-w-[520px] overflow-hidden rounded-2xl shadow-[0_8px_32px_rgba(16,24,40,0.12)] sm:h-[280px] lg:h-[320px] lg:w-[min(420px,42%)] lg:max-w-none lg:shrink-0">
-                <Image
-                  src="/images/care-book.webp"
-                  alt="Team collaborating at a table"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 520px, 420px"
-                />
-              </div>
-              <div className="flex-1 text-center lg:text-left">
-                <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Mission</h2>
-                <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                  To deliver thoughtful, patient-centered care across our medical specialties and wellness
-                  therapies; to support teaching and research through proper ethics and quality systems; and
-                  to share clear, useful information with patients and the public.
-                </p>
-                <p className="font-ui mt-4 text-[15px] leading-[1.85] text-[#4a5565]">
-                  Our formal mission statement and governance materials are maintained with hospital
-                  leadership and published as they are finalized.
-                </p>
-              </div>
+            <div className="mx-auto max-w-[800px] text-center">
+              <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Mission</h2>
+            </div>
+            <div className="relative mx-auto mt-8 aspect-[4/5] w-full max-w-[460px] overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-[0_8px_32px_rgba(16,24,40,0.12)]">
+              <Image
+                src={sectionVisuals.mission.src}
+                alt={sectionVisuals.mission.alt}
+                fill
+                className="object-contain object-center"
+                sizes="(max-width: 768px) min(100vw - 48px, 720px), 720px"
+              />
             </div>
           </div>
         </section>
@@ -153,21 +136,15 @@ export default function AboutPage() {
           <div className={wrapperClass}>
             <div className="mb-10 text-center">
               <h2 className="text-[34px] font-bold text-[#101828] md:text-[40px]">Values</h2>
-              <p className="font-ui mx-auto mt-3 max-w-[640px] text-[15px] leading-[1.7] text-[#4a5565]">
-                Shared expectations that guide how our teams work with patients, families, staff, and partners
-                every day.
-              </p>
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {values.map((v) => (
-                <article
-                  key={v.title}
-                  className="flex h-full flex-col rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
-                >
-                  <h3 className="text-[18px] font-bold text-[#101828]">{v.title}</h3>
-                  <p className="font-ui mt-3 flex-1 text-[15px] leading-[1.7] text-[#4a5565]">{v.text}</p>
-                </article>
-              ))}
+            <div className="relative mx-auto aspect-[4/5] w-full max-w-[460px] overflow-hidden rounded-2xl border border-[#e5e7eb] bg-white shadow-[0_8px_32px_rgba(16,24,40,0.12)]">
+              <Image
+                src={sectionVisuals.values.src}
+                alt={sectionVisuals.values.alt}
+                fill
+                className="object-contain object-center"
+                sizes="(max-width: 768px) min(100vw - 48px, 460px), 460px"
+              />
             </div>
           </div>
         </section>
