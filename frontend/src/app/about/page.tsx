@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader, type NavItem } from "@/components/SiteHeader";
+import { SiteHeader, type NavItem, NAV_CARE_LABEL, NAV_WELLNESS_LABEL } from "@/components/SiteHeader";
 import { InPageScrollNav } from "@/components/InPageScrollNav";
 import { ScrollToSectionOnLoad } from "@/components/ScrollToSectionOnLoad";
 
@@ -10,8 +10,8 @@ const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
 
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/care", label: "Care" },
-  { href: "/treatments", label: "Wellness" },
+  { href: "/care", label: NAV_CARE_LABEL },
+  { href: "/treatments", label: NAV_WELLNESS_LABEL },
   { href: "/research", label: "Research" },
   { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },

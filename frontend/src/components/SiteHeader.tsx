@@ -6,6 +6,10 @@ import { useState } from "react";
 
 export type NavItem = { href: string; label: string };
 
+/** Top-level nav labels that open Care / Treatments mega-menus (routes stay `/care`, `/treatments`). */
+export const NAV_CARE_LABEL = "care@sbh";
+export const NAV_WELLNESS_LABEL = "wellness@sbh";
+
 type Props = {
   brandName?: string;
   navItems: NavItem[];
@@ -60,14 +64,16 @@ export function SiteHeader({
   ctaLabel,
 }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileSubOpen, setMobileSubOpen] = useState<{ Care: boolean; Wellness: boolean }>({
-    Care: false,
-    Wellness: false,
+  const [mobileSubOpen, setMobileSubOpen] = useState<
+    Record<typeof NAV_CARE_LABEL | typeof NAV_WELLNESS_LABEL, boolean>
+  >({
+    [NAV_CARE_LABEL]: false,
+    [NAV_WELLNESS_LABEL]: false,
   });
 
   const withDirectRoutes = navItems.map((item) => {
-    if (item.label === "Care") return { ...item, href: "/care" };
-    if (item.label === "Wellness") return { ...item, href: "/treatments" };
+    if (item.label === NAV_CARE_LABEL) return { ...item, href: "/care" };
+    if (item.label === NAV_WELLNESS_LABEL) return { ...item, href: "/treatments" };
     return item;
   });
 
@@ -93,9 +99,9 @@ export function SiteHeader({
         <nav className="font-ui hidden flex-1 items-center justify-center gap-6 lg:flex xl:gap-8">
           {withDirectRoutes.map((item) => {
             const menuItems =
-              item.label === "Care"
+              item.label === NAV_CARE_LABEL
                 ? careMenuItems
-                : item.label === "Wellness"
+                : item.label === NAV_WELLNESS_LABEL
                   ? wellnessMenuItems
                   : null;
             if (!menuItems) {
@@ -138,7 +144,7 @@ export function SiteHeader({
           type="button"
           onClick={() =>
             setMobileOpen((s) => {
-              if (s) setMobileSubOpen({ Care: false, Wellness: false });
+              if (s) setMobileSubOpen({ [NAV_CARE_LABEL]: false, [NAV_WELLNESS_LABEL]: false });
               return !s;
             })
           }
@@ -173,12 +179,17 @@ export function SiteHeader({
         <nav className="font-ui flex max-h-[min(72dvh,calc(100dvh-68px))] flex-col gap-1 overflow-y-auto overscroll-contain border-t border-[#e5e7eb] bg-white px-6 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] lg:hidden">
           {withDirectRoutes.map((item) => {
             const menuItems =
-              item.label === "Care"
+              item.label === NAV_CARE_LABEL
                 ? careMenuItems
-                : item.label === "Wellness"
+                : item.label === NAV_WELLNESS_LABEL
                   ? wellnessMenuItems
                   : null;
-            const subKey = item.label === "Care" ? "Care" : item.label === "Wellness" ? "Wellness" : null;
+            const subKey =
+              item.label === NAV_CARE_LABEL
+                ? NAV_CARE_LABEL
+                : item.label === NAV_WELLNESS_LABEL
+                  ? NAV_WELLNESS_LABEL
+                  : null;
             const expanded = subKey ? mobileSubOpen[subKey] : false;
 
             if (!menuItems) {
