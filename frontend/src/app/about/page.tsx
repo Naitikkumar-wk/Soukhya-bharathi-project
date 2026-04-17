@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader, type NavItem } from "@/components/SiteHeader";
+import { SiteHeader, type NavItem, NAV_CARE_LABEL, NAV_WELLNESS_LABEL } from "@/components/SiteHeader";
 import { InPageScrollNav } from "@/components/InPageScrollNav";
 import { ScrollToSectionOnLoad } from "@/components/ScrollToSectionOnLoad";
 
@@ -10,8 +10,8 @@ const wrapperClass = "mx-auto w-[min(1184px,calc(100%-48px))]";
 
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/care", label: "Care" },
-  { href: "/treatments", label: "Wellness" },
+  { href: "/care", label: NAV_CARE_LABEL },
+  { href: "/treatments", label: NAV_WELLNESS_LABEL },
   { href: "/research", label: "Research" },
   { href: "/about", label: "About SBH" },
   { href: "/stories", label: "Stories" },
@@ -26,15 +26,15 @@ const teamPlaceholders = [
 
 const sectionVisuals = {
   philosophy: {
-    src: "/images/Holistic wellbeing Philosophy.png",
+    src: "/images/Body Mind Daily Livi_values.png",
     alt: "Soukhya Bharathi philosophy visual card",
   },
   mission: {
-    src: "/images/Ayurveda-inspired mission.png",
+    src: "/images/Saukhyabharathi mission_white.png",
     alt: "Soukhya Bharathi mission visual card",
   },
   values: {
-    src: "/images/Saukhyabharathi Valu.png",
+    src: "/images/Harmonize Heal Thriv Values.png",
     alt: "Soukhya Bharathi values visual card",
   },
 };
@@ -71,10 +71,10 @@ export default function AboutPage() {
                 About SBH
               </p>
               <h1 className="mt-3 text-[40px] leading-[1.1] font-bold text-[#101828] md:text-[52px]">
-                Soukhya Bharathi
+                Saukhyabharathi
               </h1>
               <p className="font-ui mx-auto mt-4 max-w-[640px] text-[16px] leading-[1.8] text-[#4a5565]">
-                SaukhyaBharathi brings Ayurvedic care together with modern clinical practice. Here you can
+                Saukhyabharathi brings Ayurvedic care together with modern clinical practice. Here you can
                 see how we think about healing, how we run our services, and how we stay accountable to
                 patients and the community.
               </p>
@@ -108,8 +108,8 @@ export default function AboutPage() {
                 src={sectionVisuals.philosophy.src}
                 alt={sectionVisuals.philosophy.alt}
                 fill
-                className="object-cover object-center"
-                sizes="(max-width: 768px) min(100vw - 48px, 460px), 460px"
+                className="object-contain object-center"
+                sizes="(max-width: 768px) min(100vw - 48px, 620px), 620px"
               />
             </div>
           </div>
@@ -125,8 +125,8 @@ export default function AboutPage() {
                 src={sectionVisuals.mission.src}
                 alt={sectionVisuals.mission.alt}
                 fill
-                className="object-cover object-center"
-                sizes="(max-width: 768px) min(100vw - 48px, 460px), 460px"
+                className="object-contain object-center"
+                sizes="(max-width: 768px) min(100vw - 48px, 720px), 720px"
               />
             </div>
           </div>
@@ -142,7 +142,7 @@ export default function AboutPage() {
                 src={sectionVisuals.values.src}
                 alt={sectionVisuals.values.alt}
                 fill
-                className="object-cover object-center"
+                className="object-contain object-center"
                 sizes="(max-width: 768px) min(100vw - 48px, 460px), 460px"
               />
             </div>
