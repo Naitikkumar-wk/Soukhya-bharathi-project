@@ -105,8 +105,16 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
                 Karnataka 560011
               </a>
             </li>
-            <li>+91 98765 43210</li>
-            <li>care@saukhyabharathi.org</li>
+            <li>
+              <a href="tel:+919364087518" className={quickLinkClass}>
+                +91 93640 87518
+              </a>
+            </li>
+            <li>
+              <a href="mailto:sbh.hrmanager@gmail.com" className={quickLinkClass}>
+                sbh.hrmanager@gmail.com
+              </a>
+            </li>
           </ul>
         </div>
       </div>
