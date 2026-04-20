@@ -18,17 +18,12 @@ type Props = {
 };
 
 const careMenuItems: NavItem[] = [
-  { href: "/care?section=cancer-care", label: "Cancer Care" },
-  { href: "/care?section=neuro-care", label: "Neurological Care" },
+  { href: "/care?section=terminal-illness", label: "Terminal Illness" },
   { href: "/care?section=cardiac-care", label: "Cardiac Care" },
-  { href: "/care?section=respiratory-care", label: "Respiratory Care" },
-  { href: "/care?section=womens-care", label: "Women's Care" },
-  { href: "/care?section=pediatric-care", label: "Pediatric Care" },
-  { href: "/care?section=skin-hair-care", label: "Skin & Hair Care" },
-  { href: "/care?section=digestive-care", label: "Digestive Care" },
-  { href: "/care?section=endocrinology-care", label: "Endocrinology Care" },
-  { href: "/care?section=musculoskeletal-care", label: "Musculoskeletal Care" },
-  { href: "/care?section=other-services", label: "Other Services" },
+  { href: "/care?section=neuro-cognitive-care", label: "Neuro-Cognitive Care" },
+  { href: "/care?section=women-child-health", label: "Women & Child Health" },
+  { href: "/care?section=internal-medicine", label: "Internal Medicine" },
+  { href: "/care?section=dermatology", label: "Dermatology" },
 ];
 
 const wellnessMenuItems: NavItem[] = [
