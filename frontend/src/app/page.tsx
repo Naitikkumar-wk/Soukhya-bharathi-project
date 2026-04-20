@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { IntegratedCareModelSection } from "@/components/IntegratedCareModelSection";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, type NavItem, NAV_CARE_LABEL, NAV_WELLNESS_LABEL } from "@/components/SiteHeader";
 
@@ -203,6 +204,12 @@ export default function Home() {
                 </a>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="border-b border-[#e5e7eb] bg-white py-12 md:py-16" aria-label="Integrated care model">
+          <div className={wrapperClass}>
+            <IntegratedCareModelSection />
           </div>
         </section>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { IntegratedCareModelSection } from "@/components/IntegratedCareModelSection";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader, type NavItem, NAV_CARE_LABEL, NAV_WELLNESS_LABEL } from "@/components/SiteHeader";
 
@@ -472,29 +473,7 @@ export default function CarePage() {
                 ))}
               </div>
 
-              <section className="my-12 rounded-2xl border border-[#a7e9e3] bg-[#f0fffe] px-8 py-12">
-                <div className="mb-10 text-center">
-                  <h2 className="text-[28px] font-bold text-[#101828] md:text-[34px]">
-                    Ayurveda &amp; Modern Medicine Under One Roof
-                  </h2>
-                  <p className="font-ui mx-auto mt-3 max-w-[560px] text-[15px] leading-[1.7] text-[#4a5565]">
-                    Our integrated care model combines the best of classical Ayurveda with evidence-based
-                    modern medicine for whole-person healing.
-                  </p>
-                </div>
-                <div className="mx-auto max-w-[1100px] overflow-hidden rounded-2xl border border-[#a7e9e3] bg-white shadow-[0_2px_8px_rgba(16,24,40,0.06)]">
-                  <div className="relative h-[340px] sm:h-[420px] md:h-[500px]">
-                    <Image
-                      src="/images/care-patient-process.png"
-                      alt="Integrated care model diagram"
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 1100px"
-                      priority
-                    />
-                  </div>
-                </div>
-              </section>
+              <IntegratedCareModelSection className="my-12" />
 
               <section id="wellness" className="py-16">
                 <div className="mb-11 text-center">

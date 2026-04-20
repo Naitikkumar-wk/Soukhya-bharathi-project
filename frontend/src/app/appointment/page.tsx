@@ -200,6 +200,65 @@ const GENDER_OPTIONS: { value: Gender; label: string }[] = [
   { value: "other", label: "Other" },
 ];
 
+/** Shown in expandable panel on step 3; keep in sync with clinic OPD consent (Revised Apr 2026). */
+const OPD_CONSENT_SECTIONS: { heading: string; body?: string }[] = [
+  {
+    heading: "Purpose of the Consent",
+    body: "This consent form is to ensure that you understand the nature of Ayurvedic consultation and treatments offered in this clinic and voluntarily agree to receive them.",
+  },
+  {
+    heading: "1. Nature of Ayurvedic treatment",
+    body: "I understand that Ayurveda is a traditional system of medicine involving individualized assessment and management using herbal/mineral medicines, Panchakarma procedures (if advised), dietary and lifestyle recommendations, and external therapies such as Abhyanga, Swedana, Shirodhara etc.",
+  },
+  {
+    heading: "2. Consent for Consultation and Treatment",
+    body: "I hereby consent to undergo Ayurvedic consultation and treatment as advised by the attending Vaidya/doctor. I understand that Ayurvedic treatments may involve internal and/or external therapies. Results may vary depending on my condition and constitution, and I may experience mild detoxification symptoms, including tiredness, exhaustion, etc., or any body reactions, which will be explained to me.",
+  },
+  {
+    heading: "3. Disclosure and Communication",
+    body: "I have informed the doctor about my past medical history, current medications, allergies, and any ongoing modern medical treatment. I understand that concealing such information may affect treatment outcome or safety.",
+  },
+  {
+    heading: "4. Voluntary Consent",
+    body: "I voluntarily seek Ayurvedic consultation and treatment, and I have had the opportunity to ask questions, which I found satisfactory.",
+  },
+  {
+    heading: "5. Confidentiality",
+    body: "All personal and medical information will be kept confidential and used only for professional purposes.",
+  },
+  {
+    heading: "6. Medicines that one dispatches will not be taken back.",
+  },
+  {
+    heading: "7. Appointment timing",
+    body: "The scheduled appointment time might get postponed in case of a medical emergency faced by the consulting doctor.",
+  },
+  {
+    heading: "8. Conduct",
+    body: "Any rude behavior with the treating doctor / staff will result in immediate termination of all treatment modalities, and strict action will be taken as per law.",
+  },
+  {
+    heading: "9. Medicine availability",
+    body: "Medicine stocks are subject to availability due to a lack of raw materials throughout the year.",
+  },
+  {
+    heading: "10. Medical records — medico-legal",
+    body: "Medical records will not be provided for any medico-legal purposes.",
+  },
+  {
+    heading: "11. Medical records — research and education",
+    body: "Medical records may be used in scientific platforms for conducting trials, presenting in seminars, publications, etc., for educational and research purposes on online platforms and social media.",
+  },
+  {
+    heading: "12. Cost of medicine",
+    body: "The cost of the medicine is subject to variation depending on the cost of the raw materials.",
+  },
+  {
+    heading: "13. Professional fees and medicine cost",
+    body: "To offer the best possible service, bargaining for the professional fees and medicine cost is not entertained.",
+  },
+];
+
 // ── Utility ────────────────────────────────────────────────────────────────
 
 function formatDate(d: Date) {
@@ -854,7 +913,8 @@ export default function BookPage() {
     else if (Number(booking.age) < 1 || Number(booking.age) > 120)
       errs.age = "Enter a valid age (1–120)";
     if (!booking.gender) errs.gender = "Please select a gender";
-    if (!booking.consentAccepted) errs.consentAccepted = "Please accept consent to continue";
+    if (!booking.consentAccepted)
+      errs.consentAccepted = "Please read the OPD consent and confirm you agree to continue";
     return errs;
   };
 
@@ -1300,8 +1360,44 @@ export default function BookPage() {
                     </p>
                   </div>
 
-                  <div className="md:col-span-2">
-                    <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3">
+                  <div className="md:col-span-2 space-y-4">
+                    <p className="font-ui text-[13px] font-bold text-[#101828]">OPD consent</p>
+                    <p className="font-ui text-[12px] leading-[1.6] text-[#4a5565]">
+                      Expand the panel below to read the full consent. You must tick the box to confirm you have read
+                      and agree before continuing.
+                    </p>
+                    <details className="group rounded-xl border border-[#e5e7eb] bg-white open:border-[#a7e9e3] open:shadow-sm">
+                      <summary className="font-ui flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3.5 text-[14px] font-bold text-[#101828] transition hover:bg-[#f9fafb] [&::-webkit-details-marker]:hidden">
+                        <span>Full OPD consent text (tap to expand)</span>
+                        <span
+                          className="shrink-0 text-[11px] font-bold uppercase tracking-wide text-[#1f948e] group-open:hidden"
+                          aria-hidden
+                        >
+                          Show
+                        </span>
+                        <span
+                          className="hidden shrink-0 text-[11px] font-bold uppercase tracking-wide text-[#1f948e] group-open:inline"
+                          aria-hidden
+                        >
+                          Hide
+                        </span>
+                      </summary>
+                      <div className="max-h-[min(70vh,520px)] overflow-y-auto border-t border-[#e5e7eb] px-4 py-4">
+                        <div className="space-y-5 pr-1">
+                          {OPD_CONSENT_SECTIONS.map((section) => (
+                            <div key={section.heading}>
+                              <h3 className="font-ui text-[13px] font-bold text-[#101828]">{section.heading}</h3>
+                              {section.body ? (
+                                <p className="font-ui mt-1.5 text-[13px] leading-[1.65] text-[#4a5565]">
+                                  {section.body}
+                                </p>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </details>
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-4 py-3.5">
                       <input
                         type="checkbox"
                         checked={booking.consentAccepted}
@@ -1309,14 +1405,16 @@ export default function BookPage() {
                           setBooking((b) => ({ ...b, consentAccepted: e.target.checked }));
                           setErrors((er) => ({ ...er, consentAccepted: "" }));
                         }}
-                        className="mt-0.5 h-4 w-4 accent-[#1f948e]"
+                        className="mt-0.5 h-4 w-4 shrink-0 accent-[#1f948e]"
                       />
-                      <span className="font-ui text-[13px] leading-[1.5] text-[#4a5565]">
-                        I confirm the details are accurate and consent to share this information for booking.
+                      <span className="font-ui text-[13px] leading-[1.55] text-[#4a5565]">
+                        I have read the OPD consent above (including Purpose and points 1–13) and agree to its terms.
+                        I confirm that the personal and medical information I provided for this booking is accurate and
+                        complete.
                       </span>
                     </label>
                     {errors.consentAccepted && (
-                      <p className="font-ui mt-1 text-[12px] text-red-500">{errors.consentAccepted}</p>
+                      <p className="font-ui text-[12px] text-red-500">{errors.consentAccepted}</p>
                     )}
                   </div>
 

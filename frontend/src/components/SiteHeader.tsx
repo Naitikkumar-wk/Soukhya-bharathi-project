@@ -7,8 +7,8 @@ import { useState } from "react";
 export type NavItem = { href: string; label: string };
 
 /** Top-level nav labels that open Care / Treatments mega-menus (routes stay `/care`, `/treatments`). */
-export const NAV_CARE_LABEL = "care@sbh";
-export const NAV_WELLNESS_LABEL = "wellness@sbh";
+export const NAV_CARE_LABEL = "care@SKBH";
+export const NAV_WELLNESS_LABEL = "wellness@SKBH";
 
 type Props = {
   brandName?: string;
