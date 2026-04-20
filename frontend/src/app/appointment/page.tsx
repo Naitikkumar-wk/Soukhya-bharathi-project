@@ -117,6 +117,12 @@ const specialties: Service[] = [
     description: "Sleep disorders, home Panchakarma, surgical care, critical conditions.",
     group: "specialty",
   },
+  {
+    id: "diagnostic-services",
+    label: "Diagnostic Services",
+    description: "ECG, blood investigations, and PAP smear test support for clinical assessment.",
+    group: "specialty",
+  },
 ];
 
 const wellnessTherapies: Service[] = [
@@ -150,6 +156,12 @@ const wellnessTherapies: Service[] = [
     description: "Kerala marma point stimulation for deep tissue healing.",
     group: "wellness",
   },
+  {
+    id: "saukhya-aushadi",
+    label: "Saukhya Aushadi (Pharmacy)",
+    description: "Ayurvedic pharmacy support with prescribed formulations and dispensing guidance.",
+    group: "wellness",
+  },
 ];
 
 const SERVICE_DESCRIPTION_MAP: Record<string, string> = [...specialties, ...wellnessTherapies].reduce(
@@ -168,6 +180,9 @@ const STEPS = [
   { number: 3, label: "Details" },
   { number: 4, label: "Confirm" },
 ] as const;
+
+/** For “today” only: hide slots starting this soon or earlier (same local clock as the browser). */
+const SLOT_BOOKING_LEAD_MINUTES = 45;
 
 const SLOT_TIMES: TimePreference[] = [
   "8:00 AM",
@@ -268,6 +283,43 @@ function formatDate(d: Date) {
     month: "short",
     day: "numeric",
   });
+}
+
+function isSameLocalCalendarDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+/** Interprets labels like "8:30 AM" on the same local calendar day as `day` (browser local timezone). */
+function slotLabelToLocalDateTime(day: Date, slotLabel: string): Date | null {
+  const m = slotLabel.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!m) return null;
+  let hour = Number.parseInt(m[1], 10);
+  const minute = Number.parseInt(m[2], 10);
+  const ap = m[3].toUpperCase();
+  if (ap === "PM" && hour !== 12) hour += 12;
+  if (ap === "AM" && hour === 12) hour = 0;
+  return new Date(day.getFullYear(), day.getMonth(), day.getDate(), hour, minute, 0, 0);
+}
+
+/**
+ * When the chosen date is today, hide slots whose start is at or before `now + lead` (past or within lead time).
+ * For future dates, always returns false.
+ */
+function isSlotTimeInPastForSelectedDay(
+  slotTime: TimePreference,
+  selectedDay: Date,
+  now: Date = new Date(),
+  leadMinutes: number = SLOT_BOOKING_LEAD_MINUTES
+): boolean {
+  if (!isSameLocalCalendarDay(selectedDay, now)) return false;
+  const at = slotLabelToLocalDateTime(selectedDay, slotTime);
+  if (!at) return false;
+  const cutoff = new Date(now.getTime() + leadMinutes * 60 * 1000);
+  return at.getTime() <= cutoff.getTime();
 }
 
 function mapApiService(item: ApiServiceItem): Service {
@@ -452,6 +504,14 @@ function ServiceIcon({ id, selected }: { id: string; selected: boolean }) {
           <circle cx="5" cy="12" r="1" fill={c} />
         </svg>
       );
+    case "diagnostic-services":
+      return (
+        <svg {...svgProps}>
+          <path d="M4 5h16v14H4z" />
+          <path d="M7 9h3M7 12h6M7 15h4" />
+          <path d="M16 8l3 3-3 3" />
+        </svg>
+      );
     case "panchakarma":
       return (
         <svg {...svgProps}>
@@ -488,6 +548,15 @@ function ServiceIcon({ id, selected }: { id: string; selected: boolean }) {
       return (
         <svg {...svgProps}>
           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+      );
+    case "saukhya-aushadi":
+      return (
+        <svg {...svgProps}>
+          <rect x="7" y="3" width="10" height="18" rx="2" />
+          <line x1="10" y1="8" x2="14" y2="8" />
+          <line x1="12" y1="6" x2="12" y2="10" />
+          <line x1="9" y1="14" x2="15" y2="14" />
         </svg>
       );
     default:
@@ -827,6 +896,13 @@ export default function BookPage() {
     consentAccepted: false,
   });
 
+  /** Recomputed each render so “today” hides slots as the clock moves without needing a timer. */
+  const slotTimesForBookingDay = (() => {
+    const d = booking.date;
+    if (!d) return SLOT_TIMES;
+    return SLOT_TIMES.filter((t) => !isSlotTimeInPastForSelectedDay(t, d));
+  })();
+
   const loadServices = async () => {
     setServicesLoading(true);
     setServicesError(null);
@@ -874,9 +950,17 @@ export default function BookPage() {
           };
         }
         setAvailabilityByBucket(nextState);
-        if (booking.timePreference && nextState[booking.timePreference]?.available === false) {
-          setBooking((prev) => ({ ...prev, timePreference: null }));
-        }
+        setBooking((prev) => {
+          if (!prev.timePreference) return prev;
+          const t = prev.timePreference;
+          if (prev.date && isSlotTimeInPastForSelectedDay(t, prev.date)) {
+            return { ...prev, timePreference: null };
+          }
+          if (nextState[t]?.available === false) {
+            return { ...prev, timePreference: null };
+          }
+          return prev;
+        });
       } catch (error) {
         if (isDisposed) return;
         setAvailabilityError(
@@ -921,6 +1005,16 @@ export default function BookPage() {
   // ── Navigation ────────────────────────────────────────────────────────────
 
   const handleNext = () => {
+    if (step === 2) {
+      if (
+        booking.date &&
+        booking.timePreference &&
+        isSlotTimeInPastForSelectedDay(booking.timePreference, booking.date)
+      ) {
+        setBooking((b) => ({ ...b, timePreference: null }));
+        return;
+      }
+    }
     if (step === 3) {
       const errs = validateStep4();
       if (Object.keys(errs).length > 0) {
@@ -939,6 +1033,14 @@ export default function BookPage() {
     const validationErrors = validateStep4();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      return;
+    }
+    if (isSlotTimeInPastForSelectedDay(booking.timePreference, booking.date)) {
+      setSubmitError(
+        `That time is no longer available (must be at least ${SLOT_BOOKING_LEAD_MINUTES} minutes from now for same-day bookings). Please choose another slot.`
+      );
+      setStep(2);
+      setBooking((b) => ({ ...b, timePreference: null }));
       return;
     }
 
@@ -1167,37 +1269,44 @@ export default function BookPage() {
                   {availabilityError && (
                     <p className="font-ui mb-2 text-[12px] text-red-600">{availabilityError}</p>
                   )}
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-                    {SLOT_TIMES.map((slotTime) => {
-                      const slot = availabilityByBucket[slotTime];
-                      const isUnavailable = slot ? !slot.available : false;
-                      const sel = booking.timePreference === slotTime;
-                      return (
-                        <button
-                          key={slotTime}
-                          type="button"
-                          disabled={isUnavailable}
-                          onClick={() => handleTimeSelect(slotTime)}
-                          className={`rounded-xl border px-3 py-3 text-center transition ${
-                            isUnavailable
-                              ? "cursor-not-allowed border-[#f3d1d1] bg-[#fbf2f2] text-[#9b4f4f]"
-                              : sel
-                                ? "border-[#1f948e] bg-[#1f948e] text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)]"
-                                : "border-[#e5e7eb] bg-white text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)]"
-                          }`}
-                        >
-                          <div className="text-[14px] font-bold">{slotTime}</div>
-                          <div
-                            className={`font-ui mt-0.5 text-[11px] ${
-                              sel ? "text-white/80" : isUnavailable ? "text-[#9b4f4f]" : "text-[#4a5565]"
+                  {booking.date && slotTimesForBookingDay.length === 0 ? (
+                    <p className="font-ui rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-4 py-4 text-[13px] leading-[1.6] text-[#4a5565]">
+                      There are no bookable time slots left for today (times within the next{" "}
+                      {SLOT_BOOKING_LEAD_MINUTES} minutes or earlier are hidden). Please choose a future date.
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+                      {slotTimesForBookingDay.map((slotTime) => {
+                        const slot = availabilityByBucket[slotTime];
+                        const isUnavailable = slot ? !slot.available : false;
+                        const sel = booking.timePreference === slotTime;
+                        return (
+                          <button
+                            key={slotTime}
+                            type="button"
+                            disabled={isUnavailable}
+                            onClick={() => handleTimeSelect(slotTime)}
+                            className={`rounded-xl border px-3 py-3 text-center transition ${
+                              isUnavailable
+                                ? "cursor-not-allowed border-[#f3d1d1] bg-[#fbf2f2] text-[#9b4f4f]"
+                                : sel
+                                  ? "border-[#1f948e] bg-[#1f948e] text-white shadow-[0_4px_20px_rgba(31,148,142,0.25)]"
+                                  : "border-[#e5e7eb] bg-white text-[#101828] hover:border-[#a7e9e3] hover:shadow-[0_4px_12px_rgba(16,24,40,0.08)]"
                             }`}
                           >
-                            {isUnavailable ? "Full" : `${slot?.remaining ?? 0} slots left`}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                            <div className="text-[14px] font-bold">{slotTime}</div>
+                            <div
+                              className={`font-ui mt-0.5 text-[11px] ${
+                                sel ? "text-white/80" : isUnavailable ? "text-[#9b4f4f]" : "text-[#4a5565]"
+                              }`}
+                            >
+                              {isUnavailable ? "Full" : `${slot?.remaining ?? 0} slots left`}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
