@@ -80,8 +80,9 @@ export function SiteHeader({
             <Image
               src="/images/logo.png"
               alt="Saukhyabharathi logo"
-              fill
-              className="scale-125 object-contain"
+              width={40}
+              height={40}
+              className="h-10 w-10 scale-125 object-contain"
               sizes="40px"
               priority
             />

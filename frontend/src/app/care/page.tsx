@@ -252,6 +252,7 @@ function CareHeadingSection({
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 360px"
+                priority={heading.id === "terminal-illness"}
               />
             </div>
           ) : (

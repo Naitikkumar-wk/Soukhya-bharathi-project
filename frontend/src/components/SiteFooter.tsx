@@ -31,7 +31,7 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
                 alt="Saukhyabharathi logo"
                 width={52}
                 height={52}
-                className="object-contain"
+                className="h-[52px] w-[52px] object-contain"
               />
             </span>
             <span className="text-[24px] font-bold text-white">Saukhyabharathi</span>
