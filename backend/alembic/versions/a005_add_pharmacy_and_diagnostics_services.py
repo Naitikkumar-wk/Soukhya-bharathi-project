@@ -1,6 +1,6 @@
 """add pharmacy and diagnostics services
 
-Revision ID: a005_add_pharmacy_and_diagnostics_services
+Revision ID: a005_add_pharmacy_diagnostics
 Revises: a004_appointment_email
 Create Date: 2026-04-20
 """
@@ -8,7 +8,7 @@ Create Date: 2026-04-20
 from alembic import op
 
 
-revision = "a005_add_pharmacy_and_diagnostics_services"
+revision = "a005_add_pharmacy_diagnostics"
 down_revision = "a004_appointment_email"
 branch_labels = None
 depends_on = None
