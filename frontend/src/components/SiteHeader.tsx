@@ -76,18 +76,21 @@ export function SiteHeader({
   return (
     <header className="sticky top-0 z-30 border-b border-[#e5e7eb] bg-white">
       <div className="border-b border-[#d5f3ef] bg-gradient-to-r from-[#eafffc] via-[#f0fffe] to-[#eafffc]">
-        <div className="mx-auto flex min-h-[42px] w-[min(1440px,calc(100%-36px))] flex-wrap items-center justify-center gap-x-3 gap-y-1.5 py-1.5">
-          <span className="font-ui inline-flex items-center rounded-full border border-[#a7e9e3] bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#1f948e]">
+        <div className="mx-auto flex min-h-[36px] w-[min(980px,calc(100%-36px))] flex-nowrap items-center justify-center gap-x-2 py-1">
+          <span className="font-ui hidden items-center rounded-full border border-[#a7e9e3] bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#1f948e] sm:inline-flex">
             New Offers
           </span>
-          <p className="font-ui text-center text-[12px] font-semibold text-[#101828] md:text-[13px]">
+          <p className="font-ui text-[11px] font-semibold whitespace-nowrap text-[#101828] sm:hidden">
+            Latest offers available
+          </p>
+          <p className="font-ui hidden text-center text-[12px] font-semibold text-[#101828] sm:block md:text-[13px]">
             Check our latest wellness and care offer posters.
           </p>
           <a
             href={OFFERS_FOLDER_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-ui inline-flex items-center rounded-full border border-[#1f948e] bg-white px-3 py-1 text-[11px] font-bold text-[#1f948e] transition hover:bg-[#1f948e] hover:text-white md:text-[12px]"
+            className="font-ui inline-flex items-center rounded-full border border-[#1f948e] bg-white px-2.5 py-1 text-[10px] font-bold text-[#1f948e] transition hover:bg-[#1f948e] hover:text-white sm:px-3 sm:text-[11px] md:text-[12px]"
           >
             View Offers
           </a>

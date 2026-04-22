@@ -177,16 +177,14 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-[linear-gradient(179deg,rgba(1,73,69,0.8)_0.49%,rgba(255,255,255,0)_187.51%)]" />
           <div className="absolute inset-0 bg-black/25" />
-          <div className={`relative ${wrapperClass}`}>
-            <div className="max-w-[560px]">
+          <div className={`relative ${wrapperClass} translate-y-3 md:translate-y-28`}>
+            <div className="max-w-[560px] lg:max-w-[960px]">
               <p className="font-ui text-[14px] text-white/90">Authentic Ayurveda Care</p>
-              <h1 className="mt-3 text-[clamp(36px,7vw,60px)] leading-[1.12] font-bold text-white">
-                Restore Harmony in
-                <br />
-                Mind, Body &amp; Spirit
+              <h1 className="mt-3 text-[clamp(36px,7vw,60px)] leading-[1.12] font-bold text-white lg:whitespace-nowrap">
+                Restore Harmony in Mind, Body &amp; Spirit
               </h1>
-              <p className="font-ui mt-5 mb-8 max-w-[520px] text-[18px] leading-[1.55] text-white/90">
-                At Saukhyabharathi, classical Ayurveda meets modern medicine — personalized consultations,
+              <p className="font-ui mt-3 mb-5 max-w-[980px] text-[15px] leading-[1.6] text-white/90 md:text-[16px] lg:whitespace-nowrap">
+                At Saukhyabharathi, classical Ayurveda meets modern medicine personalized consultations,
                 evidence-informed therapies, and wellness programs for lasting balance.
               </p>
               <div className="font-ui flex flex-wrap gap-3.5">

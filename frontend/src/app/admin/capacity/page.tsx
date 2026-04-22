@@ -18,16 +18,36 @@ export default function AdminCapacityPage() {
       });
   }, []);
 
+  const fullCount = rows.filter((row) => row.remaining <= 0).length;
+  const criticalCount = rows.filter((row) => row.remaining > 0 && row.remaining <= 2).length;
+  const availableCount = rows.filter((row) => row.remaining > 2).length;
+
   return (
     <AdminShell title="Capacity">
       {error && <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
+      {rows.length > 0 ? (
+        <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Capacity rows</p>
+            <p className="mt-1 text-2xl font-semibold text-slate-900">{rows.length}</p>
+          </div>
+          <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-rose-700">Full buckets</p>
+            <p className="mt-1 text-2xl font-semibold text-rose-800">{fullCount}</p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">Critical buckets</p>
+            <p className="mt-1 text-2xl font-semibold text-amber-800">{criticalCount}</p>
+          </div>
+        </div>
+      ) : null}
       {rows.length === 0 ? (
         <AdminEmptyState
           title="No capacity rows found"
           description="Capacity records are created when booking or scheduling operations touch a date and time bucket."
         />
       ) : null}
-      <div className="overflow-x-auto rounded-xl border border-slate-200">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
         <table className="min-w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
@@ -44,7 +64,7 @@ export default function AdminCapacityPage() {
             {rows.map((row) => (
               <tr
                 key={`${row.service_id}-${row.appointment_date}-${row.slot_time}`}
-                className="border-b border-slate-100 text-slate-700 hover:bg-slate-50/70"
+                className="border-b border-slate-100 text-slate-700 odd:bg-white even:bg-slate-50/40 hover:bg-slate-50/80"
               >
                 <td className="px-3 py-2.5 font-medium">{row.service_id}</td>
                 <td className="px-3 py-2.5">{row.appointment_date}</td>
@@ -62,6 +82,11 @@ export default function AdminCapacityPage() {
           </tbody>
         </table>
       </div>
+      {rows.length > 0 ? (
+        <p className="mt-3 text-xs text-slate-500">
+          Snapshot: {availableCount} available, {criticalCount} critical, {fullCount} full buckets.
+        </p>
+      ) : null}
     </AdminShell>
   );
 }
