@@ -43,6 +43,7 @@ def post_appointment(
             phone_raw=body.phone,
             age=body.age,
             gender=body.gender,
+            booking_for=body.booking_for,
             concern=body.concern,
             consent_accepted=body.consent_accepted,
             source=body.source,

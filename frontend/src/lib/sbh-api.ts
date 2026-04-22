@@ -33,6 +33,7 @@ export type AppointmentCreatePayload = {
   phone: string;
   age: number;
   gender: "male" | "female" | "other";
+  booking_for: "self" | "parent" | "others";
   concern?: string | null;
   consent_accepted: boolean;
   source: string;

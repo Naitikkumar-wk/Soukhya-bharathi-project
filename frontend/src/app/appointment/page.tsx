@@ -34,6 +34,7 @@ type Service = {
 
 type TimePreference = string;
 type Gender = "male" | "female" | "other";
+type BookingFor = "self" | "parent" | "others";
 
 type BookingState = {
   service: Service | null;
@@ -44,6 +45,7 @@ type BookingState = {
   phone: string;
   age: string;
   gender: Gender | "";
+  bookingFor: BookingFor;
   concern: string;
   consentAccepted: boolean;
 };
@@ -213,6 +215,12 @@ const GENDER_OPTIONS: { value: Gender; label: string }[] = [
   { value: "male", label: "Male" },
   { value: "female", label: "Female" },
   { value: "other", label: "Other" },
+];
+
+const BOOKING_FOR_OPTIONS: { value: BookingFor; label: string }[] = [
+  { value: "self", label: "Self" },
+  { value: "parent", label: "Parent" },
+  { value: "others", label: "Others" },
 ];
 
 /** Shown in expandable panel on step 3; keep in sync with clinic OPD consent (Revised Apr 2026). */
@@ -892,6 +900,7 @@ export default function BookPage() {
     phone: "",
     age: "",
     gender: "",
+    bookingFor: "self",
     concern: "",
     consentAccepted: false,
   });
@@ -997,6 +1006,7 @@ export default function BookPage() {
     else if (Number(booking.age) < 1 || Number(booking.age) > 120)
       errs.age = "Enter a valid age (1–120)";
     if (!booking.gender) errs.gender = "Please select a gender";
+    if (!booking.bookingFor) errs.bookingFor = "Please choose who the booking is for";
     if (!booking.consentAccepted)
       errs.consentAccepted = "Please read the OPD consent and confirm you agree to continue";
     return errs;
@@ -1063,6 +1073,7 @@ export default function BookPage() {
           phone: booking.phone.trim(),
           age: Number(booking.age),
           gender: booking.gender as Gender,
+          booking_for: booking.bookingFor,
           concern: booking.concern.trim() ? booking.concern.trim() : null,
           consent_accepted: true,
           source: "web",
@@ -1099,6 +1110,7 @@ export default function BookPage() {
       phone: "",
       age: "",
       gender: "",
+      bookingFor: "self",
       concern: "",
       consentAccepted: false,
     });
@@ -1449,6 +1461,34 @@ export default function BookPage() {
                     )}
                   </div>
 
+                  {/* Booking For */}
+                  <div>
+                    <label className="font-ui mb-1.5 block text-[13px] font-bold text-[#101828]">
+                      Booking For <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex flex-wrap gap-4 pt-3">
+                      {BOOKING_FOR_OPTIONS.map((option) => (
+                        <label key={option.value} className="flex cursor-pointer items-center gap-1.5">
+                          <input
+                            type="radio"
+                            name="bookingFor"
+                            value={option.value}
+                            checked={booking.bookingFor === option.value}
+                            onChange={() => {
+                              setBooking((b) => ({ ...b, bookingFor: option.value }));
+                              setErrors((er) => ({ ...er, bookingFor: "" }));
+                            }}
+                            className="h-4 w-4 accent-[#1f948e]"
+                          />
+                          <span className="font-ui text-[13px] text-[#101828]">{option.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {errors.bookingFor && (
+                      <p className="font-ui mt-1 text-[12px] text-red-500">{errors.bookingFor}</p>
+                    )}
+                  </div>
+
                   {/* Medical Concern */}
                   <div className="md:col-span-2">
                     <label className="font-ui mb-1.5 block text-[13px] font-bold text-[#101828]">
@@ -1566,6 +1606,10 @@ export default function BookPage() {
                         ? booking.gender.charAt(0).toUpperCase() + booking.gender.slice(1)
                         : ""
                     }
+                  />
+                  <SummaryRow
+                    label="Booking For"
+                    value={booking.bookingFor.charAt(0).toUpperCase() + booking.bookingFor.slice(1)}
                   />
                   {booking.concern && (
                     <>

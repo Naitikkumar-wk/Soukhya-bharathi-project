@@ -74,6 +74,7 @@ class Appointment(Base):
     phone_normalized: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     age: Mapped[int] = mapped_column(Integer, nullable=False)
     gender: Mapped[str] = mapped_column(String(16), nullable=False)
+    booking_for: Mapped[str] = mapped_column(String(16), nullable=False, default="self")
     concern: Mapped[str | None] = mapped_column(Text, nullable=True)
     internal_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     consent_accepted: Mapped[bool] = mapped_column(Boolean, nullable=False)

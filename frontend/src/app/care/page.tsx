@@ -41,7 +41,7 @@ type CareHeading = {
 const careHeadings: CareHeading[] = [
   {
     id: "terminal-illness",
-    label: "Terminal Illness",
+    label: "Terminal Illness Care",
     description:
       "Integrated support for advanced, high-risk, and quality-of-life-focused care pathways.",
     imageSrc: "/images/care-tile-cancer.webp",
@@ -75,7 +75,6 @@ const careHeadings: CareHeading[] = [
           "Sleep Disorders",
           "Male Infertility",
           "Home Panchakarma Services",
-          "Surgical Care",
         ],
       },
     ],
@@ -84,17 +83,13 @@ const careHeadings: CareHeading[] = [
     id: "cardiac-care",
     label: "Cardiac Care",
     description:
-      "Preventive and therapeutic cardiology integrated with diagnostics and long-term risk management.",
+      "Preventive and therapeutic cardiology with long-term risk management.",
     imageSrc: "/images/care-tile-cardiac.jpg",
     imageAlt: "Cardiologist reviewing ECG notes with stethoscope",
     subUnits: [
       {
         title: "Cardiology Programs",
         diseases: ["Preventive Cardiology", "Hypertension"],
-      },
-      {
-        title: "Diagnostic Services Support",
-        diseases: ["ECG", "Blood Investigation", "PAP Smear Test"],
       },
     ],
   },
@@ -143,19 +138,13 @@ const careHeadings: CareHeading[] = [
           "Pre-Pregnancy Planning (Garbha Samskara)",
           "Antenatal / Postnatal Care",
           "Pregnancy Care",
+          "PAP Smear Test",
           "Endometriosis",
         ],
       },
       {
         title: "Pediatric Care",
-        diseases: [
-          "Autism",
-          "ADHD",
-          "Developmental Delay",
-          "Allergy / Asthma",
-          "Skin Disorders",
-          "Tonsil & Adenoid Care",
-        ],
+        diseases: ["Pediatric Care"],
       },
     ],
   },
@@ -192,10 +181,6 @@ const careHeadings: CareHeading[] = [
           "Ligament Injury / Sprains",
         ],
       },
-      {
-        title: "Diagnostics",
-        diseases: ["ECG", "Blood Investigation", "PAP Smear Test"],
-      },
     ],
   },
   {
@@ -207,16 +192,26 @@ const careHeadings: CareHeading[] = [
     imageAlt: "Medical professional performing laser skin treatment on a patient",
     subUnits: [
       {
-        title: "Skin & Hair Care",
-        diseases: [
-          "Acne",
-          "Psoriasis",
-          "Vitiligo",
-          "Eczema",
-          "Fungal Infections",
-          "Hair Fall",
-          "Premature Graying of Hair",
-        ],
+        title: "Skin Care",
+        diseases: ["Acne", "Psoriasis", "Vitiligo", "Eczema", "Fungal Infections"],
+      },
+      {
+        title: "Hair Care",
+        diseases: ["Hair Fall", "Premature Graying of Hair", "Scalp Health & Dandruff"],
+      },
+    ],
+  },
+  {
+    id: "diagnostic-services",
+    label: "Diagnostic Services",
+    description:
+      "Supporting investigations that complement clinical assessment across specialties, coordinated with your care team.",
+    imageSrc: "/images/care-tile-cardiac.jpg",
+    imageAlt: "Clinical monitoring and diagnostic support",
+    subUnits: [
+      {
+        title: "Diagnostics",
+        diseases: ["ECG", "Blood Investigation"],
       },
     ],
   },
@@ -348,7 +343,7 @@ export default function CarePage() {
               Care @ Saukhyabharathi
             </h1>
             <p className="font-ui mx-auto mt-3 max-w-[760px] text-[15px] leading-[1.75] text-[#4a5565] md:mt-4 md:text-[16px] md:leading-[1.8]">
-              Integrated Ayurveda and modern medicine organized into 6 focused care headings for clearer
+              Integrated Ayurveda and modern medicine organized into 7 focused care headings for clearer
               disease-wise guidance.
             </p>
 

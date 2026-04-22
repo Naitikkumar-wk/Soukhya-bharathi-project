@@ -109,6 +109,7 @@ def appointment_to_response(a: Appointment) -> dict[str, Any]:
         "phone": a.phone,
         "age": a.age,
         "gender": a.gender,
+        "booking_for": a.booking_for,
         "concern": a.concern,
         "created_at": a.created_at.isoformat().replace("+00:00", "Z"),
     }
@@ -125,6 +126,7 @@ def create_booking(
     phone_raw: str,
     age: int,
     gender: str,
+    booking_for: str,
     concern: str | None,
     consent_accepted: bool,
     source: str,
@@ -143,6 +145,8 @@ def create_booking(
 
     if gender not in ("male", "female", "other"):
         raise ApiError("VALIDATION_ERROR", "Invalid gender", 422)
+    if booking_for not in ("self", "parent", "others"):
+        raise ApiError("VALIDATION_ERROR", "Invalid booking_for", 422)
 
     nm = name.strip()
     if not nm or len(nm) > 120:
@@ -229,6 +233,7 @@ def create_booking(
             phone_normalized=normalized_phone,
             age=age,
             gender=gender,
+            booking_for=booking_for,
             concern=concern,
             consent_accepted=True,
             source=source,

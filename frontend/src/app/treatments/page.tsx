@@ -381,6 +381,47 @@ export default function TreatmentsPage() {
                 <TherapyCard key={therapy.id} therapy={therapy} />
               ))}
             </div>
+
+            <article
+              id="saukhya-aushadi"
+              className="mt-6 scroll-mt-32 overflow-hidden rounded-2xl border border-[#a7e9e3] bg-gradient-to-br from-[#f0fffe] via-white to-white shadow-[0_8px_24px_rgba(16,24,40,0.08)] md:mt-7"
+            >
+              <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-[1fr,220px] md:gap-6 md:p-6">
+                <div>
+                  <span className="font-ui inline-flex items-center rounded-full border border-[#a7e9e3] bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1f948e]">
+                    Pharmacy Option
+                  </span>
+                  <h3 className="mt-2 text-[24px] font-bold leading-tight text-[#101828] md:text-[26px]">
+                    Saukhya Aushadi (Pharmacy)
+                  </h3>
+                  <p className="font-ui mt-2 max-w-[760px] text-[15px] leading-[1.68] text-[#4a5565]">
+                    This section is for medicine purchase and refill support, not for booking a therapy session. Soon
+                    you can order prescribed medicines directly from here.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <span className="font-ui rounded-full border border-[#d5f3ef] bg-white px-3 py-1 text-[12px] font-medium text-[#1f7474]">
+                      Prescription Medicines
+                    </span>
+                    <span className="font-ui rounded-full border border-[#d5f3ef] bg-white px-3 py-1 text-[12px] font-medium text-[#1f7474]">
+                      Refill Support
+                    </span>
+                    <span className="font-ui rounded-full border border-[#d5f3ef] bg-white px-3 py-1 text-[12px] font-medium text-[#1f7474]">
+                      Guidance at Checkout
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col justify-center rounded-xl border border-[#e5e7eb] bg-white/90 p-4 md:p-5">
+                  <p className="font-ui text-center text-[12px] font-semibold text-[#4a5565]">Pharmacy launch status</p>
+                  <button
+                    type="button"
+                    disabled
+                    className="font-ui mt-2 inline-flex cursor-not-allowed items-center justify-center rounded-full border border-[#e5e7eb] bg-[#f9fafb] px-6 py-2.5 text-[13px] font-bold text-[#9ca3af] md:text-[14px]"
+                  >
+                    Coming Soon
+                  </button>
+                </div>
+              </div>
+            </article>
           </div>
         </section>
 
