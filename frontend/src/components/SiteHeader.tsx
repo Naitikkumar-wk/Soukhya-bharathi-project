@@ -7,8 +7,9 @@ import { useState } from "react";
 export type NavItem = { href: string; label: string };
 
 /** Top-level nav labels that open Care / Treatments mega-menus (routes stay `/care`, `/treatments`). */
-export const NAV_CARE_LABEL = "care@SKBH";
-export const NAV_WELLNESS_LABEL = "wellness@SKBH";
+export const NAV_CARE_LABEL = "Care@SBH";
+export const NAV_WELLNESS_LABEL = "Wellness@SBH";
+const OFFERS_FOLDER_URL = process.env.NEXT_PUBLIC_OFFERS_FOLDER_URL ?? "#";
 
 type Props = {
   brandName?: string;
@@ -39,7 +40,7 @@ function MobileChevron({ open }: { open: boolean }) {
   return (
     <svg
       aria-hidden
-      className={`h-4 w-4 shrink-0 text-[#4a5565] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      className={`h-4 w-4 shrink-0 text-[#101828] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
       viewBox="0 0 20 20"
       fill="currentColor"
     >
@@ -74,6 +75,27 @@ export function SiteHeader({
 
   return (
     <header className="sticky top-0 z-30 border-b border-[#e5e7eb] bg-white">
+      <div className="border-b border-[#d5f3ef] bg-gradient-to-r from-[#eafffc] via-[#f0fffe] to-[#eafffc]">
+        <div className="mx-auto flex min-h-[36px] w-[min(980px,calc(100%-36px))] flex-nowrap items-center justify-center gap-x-2 py-1">
+          <span className="font-ui hidden items-center rounded-full border border-[#a7e9e3] bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#1f948e] sm:inline-flex">
+            New Offers
+          </span>
+          <p className="font-ui text-[11px] font-semibold whitespace-nowrap text-[#101828] sm:hidden">
+            Latest offers available
+          </p>
+          <p className="font-ui hidden text-center text-[12px] font-semibold text-[#101828] sm:block md:text-[13px]">
+            Check our latest wellness and care offer posters.
+          </p>
+          <a
+            href={OFFERS_FOLDER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-ui inline-flex items-center rounded-full border border-[#1f948e] bg-white px-2.5 py-1 text-[10px] font-bold text-[#1f948e] transition hover:bg-[#1f948e] hover:text-white sm:px-3 sm:text-[11px] md:text-[12px]"
+          >
+            View Offers
+          </a>
+        </div>
+      </div>
       <div className="mx-auto flex h-[68px] w-[min(1440px,calc(100%-36px))] items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2.5 no-underline">
           <span className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-lg bg-[#1f948e]">
@@ -92,7 +114,7 @@ export function SiteHeader({
           </span>
         </Link>
 
-        <nav className="font-ui hidden flex-1 items-center justify-center gap-6 lg:flex xl:gap-8">
+        <nav className="hidden flex-1 items-center justify-center gap-1 font-sans lg:flex">
           {withDirectRoutes.map((item) => {
             const menuItems =
               item.label === NAV_CARE_LABEL
@@ -105,27 +127,27 @@ export function SiteHeader({
                 <a
                   key={item.label}
                   href={item.href}
-                  className="inline-flex min-h-[44px] items-center whitespace-nowrap text-[15px] text-[#4a5565] hover:text-[#101828]"
+                  className="inline-flex h-10 items-center whitespace-nowrap px-[10px] text-[16px] text-[#101828] hover:text-[#101828]"
                 >
                   {item.label}
                 </a>
               );
             }
             return (
-              <div key={item.label} className="group relative flex items-center gap-1">
+              <div key={item.label} className="group relative flex items-center">
                 <a
                   href={item.href}
-                  className="inline-flex min-h-[44px] items-center whitespace-nowrap text-[15px] text-[#4a5565] hover:text-[#101828]"
+                  className="inline-flex h-10 items-center whitespace-nowrap px-[10px] text-[16px] text-[#101828] hover:text-[#101828]"
                 >
                   {item.label}
                 </a>
-                <span className="text-[11px] text-[#4a5565]">▾</span>
+                <span className="text-[11px] text-[#101828]">▾</span>
                 <div className="pointer-events-none invisible absolute top-[42px] left-0 z-40 min-w-[248px] rounded-xl border border-[#e5e7eb] bg-white p-2 opacity-0 shadow-[0_10px_28px_rgba(16,24,40,0.14)] transition group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
                   {menuItems.map((menuItem) => (
                     <a
                       key={menuItem.href}
                       href={menuItem.href}
-                      className="block rounded-lg px-3 py-2 text-[14px] text-[#4a5565] hover:bg-[#f0fffe] hover:text-[#101828]"
+                      className="block rounded-lg px-3 py-2 text-[16px] text-[#101828] hover:bg-[#f0fffe] hover:text-[#101828]"
                     >
                       {menuItem.label}
                     </a>
@@ -193,7 +215,7 @@ export function SiteHeader({
                 <div key={item.label} className="border-b border-[#f0f1f3] py-1 last:border-b-0">
                   <a
                     href={item.href}
-                    className="block py-2.5 text-[16px] text-[#4a5565]"
+                    className="block py-2.5 text-[16px] text-[#101828]"
                     onClick={() => setMobileOpen(false)}
                   >
                     {item.label}
@@ -207,14 +229,14 @@ export function SiteHeader({
                 <div className="flex min-h-[44px] items-stretch gap-1">
                   <a
                     href={item.href}
-                    className="flex flex-1 items-center py-2.5 text-[16px] text-[#4a5565]"
+                    className="flex flex-1 items-center py-2.5 text-[16px] text-[#101828]"
                     onClick={() => setMobileOpen(false)}
                   >
                     {item.label}
                   </a>
                   <button
                     type="button"
-                    className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg border-0 bg-transparent text-[#4a5565]"
+                    className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg border-0 bg-transparent text-[#101828]"
                     aria-expanded={expanded}
                     aria-controls={`mobile-sub-${item.label}`}
                     onClick={() =>
@@ -237,7 +259,7 @@ export function SiteHeader({
                       <a
                         key={menuItem.href}
                         href={menuItem.href}
-                        className="block py-2 text-[14px] text-[#5b6571]"
+                        className="block py-2 text-[16px] text-[#101828]"
                         onClick={() => setMobileOpen(false)}
                       >
                         {menuItem.label}

@@ -40,7 +40,23 @@ const SLOT_TIMES = [
   "7:30 PM",
 ] as const;
 
+function toYyyyMmDd(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function ymdOffset(days: number): string {
+  const now = new Date();
+  now.setDate(now.getDate() + days);
+  return toYyyyMmDd(now);
+}
+
 export default function AdminAppointmentsPage() {
+  const today = ymdOffset(0);
+  const tomorrow = ymdOffset(1);
+  const nextDay = ymdOffset(2);
   const [items, setItems] = useState<AdminAppointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,11 +66,11 @@ export default function AdminAppointmentsPage() {
     slot_time: "",
     phone: "",
     booking_reference: "",
-    date_from: "",
-    date_to: "",
+    date_from: today,
+    date_to: today,
     limit: 100,
   });
-  const [specificDate, setSpecificDate] = useState("");
+  const [specificDate, setSpecificDate] = useState(today);
 
   async function load(nextFilters: AdminAppointmentsFilters = filters) {
     setLoading(true);
@@ -102,13 +118,20 @@ export default function AdminAppointmentsPage() {
       slot_time: "",
       phone: "",
       booking_reference: "",
-      date_from: "",
-      date_to: "",
+      date_from: today,
+      date_to: today,
       limit: 100,
     };
-    setSpecificDate("");
+    setSpecificDate(today);
     setFilters(reset);
     load(reset);
+  }
+
+  function handleQuickDay(dateValue: string) {
+    const next = { ...filters, date_from: dateValue, date_to: dateValue };
+    setSpecificDate(dateValue);
+    setFilters(next);
+    load(next);
   }
 
   return (
@@ -222,6 +245,41 @@ export default function AdminAppointmentsPage() {
           </div>
         </form>
         <div className="mt-4 flex flex-wrap items-end gap-3">
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => handleQuickDay(today)}
+              className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                specificDate === today
+                  ? "border-teal-600 bg-teal-600 text-white"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              Today
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickDay(tomorrow)}
+              className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                specificDate === tomorrow
+                  ? "border-teal-600 bg-teal-600 text-white"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              Tomorrow
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickDay(nextDay)}
+              className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                specificDate === nextDay
+                  ? "border-teal-600 bg-teal-600 text-white"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              Next day
+            </button>
+          </div>
           <div>
             <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
               Specific date quick search

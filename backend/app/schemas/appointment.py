@@ -13,6 +13,7 @@ class AppointmentCreate(BaseModel):
     phone: str = Field(..., max_length=32)
     age: int = Field(..., ge=1, le=120)
     gender: Literal["male", "female", "other"]
+    booking_for: Literal["self", "parent", "others"] = "self"
     concern: str | None = Field(None, max_length=300)
     consent_accepted: bool
     source: str = Field(default="web", max_length=32)
@@ -31,5 +32,6 @@ class AppointmentRead(BaseModel):
     phone: str
     age: int
     gender: str
+    booking_for: str
     concern: str | None
     created_at: str

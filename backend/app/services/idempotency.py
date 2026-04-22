@@ -12,6 +12,7 @@ def hash_appointment_payload(payload: dict[str, Any]) -> str:
         "phone": payload["phone"],
         "age": payload["age"],
         "gender": payload["gender"],
+        "booking_for": payload.get("booking_for") or "self",
         "concern": payload.get("concern"),
         "consent_accepted": payload["consent_accepted"],
         "source": payload.get("source") or "web",
