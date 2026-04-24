@@ -8,6 +8,34 @@ type Props = {
 const quickLinkClass =
   "text-white/80 underline-offset-2 transition hover:text-white hover:underline";
 
+const iconClass = "mt-0.5 h-[18px] w-[18px] shrink-0 text-white/90";
+
+function IconMapPin({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}
+
+function IconPhone({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+    </svg>
+  );
+}
+
+function IconMail({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect width="20" height="16" x="2" y="4" rx="2" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
+  );
+}
+
 /** Matches wellness sections on `/treatments`; Shirodhara/Abhyanga anchor to Panchakarma as closest program content. */
 const footerTreatmentLinks: { href: string; label: string }[] = [
   { href: "/treatments?section=panchakarma", label: "Panchakarma" },
@@ -99,20 +127,28 @@ export function SiteFooter({ wrapperClass = "mx-auto w-[min(1184px,calc(100%-48p
                 href="https://maps.app.goo.gl/EZLmm7VTySGfyGFN9"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={quickLinkClass}
+                className={`${quickLinkClass} inline-flex items-start gap-2.5`}
               >
-                1st Cross Road, Siddapura Rd, 1st Block, Jaya Nagar East, Jayanagar, Bengaluru,
-                Karnataka 560011
+                <IconMapPin className={iconClass} />
+                <span>
+                  1st Cross Road, Siddapura Rd, 1st Block, Jaya Nagar East, Jayanagar, Bengaluru,
+                  Karnataka 560011
+                </span>
               </a>
             </li>
             <li>
-              <a href="tel:+919364087518" className={quickLinkClass}>
-                +91 93640 87518
+              <a href="tel:+919364087518" className={`${quickLinkClass} inline-flex items-start gap-2.5`}>
+                <IconPhone className={iconClass} />
+                <span>+91 93640 87518</span>
               </a>
             </li>
             <li>
-              <a href="mailto:sbh.hrmanager@gmail.com" className={quickLinkClass}>
-                sbh.hrmanager@gmail.com
+              <a
+                href="mailto:sbh.hrmanager@gmail.com"
+                className={`${quickLinkClass} inline-flex items-start gap-2.5 break-all`}
+              >
+                <IconMail className={iconClass} />
+                <span>sbh.hrmanager@gmail.com</span>
               </a>
             </li>
           </ul>
