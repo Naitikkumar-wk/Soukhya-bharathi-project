@@ -1050,13 +1050,16 @@ export default function BookPage() {
   ) => {
     switch (field) {
       case "name":
-        return snapshot.name.trim() ? "" : "Name is required";
+        if (!snapshot.name.trim()) return "Name is required";
+        return /^[A-Za-z][A-Za-z\s'.-]{1,59}$/.test(snapshot.name.trim())
+          ? ""
+          : "Enter a valid name (letters only)";
       case "email":
         if (!snapshot.email.trim()) return "Email is required";
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(snapshot.email.trim()) ? "" : "Enter a valid email";
       case "phone":
         if (!snapshot.phone.trim()) return "Phone number is required";
-        return /^\+?[\d\s\-]{7,15}$/.test(snapshot.phone.trim()) ? "" : "Enter a valid phone number";
+        return /^\d{10}$/.test(snapshot.phone.trim()) ? "" : "Mobile number must be exactly 10 digits";
       case "age":
         if (!snapshot.age) return "Age is required";
         return Number(snapshot.age) >= 1 && Number(snapshot.age) <= 120
@@ -1454,12 +1457,11 @@ export default function BookPage() {
                       onChange={(e) => {
                         const nextName = e.target.value;
                         setBooking((b) => ({ ...b, name: nextName }));
-                        if (touched.name) {
-                          setErrors((er) => ({
-                            ...er,
-                            name: validateDetailField("name", { ...booking, name: nextName }),
-                          }));
-                        }
+                        setTouched((prev) => ({ ...prev, name: true }));
+                        setErrors((er) => ({
+                          ...er,
+                          name: validateDetailField("name", { ...booking, name: nextName }),
+                        }));
                       }}
                       onBlur={() => {
                         setTouched((prev) => ({ ...prev, name: true }));
@@ -1484,16 +1486,18 @@ export default function BookPage() {
                     </label>
                     <input
                       type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      maxLength={10}
                       value={booking.phone}
                       onChange={(e) => {
                         const nextPhone = e.target.value;
                         setBooking((b) => ({ ...b, phone: nextPhone }));
-                        if (touched.phone) {
-                          setErrors((er) => ({
-                            ...er,
-                            phone: validateDetailField("phone", { ...booking, phone: nextPhone }),
-                          }));
-                        }
+                        setTouched((prev) => ({ ...prev, phone: true }));
+                        setErrors((er) => ({
+                          ...er,
+                          phone: validateDetailField("phone", { ...booking, phone: nextPhone }),
+                        }));
                       }}
                       onBlur={() => {
                         setTouched((prev) => ({ ...prev, phone: true }));
@@ -1522,12 +1526,11 @@ export default function BookPage() {
                       onChange={(e) => {
                         const nextEmail = e.target.value;
                         setBooking((b) => ({ ...b, email: nextEmail }));
-                        if (touched.email) {
-                          setErrors((er) => ({
-                            ...er,
-                            email: validateDetailField("email", { ...booking, email: nextEmail }),
-                          }));
-                        }
+                        setTouched((prev) => ({ ...prev, email: true }));
+                        setErrors((er) => ({
+                          ...er,
+                          email: validateDetailField("email", { ...booking, email: nextEmail }),
+                        }));
                       }}
                       onBlur={() => {
                         setTouched((prev) => ({ ...prev, email: true }));
