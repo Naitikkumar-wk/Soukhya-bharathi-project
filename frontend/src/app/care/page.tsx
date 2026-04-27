@@ -273,13 +273,29 @@ function CareHeadingSection({
           {heading.subUnits.map((unit) => (
             <article
               key={unit.title}
-              className="rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
+              className="flex h-full flex-col rounded-2xl border border-[#e5e7eb] bg-white p-6 shadow-[0_2px_8px_rgba(16,24,40,0.06)]"
             >
               <h3 className="text-[20px] font-bold text-[#101828]">{unit.title}</h3>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-2">
+                <span className="font-ui inline-flex rounded-full border border-[#a7e9e3] bg-[#f0fffe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#1f7474]">
+                  {unit.diseases.length} Services
+                </span>
+              </div>
+              <p className="font-ui mt-3 text-[14px] leading-[1.7] text-[#4a5565]">
+                Physician-led assessment and integrated treatment planning across the focus areas below.
+              </p>
+              <div className="mt-4 flex flex-1 flex-wrap content-start gap-2">
                 {unit.diseases.map((disease) => (
                   <DiseaseChip key={disease} label={disease} />
                 ))}
+              </div>
+              <div className="mt-5 border-t border-[#e5e7eb] pt-4">
+                <a
+                  href="/appointment"
+                  className="font-ui inline-flex items-center text-[13px] font-bold text-[#1f948e] transition hover:text-[#156f69]"
+                >
+                  Discuss this specialty
+                </a>
               </div>
             </article>
           ))}

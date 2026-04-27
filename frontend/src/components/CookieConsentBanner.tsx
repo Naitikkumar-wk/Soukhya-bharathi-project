@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 const CONSENT_KEY = "sbh_cookie_consent";
 const CONSENT_COOKIE = "sbh_cookie_consent";
@@ -21,12 +21,14 @@ function persistConsent(value: ConsentValue) {
 }
 
 export function CookieConsentBanner() {
+  const [isMounted, setIsMounted] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const saved = localStorage.getItem(CONSENT_KEY);
     const cookieValue = readConsentFromCookie();
-    const current = saved ?? cookieValue;
+    const current = cookieValue ?? saved;
     setVisible(current !== "accepted" && current !== "declined");
   }, []);
 
@@ -35,7 +37,7 @@ export function CookieConsentBanner() {
     setVisible(false);
   };
 
-  if (!visible) return null;
+  if (!isMounted || !visible) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 p-4 backdrop-blur-sm md:p-6">

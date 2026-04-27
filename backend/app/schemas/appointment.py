@@ -18,6 +18,7 @@ class AppointmentCreate(BaseModel):
     consent_accepted: bool
     source: str = Field(default="web", max_length=32)
     idempotency_key: str | None = Field(None, max_length=255)
+    captcha_token: str | None = Field(None, max_length=2048)
 
 
 class AppointmentRead(BaseModel):
