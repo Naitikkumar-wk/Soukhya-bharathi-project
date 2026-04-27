@@ -13,6 +13,15 @@ import {
 } from "@/lib/sbh-api";
 
 const wrapperClass = "mx-auto w-[min(1184px,calc(100%-32px))]";
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+const CAPTCHA_ENABLED = TURNSTILE_SITE_KEY.trim().length > 0;
+
+declare global {
+  interface Window {
+    onSbhTurnstileToken?: (token: string) => void;
+    onSbhTurnstileExpired?: () => void;
+  }
+}
 
 const navItems: NavItem[] = [
   { href: "/", label: "Home" },
@@ -341,6 +350,15 @@ function mapApiService(item: ApiServiceItem): Service {
 
 function mapBookingError(error: unknown): string {
   if (error instanceof SbhApiError) {
+    if (error.code === "CAPTCHA_REQUIRED") {
+      return "Please complete the captcha verification before confirming your booking.";
+    }
+    if (error.code === "CAPTCHA_FAILED") {
+      return "Captcha verification failed. Please try again.";
+    }
+    if (error.code === "CAPTCHA_VERIFICATION_UNAVAILABLE") {
+      return "Captcha verification is temporarily unavailable. Please try again shortly.";
+    }
     if (error.code === "BUCKET_FULL") {
       return "Selected time slot is no longer available. Please choose another slot.";
     }
@@ -878,6 +896,7 @@ export default function BookPage() {
   const [step, setStep] = useState(1);
   const [confirmed, setConfirmed] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState<"specialty" | "wellness">("specialty");
   const [services, setServices] = useState<Service[]>([]);
   const [servicesLoading, setServicesLoading] = useState(true);
@@ -890,6 +909,8 @@ export default function BookPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [bookingResult, setBookingResult] = useState<AppointmentResponse | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaReady, setCaptchaReady] = useState(false);
 
   const [booking, setBooking] = useState<BookingState>({
     service: null,
@@ -932,6 +953,36 @@ export default function BookPage() {
 
   useEffect(() => {
     loadServices();
+  }, []);
+
+  useEffect(() => {
+    if (!CAPTCHA_ENABLED) {
+      setCaptchaReady(false);
+      setCaptchaToken(null);
+      return;
+    }
+    window.onSbhTurnstileToken = (token: string) => {
+      setCaptchaToken(token || null);
+      setSubmitError(null);
+    };
+    window.onSbhTurnstileExpired = () => {
+      setCaptchaToken(null);
+    };
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => setCaptchaReady(true);
+    script.onerror = () => {
+      setCaptchaReady(false);
+      setSubmitError("Captcha failed to load. Please refresh and try again.");
+    };
+    document.head.appendChild(script);
+    return () => {
+      window.onSbhTurnstileToken = undefined;
+      window.onSbhTurnstileExpired = undefined;
+      document.head.removeChild(script);
+    };
   }, []);
 
   useEffect(() => {
@@ -993,22 +1044,46 @@ export default function BookPage() {
 
   // ── Validation ────────────────────────────────────────────────────────────
 
+  const validateDetailField = (
+    field: "name" | "email" | "phone" | "age" | "gender" | "bookingFor" | "consentAccepted",
+    snapshot: BookingState = booking
+  ) => {
+    switch (field) {
+      case "name":
+        return snapshot.name.trim() ? "" : "Name is required";
+      case "email":
+        if (!snapshot.email.trim()) return "Email is required";
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(snapshot.email.trim()) ? "" : "Enter a valid email";
+      case "phone":
+        if (!snapshot.phone.trim()) return "Phone number is required";
+        return /^\+?[\d\s\-]{7,15}$/.test(snapshot.phone.trim()) ? "" : "Enter a valid phone number";
+      case "age":
+        if (!snapshot.age) return "Age is required";
+        return Number(snapshot.age) >= 1 && Number(snapshot.age) <= 120
+          ? ""
+          : "Enter a valid age (1–120)";
+      case "gender":
+        return snapshot.gender ? "" : "Please select a gender";
+      case "bookingFor":
+        return snapshot.bookingFor ? "" : "Please choose who the booking is for";
+      case "consentAccepted":
+        return snapshot.consentAccepted
+          ? ""
+          : "Please read the OPD consent and confirm you agree to continue";
+      default:
+        return "";
+    }
+  };
+
   const validateStep4 = () => {
     const errs: Record<string, string> = {};
-    if (!booking.name.trim()) errs.name = "Name is required";
-    if (!booking.email.trim()) errs.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(booking.email.trim()))
-      errs.email = "Enter a valid email";
-    if (!booking.phone.trim()) errs.phone = "Phone number is required";
-    else if (!/^\+?[\d\s\-]{7,15}$/.test(booking.phone.trim()))
-      errs.phone = "Enter a valid phone number";
-    if (!booking.age) errs.age = "Age is required";
-    else if (Number(booking.age) < 1 || Number(booking.age) > 120)
-      errs.age = "Enter a valid age (1–120)";
-    if (!booking.gender) errs.gender = "Please select a gender";
-    if (!booking.bookingFor) errs.bookingFor = "Please choose who the booking is for";
-    if (!booking.consentAccepted)
-      errs.consentAccepted = "Please read the OPD consent and confirm you agree to continue";
+    const fields: Array<
+      "name" | "email" | "phone" | "age" | "gender" | "bookingFor" | "consentAccepted"
+    > = ["name", "email", "phone", "age", "gender", "bookingFor", "consentAccepted"];
+    for (const field of fields) {
+      const message = validateDetailField(field);
+      if (message) errs[field] = message;
+    }
     return errs;
   };
 
@@ -1029,6 +1104,16 @@ export default function BookPage() {
       const errs = validateStep4();
       if (Object.keys(errs).length > 0) {
         setErrors(errs);
+        setTouched((prev) => ({
+          ...prev,
+          name: true,
+          email: true,
+          phone: true,
+          age: true,
+          gender: true,
+          bookingFor: true,
+          consentAccepted: true,
+        }));
         return;
       }
       setErrors({});
@@ -1040,6 +1125,10 @@ export default function BookPage() {
 
   const handleConfirm = async () => {
     if (!booking.service || !booking.date || !booking.timePreference) return;
+    if (CAPTCHA_ENABLED && !captchaToken) {
+      setSubmitError("Please complete the captcha verification before confirming your booking.");
+      return;
+    }
     const validationErrors = validateStep4();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -1077,12 +1166,28 @@ export default function BookPage() {
           concern: booking.concern.trim() ? booking.concern.trim() : null,
           consent_accepted: true,
           source: "web",
+          captcha_token: CAPTCHA_ENABLED ? captchaToken : null,
         },
         { idempotencyKey }
       );
       setBookingResult(result);
       setConfirmed(true);
     } catch (error) {
+      if (error instanceof SbhApiError && error.code === "VALIDATION_ERROR") {
+        const validationErrors = validateStep4();
+        setErrors(validationErrors);
+        setTouched((prev) => ({
+          ...prev,
+          name: true,
+          email: true,
+          phone: true,
+          age: true,
+          gender: true,
+          bookingFor: true,
+          consentAccepted: true,
+        }));
+        setStep(3);
+      }
       setSubmitError(mapBookingError(error));
     } finally {
       setIsSubmitting(false);
@@ -1099,8 +1204,11 @@ export default function BookPage() {
     setActiveTab("specialty");
     setSubmitError(null);
     setBookingResult(null);
+    setCaptchaToken(null);
     setAvailabilityByBucket({});
     setAvailabilityError(null);
+    setTouched({});
+    setErrors({});
     setBooking({
       service: null,
       date: null,
@@ -1344,8 +1452,18 @@ export default function BookPage() {
                       type="text"
                       value={booking.name}
                       onChange={(e) => {
-                        setBooking((b) => ({ ...b, name: e.target.value }));
-                        setErrors((er) => ({ ...er, name: "" }));
+                        const nextName = e.target.value;
+                        setBooking((b) => ({ ...b, name: nextName }));
+                        if (touched.name) {
+                          setErrors((er) => ({
+                            ...er,
+                            name: validateDetailField("name", { ...booking, name: nextName }),
+                          }));
+                        }
+                      }}
+                      onBlur={() => {
+                        setTouched((prev) => ({ ...prev, name: true }));
+                        setErrors((er) => ({ ...er, name: validateDetailField("name") }));
                       }}
                       placeholder="Enter full name"
                       className={`font-ui w-full rounded-xl border px-4 py-3.5 text-[15px] text-[#101828] placeholder:text-[#9ca3af] outline-none transition focus:ring-2 focus:ring-[#1f948e]/20 ${
@@ -1368,8 +1486,18 @@ export default function BookPage() {
                       type="tel"
                       value={booking.phone}
                       onChange={(e) => {
-                        setBooking((b) => ({ ...b, phone: e.target.value }));
-                        setErrors((er) => ({ ...er, phone: "" }));
+                        const nextPhone = e.target.value;
+                        setBooking((b) => ({ ...b, phone: nextPhone }));
+                        if (touched.phone) {
+                          setErrors((er) => ({
+                            ...er,
+                            phone: validateDetailField("phone", { ...booking, phone: nextPhone }),
+                          }));
+                        }
+                      }}
+                      onBlur={() => {
+                        setTouched((prev) => ({ ...prev, phone: true }));
+                        setErrors((er) => ({ ...er, phone: validateDetailField("phone") }));
                       }}
                       placeholder="+91 93640 87518"
                       className={`font-ui w-full rounded-xl border px-4 py-3.5 text-[15px] text-[#101828] placeholder:text-[#9ca3af] outline-none transition focus:ring-2 focus:ring-[#1f948e]/20 ${
@@ -1392,8 +1520,18 @@ export default function BookPage() {
                       type="email"
                       value={booking.email}
                       onChange={(e) => {
-                        setBooking((b) => ({ ...b, email: e.target.value }));
-                        setErrors((er) => ({ ...er, email: "" }));
+                        const nextEmail = e.target.value;
+                        setBooking((b) => ({ ...b, email: nextEmail }));
+                        if (touched.email) {
+                          setErrors((er) => ({
+                            ...er,
+                            email: validateDetailField("email", { ...booking, email: nextEmail }),
+                          }));
+                        }
+                      }}
+                      onBlur={() => {
+                        setTouched((prev) => ({ ...prev, email: true }));
+                        setErrors((er) => ({ ...er, email: validateDetailField("email") }));
                       }}
                       placeholder="yourname@email.com"
                       className={`font-ui w-full rounded-xl border px-4 py-3.5 text-[15px] text-[#101828] placeholder:text-[#9ca3af] outline-none transition focus:ring-2 focus:ring-[#1f948e]/20 ${
@@ -1416,8 +1554,18 @@ export default function BookPage() {
                       type="number"
                       value={booking.age}
                       onChange={(e) => {
-                        setBooking((b) => ({ ...b, age: e.target.value }));
-                        setErrors((er) => ({ ...er, age: "" }));
+                        const nextAge = e.target.value;
+                        setBooking((b) => ({ ...b, age: nextAge }));
+                        if (touched.age) {
+                          setErrors((er) => ({
+                            ...er,
+                            age: validateDetailField("age", { ...booking, age: nextAge }),
+                          }));
+                        }
+                      }}
+                      onBlur={() => {
+                        setTouched((prev) => ({ ...prev, age: true }));
+                        setErrors((er) => ({ ...er, age: validateDetailField("age") }));
                       }}
                       placeholder="Age in years"
                       min={1}
@@ -1447,8 +1595,10 @@ export default function BookPage() {
                             value={g.value}
                             checked={booking.gender === g.value}
                             onChange={() => {
+                              const nextBooking = { ...booking, gender: g.value };
                               setBooking((b) => ({ ...b, gender: g.value }));
-                              setErrors((er) => ({ ...er, gender: "" }));
+                              setTouched((prev) => ({ ...prev, gender: true }));
+                              setErrors((er) => ({ ...er, gender: validateDetailField("gender", nextBooking) }));
                             }}
                             className="h-4 w-4 accent-[#1f948e]"
                           />
@@ -1475,8 +1625,13 @@ export default function BookPage() {
                             value={option.value}
                             checked={booking.bookingFor === option.value}
                             onChange={() => {
+                              const nextBooking = { ...booking, bookingFor: option.value };
                               setBooking((b) => ({ ...b, bookingFor: option.value }));
-                              setErrors((er) => ({ ...er, bookingFor: "" }));
+                              setTouched((prev) => ({ ...prev, bookingFor: true }));
+                              setErrors((er) => ({
+                                ...er,
+                                bookingFor: validateDetailField("bookingFor", nextBooking),
+                              }));
                             }}
                             className="h-4 w-4 accent-[#1f948e]"
                           />
@@ -1551,8 +1706,13 @@ export default function BookPage() {
                         type="checkbox"
                         checked={booking.consentAccepted}
                         onChange={(e) => {
+                          const nextBooking = { ...booking, consentAccepted: e.target.checked };
                           setBooking((b) => ({ ...b, consentAccepted: e.target.checked }));
-                          setErrors((er) => ({ ...er, consentAccepted: "" }));
+                          setTouched((prev) => ({ ...prev, consentAccepted: true }));
+                          setErrors((er) => ({
+                            ...er,
+                            consentAccepted: validateDetailField("consentAccepted", nextBooking),
+                          }));
                         }}
                         className="mt-0.5 h-4 w-4 shrink-0 accent-[#1f948e]"
                       />
@@ -1629,6 +1789,22 @@ export default function BookPage() {
                 <p className="font-ui mt-5 text-[12px] leading-[1.6] text-[#4a5565]">
                   We will confirm this booking immediately and send your reference details for follow-up.
                 </p>
+                {CAPTCHA_ENABLED && (
+                  <div className="mt-4 rounded-xl border border-[#d9ecff] bg-white p-3">
+                    <p className="font-ui mb-2 text-[12px] font-semibold text-[#4a5565]">
+                      Please verify you are human before confirming.
+                    </p>
+                    <div
+                      className="cf-turnstile"
+                      data-sitekey={TURNSTILE_SITE_KEY}
+                      data-callback="onSbhTurnstileToken"
+                      data-expired-callback="onSbhTurnstileExpired"
+                    />
+                    {!captchaReady && (
+                      <p className="font-ui mt-2 text-[12px] text-[#4a5565]">Loading captcha...</p>
+                    )}
+                  </div>
+                )}
                 {submitError && (
                   <p className="font-ui mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-[12px] text-red-600">
                     {submitError}
@@ -1747,9 +1923,11 @@ export default function BookPage() {
               <button
                 type="button"
                 onClick={handleConfirm}
-                disabled={isSubmitting}
+                disabled={isSubmitting || (CAPTCHA_ENABLED && !captchaToken)}
                 className={`font-ui inline-flex items-center gap-1.5 rounded-full px-8 py-2.5 text-[14px] font-bold text-white transition ${
-                  isSubmitting ? "cursor-not-allowed bg-[#9ca3af]" : "bg-[#1f948e] hover:brightness-95"
+                  isSubmitting || (CAPTCHA_ENABLED && !captchaToken)
+                    ? "cursor-not-allowed bg-[#9ca3af]"
+                    : "bg-[#1f948e] hover:brightness-95"
                 }`}
               >
                 {isSubmitting ? "Confirming..." : "Confirm Booking"}

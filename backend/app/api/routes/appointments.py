@@ -1,12 +1,14 @@
 from typing import Annotated
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Header
+from fastapi import APIRouter, BackgroundTasks, Depends, Header, Request
+from app.core.config import settings
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import ApiError
 from app.db.session import get_db
 from app.schemas.appointment import AppointmentCreate, AppointmentRead
 from app.services.booking import appointment_to_response, create_booking, get_appointment_by_lookup
+from app.services.captcha import verify_turnstile_token
 from app.services.notification_tasks import process_confirmation_email
 
 router = APIRouter()
@@ -22,6 +24,7 @@ def _clean_idempotency_key(value: str | None) -> str | None:
 @router.post("/appointments", status_code=201, response_model=AppointmentRead)
 def post_appointment(
     body: AppointmentCreate,
+    request: Request,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     idempotency_key_header: Annotated[str | None, Header(alias="Idempotency-Key")] = None,
@@ -31,6 +34,10 @@ def post_appointment(
     )
     payload_for_hash = body.model_dump(mode="json")
     payload_for_hash.pop("idempotency_key", None)
+    payload_for_hash.pop("captcha_token", None)
+
+    if settings.captcha_enabled:
+        verify_turnstile_token(body.captcha_token, remote_ip=request.client.host if request.client else None)
 
     try:
         result, notif_id = create_booking(

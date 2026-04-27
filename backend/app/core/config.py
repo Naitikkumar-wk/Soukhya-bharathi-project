@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     smtp_password: str | None = None
     smtp_use_tls: bool = True
     smtp_timeout_seconds: int = 15
+    captcha_enabled: bool = False
+    turnstile_secret_key: str | None = None
+    turnstile_verify_url: str = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 
     db_pool_size: int = 5
     db_max_overflow: int = 10

@@ -38,6 +38,7 @@ export type AppointmentCreatePayload = {
   consent_accepted: boolean;
   source: string;
   idempotency_key?: string | null;
+  captcha_token?: string | null;
 };
 
 export type AppointmentResponse = {
