@@ -25,6 +25,7 @@ const careMenuItems: NavItem[] = [
   { href: "/care?section=women-child-health", label: "Women & Child Health" },
   { href: "/care?section=internal-medicine", label: "Internal Medicine" },
   { href: "/care?section=dermatology", label: "Dermatology" },
+  { href: "/care?section=diagnostic-services", label: "Diagnostic Services" },
 ];
 
 const wellnessMenuItems: NavItem[] = [
@@ -33,6 +34,7 @@ const wellnessMenuItems: NavItem[] = [
   { href: "/treatments?section=cupping", label: "Cupping Therapy" },
   { href: "/treatments?section=yoga-therapy", label: "Yoga Therapy" },
   { href: "/treatments?section=kalari-marma", label: "Kalari Marma Therapy" },
+  { href: "/treatments?section=saukhya-aushadi", label: "Saukhya Aushadi (Pharmacy)" },
   { href: "/treatments?section=integrated-care", label: "Integrated Healthcare" },
 ];
 
