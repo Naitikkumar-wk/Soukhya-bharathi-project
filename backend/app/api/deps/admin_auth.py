@@ -1,13 +1,16 @@
 from collections.abc import Callable
 from typing import Any
 
-from fastapi import Depends, Header
+from fastapi import Depends
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import ApiError
 from app.db.models import AdminUser
 from app.db.session import get_db
 from app.services.security import decode_admin_access_token
+
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def _extract_bearer_token(authorization: str | None) -> str:
@@ -23,9 +26,10 @@ def _extract_bearer_token(authorization: str | None) -> str:
 
 
 def get_current_admin_user(
-    authorization: str | None = Header(default=None, alias="Authorization"),
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
     db: Session = Depends(get_db),
 ) -> AdminUser:
+    authorization = f"{credentials.scheme} {credentials.credentials}" if credentials is not None else None
     token = _extract_bearer_token(authorization)
     payload = decode_admin_access_token(token)
     user_id = payload.get("sub")
